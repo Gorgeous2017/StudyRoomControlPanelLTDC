@@ -1,20 +1,16 @@
 /**
-  ******************************************************************************
-  * @file    main.c
-  * @author  fire
-  * @version V1.0
-  * @date    2015-xx-xx
-  * @brief   LTDC-液晶显示英文，字库在内部FLASH
-  ******************************************************************************
-  * @attention
-  *
-  * 实验平台:秉火  STM32 F429 开发板  
-  * 论坛    :http://www.firebbs.cn
-  * 淘宝    :https://fire-stm32.taobao.com
-  *
-  ******************************************************************************
-  */
-  
+ * @file main.c
+ * @author Gump 
+ * @version V0.1
+ * @date 2019-09-26
+ * @brief LTDC版本的室内控制面板程序
+ * 
+ * @copyright Copyright (c) <2019> <HANSHAN NORMAL UNIVERSITY(CHAOZHOU)> All rights Reserved.
+ *   Media Recognition and Intelligent System Team
+ * 
+ * none
+ */
+
 #include "stm32f4xx.h"
 #include "./led/bsp_led.h"
 #include "./sdram/bsp_sdram.h"
@@ -50,13 +46,14 @@ int main(void)
 	/*经过LCD_SetLayer(LCD_FOREGROUND_LAYER)函数后，
 	以下液晶操作都在前景层刷新，除非重新调用过LCD_SetLayer函数设置背景层*/		
 	
-  LED_BLUE;    
+  //LED_BLUE;    
 
-  Delay(0xfff);  
+  //Delay(0xfff);  
 
   while(1)
 	{
-		LCD_Test();
+		LCD_DisplayPicture(0, 0,96,96,gImage_light_on);
+        //Delay(0xF);
 	}  
 
 }

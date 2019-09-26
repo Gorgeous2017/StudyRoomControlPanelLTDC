@@ -227,7 +227,7 @@ void LCD_LayerInit(void)
 
   /*配置第 2 层，若没有重写某个成员的值，则该成员使用跟第1层一样的配置 */
   /* 配置本层的显存首地址，这里配置它紧挨在第1层的后面*/     
-  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_FRAME_BUFFER + BUFFER_OFFSET;
+  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_FRAME_BUFFER+ BUFFER_OFFSET;
 
 	/* 配置混合因子，使用像素Alpha参与混合 */       
   LTDC_Layer_InitStruct.LTDC_BlendingFactor_1 = LTDC_BlendingFactor1_PAxCA;    
@@ -601,6 +601,71 @@ void LCD_WindowModeDisable(void)
 {
   LCD_SetDisplayWindow(0, 0, LCD_PIXEL_HEIGHT, LCD_PIXEL_WIDTH); 
 }
+
+void LCD_DisplayPicture(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height,const uint8_t *image)
+{
+ 
+    DMA2D_InitTypeDef      DMA2D_InitStruct;
+    DMA2D_FG_InitTypeDef   DMA2D_FG_InitStruct;
+   
+  uint32_t DMA2D_OutAdd;
+   
+    /* Enable the DMA2D Clock */
+    //RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2D, ENABLE);
+  
+    /* DMA2D configuration */
+    //DMA2D_DeInit();
+  
+    /* Transfer mode */
+    DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M;
+  
+    /* Color mode */
+    DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB888;
+ //   DMA2D_OutAdd = CurrentFrameBuffer + 3*(Width*Ypos + Xpos);
+    DMA2D_OutAdd = CurrentFrameBuffer + 3*(LCD_PIXEL_WIDTH*Ypos + Xpos);
+  
+    /* Output Address */
+    DMA2D_InitStruct.DMA2D_OutputMemoryAdd = DMA2D_OutAdd;
+  
+    /* Number of lines : height */
+    DMA2D_InitStruct.DMA2D_NumberOfLine = Height;
+  
+    /* Number of pixel per line : width */
+    DMA2D_InitStruct.DMA2D_PixelPerLine = Width;
+  
+    /* Initialize the alpha and RGB values */
+    DMA2D_InitStruct.DMA2D_OutputGreen = 0;
+    DMA2D_InitStruct.DMA2D_OutputBlue = 130;
+    DMA2D_InitStruct.DMA2D_OutputRed = 228;
+    DMA2D_InitStruct.DMA2D_OutputAlpha = 0;
+  
+    /* Initialize the output offset */
+    DMA2D_InitStruct.DMA2D_OutputOffset = LCD_PIXEL_WIDTH- Width;
+  
+    /* Initialize DMA2D */
+    DMA2D_Init(&DMA2D_InitStruct);
+  
+    /* Configure default values for foreground */
+    DMA2D_FG_StructInit(&DMA2D_FG_InitStruct);
+  
+    /* Configure DMA2D foreground color mode */
+    DMA2D_FG_InitStruct.DMA2D_FGCM = DMA2D_RGB888;
+  
+    /* Configure Input Address */ 
+    DMA2D_FG_InitStruct.DMA2D_FGMA = (uint32_t)&gImage_light_on;
+  
+    /* Initialize foreground */
+    DMA2D_FGConfig(&DMA2D_FG_InitStruct);
+  
+    /* Start Transfer */
+    DMA2D_StartTransfer();
+  
+    /* Wait for CTC Flag activation */
+    while(DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET)
+    {
+    }
+}
+
 
 /**
   * @brief 显示一条直线
