@@ -30,6 +30,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
 
+#include "./usart/bsp_debug_usart.h"
+#include "./touch/bsp_i2c_touch.h"
+
+extern void GTP_TouchProcess(void);
+
 /** @addtogroup STM32F429I_DISCOVERY_Examples
   * @{
   */
@@ -65,6 +70,8 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
+  
+    DEBUG("hardfault err");
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {}
@@ -137,6 +144,17 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {}
+
+  
+  
+void GTP_IRQHandler(void)
+{
+	if(EXTI_GetITStatus(GTP_INT_EXTI_LINE) != RESET) //确保是否产生了EXTI Line中断
+	{
+    GTP_TouchProcess();    
+		EXTI_ClearITPendingBit(GTP_INT_EXTI_LINE);     //清除中断标志位
+	}  
+}
 
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */

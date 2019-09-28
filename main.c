@@ -12,10 +12,11 @@
  */
 
 #include "stm32f4xx.h"
-#include "./led/bsp_led.h"
+#include "./usart/bsp_debug_usart.h"
 #include "./sdram/bsp_sdram.h"
 #include "./lcd/bsp_lcd.h"
-#include <string.h>
+#include "./touch/gt9xx.h"
+#include "panel.h"
 
 void Delay(__IO u32 nCount); 
 void LCD_Test(void);
@@ -26,9 +27,15 @@ void LCD_Test(void);
   */
 int main(void)
 {
-	/* LED 端口初始化 */
-	LED_GPIO_Config();	 
   
+
+	
+	Debug_USART_Config();    
+  printf("\r\n 室内控制面板LTDC测试 \r\n");
+  /* 触摸屏初始化 */
+	GTP_Init_Panel(); 
+	printf("初始化触摸屏\n");
+	
 	/*初始化液晶屏*/
 	LCD_Init();
 	LCD_LayerInit();
@@ -48,17 +55,24 @@ int main(void)
 	
 	//Delay(0xfff);  
 
-	//while(1)
-	{
-		LCD_DisplayPicture(0, 0,96,96,gImage_light_on);
-		Delay(0xFFFF);
-		LCD_DisplayPicture(96, 0,96,96,gImage_ac_on);
-		Delay(0xFFFF);
-		LCD_DisplayPicture(96*2, 0,96,96,gImage_curtain_on);
-		Delay(0xFFFF);
-		LCD_DisplayPicture(96*3, 0,96,96,gImage_fan_on);
-		Delay(0xFFFF);
-	}  
+//	while(1)
+//	{
+//		LCD_DisplayPicture(0, 0,96,96,gImage_light_on);
+//		Delay(0xFFFF);
+//		LCD_DisplayPicture(96, 0,96,96,gImage_ac_on);
+//		Delay(0xFFFF);
+//		LCD_DisplayPicture(96*2, 0,96,96,gImage_curtain_on);
+//		Delay(0xFFFF);
+//		LCD_DisplayPicture(96*3, 0,96,96,gImage_fan_on);
+//		Delay(0xFFFF);
+//	}  
+
+  Palette_Init();
+  Delay(0xfff);
+   
+
+  while(1);
+
 
 }
 
