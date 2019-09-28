@@ -9,11 +9,10 @@
 #include "./sdram/bsp_sdram.h"
 #include "./font/fonts.h"
 
+#include "./icon/icon.h"
+
 /*把这个宏设置成非0值 液晶屏使用RGB888色彩，若为0则使用ARGB1555色彩*/
 #define LCD_RGB_888  1
-
-extern const unsigned char gImage_light_on[27648];
-
 
 #if  LCD_RGB_888
 
@@ -379,9 +378,6 @@ sFONT *  LCD_GetFont(void);
 void     LCD_DisplayStringLine(uint16_t Line, uint8_t *ptr);
 void     LCD_SetDisplayWindow(uint16_t Xpos, uint16_t Ypos, uint16_t Height, uint16_t Width);
 void     LCD_WindowModeDisable(void);
-
-void     LCD_DisplayPicture(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height,const uint8_t *image);
-
 void     LCD_DrawLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, uint8_t Direction);
 void     LCD_DrawRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height);
 void     LCD_DrawCircle(uint16_t Xpos, uint16_t Ypos, uint16_t Radius);

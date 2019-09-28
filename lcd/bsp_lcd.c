@@ -652,7 +652,7 @@ void LCD_DisplayPicture(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t H
     DMA2D_FG_InitStruct.DMA2D_FGCM = DMA2D_RGB888;
   
     /* Configure Input Address */ 
-    DMA2D_FG_InitStruct.DMA2D_FGMA = (uint32_t)&gImage_light_on;
+    DMA2D_FG_InitStruct.DMA2D_FGMA = (uint32_t)image;
   
     /* Initialize foreground */
     DMA2D_FGConfig(&DMA2D_FG_InitStruct);

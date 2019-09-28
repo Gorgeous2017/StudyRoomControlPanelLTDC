@@ -29,31 +29,35 @@ int main(void)
 	/* LED 端口初始化 */
 	LED_GPIO_Config();	 
   
-  /*初始化液晶屏*/
-  LCD_Init();
-  LCD_LayerInit();
-  LTDC_Cmd(ENABLE);
+	/*初始化液晶屏*/
+	LCD_Init();
+	LCD_LayerInit();
+	LTDC_Cmd(ENABLE);
 	
 	/*把背景层刷黑色*/
-  LCD_SetLayer(LCD_BACKGROUND_LAYER);  
+	LCD_SetLayer(LCD_BACKGROUND_LAYER);  
 	LCD_Clear(LCD_COLOR_BLACK);
 	
-  /*初始化后默认使用前景层*/
+	/*初始化后默认使用前景层*/
 	LCD_SetLayer(LCD_FOREGROUND_LAYER); 
 	/*默认设置不透明	，该函数参数为不透明度，范围 0-0xff ，0为全透明，0xff为不透明*/
-  LCD_SetTransparency(0xFF);
-	LCD_Clear(LCD_COLOR_BLACK);
+	LCD_SetTransparency(0xFF);
+	LCD_Clear(LCD_COLOR_WHITE);
 	/*经过LCD_SetLayer(LCD_FOREGROUND_LAYER)函数后，
 	以下液晶操作都在前景层刷新，除非重新调用过LCD_SetLayer函数设置背景层*/		
 	
-  //LED_BLUE;    
+	//Delay(0xfff);  
 
-  //Delay(0xfff);  
-
-  while(1)
+	//while(1)
 	{
 		LCD_DisplayPicture(0, 0,96,96,gImage_light_on);
-        //Delay(0xF);
+		Delay(0xFFFF);
+		LCD_DisplayPicture(96, 0,96,96,gImage_ac_on);
+		Delay(0xFFFF);
+		LCD_DisplayPicture(96*2, 0,96,96,gImage_curtain_on);
+		Delay(0xFFFF);
+		LCD_DisplayPicture(96*3, 0,96,96,gImage_fan_on);
+		Delay(0xFFFF);
 	}  
 
 }
