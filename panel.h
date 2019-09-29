@@ -33,16 +33,15 @@
 #define DEVICE_STATUS_TOGGLE(device, status) (status) ? (gImage_##device##_off) : (gImage_##device##_on)
 typedef struct
 {
-    uint16_t start_x;   /* 按键的x起始坐标  */
-    uint16_t start_y;   /* 按键的y起始坐标  */
-    uint16_t end_x;     /* 按键的x结束坐标  */
-    uint16_t end_y;     /* 按键的y结束坐标  */
+    uint16_t start_x;   /* 图标的x起始坐标  */
+    uint16_t start_y;   /* 图标的y起始坐标  */
     uint8_t device;     /* 用电器类型       */
     uint8_t status;     /* 用电器状态       */
-    uint8_t touch_flag; /* 按键按下的标志   */
+    uint8_t no;         /* 用电器编号       */
+    uint8_t touch_flag; /* 图标按下的标志   */
 
-    void (*draw_icon)(void *icon);    //按键描绘函数
-    void (*icon_command)(void *icon); //按键功能执行函数，例如切换颜色、画刷
+    void (*draw_icon)(void *icon);    /* 图标描绘函数     */
+    void (*icon_command)(void *icon); /* 图标功能执行函数 */
 
 } Touch_Icon;
 
@@ -68,11 +67,14 @@ typedef struct
 
 #endif
 
-void Palette_Init(void);
+void Panel_Init(void);
 void Touch_Icon_Init(void);
+void Draw_Icon(void *icon);
+void Control_Device(void *icon);
+/* 定义成外部函数，可以被触摸屏调用 */
 extern void Touch_Icon_Down(uint16_t x, uint16_t y);
 extern void Touch_Icon_Up(uint16_t x, uint16_t y);
-extern void Control_Device(void *icon);
-void Draw_Icon(void *icon);
+
+extern void Delay(__IO u32 nCount);
 
 #endif //__PANEL_H
