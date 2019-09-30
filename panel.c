@@ -65,6 +65,9 @@ void Touch_Icon_Init(void)
     icon[0].touch_flag = 0;
     icon[0].draw_icon = Draw_Icon;
     icon[0].icon_command = Control_Device;
+    icon[0].gImage_icon[0] = gImage_fan_off;
+    icon[0].gImage_icon[1] = gImage_fan_on;
+
 
     icon[1].start_x = ICON_START_X + ICON_SIZE;
     icon[1].start_y = ICON_START_Y;
@@ -73,6 +76,8 @@ void Touch_Icon_Init(void)
     icon[1].touch_flag = 0;
     icon[1].draw_icon = Draw_Icon;
     icon[1].icon_command = Control_Device;
+    icon[1].gImage_icon[0] = gImage_light_off;
+    icon[1].gImage_icon[1] = gImage_light_on;
 
     icon[2].start_x = ICON_START_X + ICON_SIZE * 2;
     icon[2].start_y = ICON_START_Y;
@@ -81,6 +86,8 @@ void Touch_Icon_Init(void)
     icon[2].touch_flag = 0;
     icon[2].draw_icon = Draw_Icon;
     icon[2].icon_command = Control_Device;
+    icon[2].gImage_icon[0] = gImage_curtain_off;
+    icon[2].gImage_icon[1] = gImage_curtain_on;
 
     icon[3].start_x = ICON_START_X + ICON_SIZE * 3;
     icon[3].start_y = ICON_START_Y;
@@ -89,6 +96,8 @@ void Touch_Icon_Init(void)
     icon[3].touch_flag = 0;
     icon[3].draw_icon = Draw_Icon;
     icon[3].icon_command = Control_Device;
+    icon[3].gImage_icon[0] = gImage_ac_off;
+    icon[3].gImage_icon[1] = gImage_ac_on;
 }
 
 /**
@@ -132,7 +141,7 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
         
             icon[i].touch_flag = 0; /*释放触摸标志*/
 
-            (icon[i].status == 0) ? (icon[i].status = 1) : (icon[i].status = 0); /* 反转用电器状态 */
+            icon[i].status = (icon[i].status == 0) ? 1 : 0; /* 反转用电器状态 */
 
             icon[i].draw_icon(&icon[i]); /*重绘图标*/
 
@@ -151,34 +160,16 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
 void Draw_Icon(void *icon)
 {
     Touch_Icon *ptr = (Touch_Icon *)icon;
-    const unsigned char *gImage;
+    const unsigned char *gImage_icon;
 
-    /*释放图标*/
+    /* 释放图标 */
     if (ptr->touch_flag == 0)
     {
-
-        switch (ptr->device)
-        {
-        case DEVICE_FAN:
-            gImage = DEVICE_STATUS_TOGGLE(fan, ptr->status);
-            break;
-        case DEVICE_LIGHT:
-            gImage = DEVICE_STATUS_TOGGLE(light, ptr->status);
-            break;
-        case DEVICE_CURTAIN:
-            gImage = DEVICE_STATUS_TOGGLE(curtain, ptr->status);
-            break;
-        case DEVICE_AC:
-            gImage = DEVICE_STATUS_TOGGLE(ac, ptr->status);
-            break;
-
-        default:
-            break;
-        }
-        LCD_DisplayPicture(ptr->start_x, ptr->start_y, ICON_SIZE, ICON_SIZE, gImage);
+        gImage_icon = *(ptr->gImage_icon + ( (ptr->status == 0 )? 0 : 1 ) );
+        LCD_DisplayPicture(ptr->start_x, ptr->start_y, ICON_SIZE, ICON_SIZE, gImage_icon);
         Delay(0xfff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
     }
-    else /*图标按下*/
+    else /* 图标按下 */
     {
 
     }

@@ -40,6 +40,8 @@ typedef struct
     uint8_t no;         /* 用电器编号       */
     uint8_t touch_flag; /* 图标按下的标志   */
 
+    const unsigned char *gImage_icon[2]; /* 图标图片数组     */
+
     void (*draw_icon)(void *icon);    /* 图标描绘函数     */
     void (*icon_command)(void *icon); /* 图标功能执行函数 */
 
@@ -55,11 +57,11 @@ typedef struct
 	推荐使用迷你取色器软件获得你看到的界面颜色。
 */
 #if LCD_RGB_888
-/*RGB888颜色转换*/
+/* RGB888颜色转换 */
 #define RGB(R, G, B) ((R << 16) | (G << 8) | (B)) /* 将8位R,G,B转化为 24位RGB888格式 */
 
 #else
-/*RGB565 颜色转换*/
+/* RGB565 颜色转换 */
 #define RGB(R, G, B) (((R >> 3) << 11) | ((G >> 2) << 5) | (B >> 3)) /* 将8位R,G,B转化为 16位RGB565格式 */
 #define RGB565_R(x) ((x >> 8) & 0xF8)
 #define RGB565_G(x) ((x >> 3) & 0xFC)
