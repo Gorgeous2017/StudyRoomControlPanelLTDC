@@ -41,6 +41,8 @@ void Panel_Init(void)
     /* 整屏清为白色 */
     LCD_Clear(LCD_COLOR_WHITE); /* 清屏，显示全白 */
 
+	LCD_DisplayStringLineEx(0,0,64,96,"28%",0);
+
     /* 初始化图标 */
     Touch_Icon_Init();
 
@@ -48,7 +50,10 @@ void Panel_Init(void)
     for (i = 0; i < ICON_NUM; i++)
     {
         icon[i].draw_icon(&icon[i]);
+        Delay(0xffff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
     }
+    //LCD_DisplayStringLineEx(0,96,64,96,"27(c.)",0);
+
 }
 
 /**
@@ -135,6 +140,9 @@ void Touch_Icon_Down(uint16_t x, uint16_t y){
  */
 void Touch_Icon_Up(uint16_t x, uint16_t y){
     uint8_t i;
+	
+    PANEL_DEBUG("Funtion Touch_Icon_Up");
+	
     for (i = 0; i < ICON_NUM; i++){
         /* 触笔在图标区域释放 */
         if (x <= (icon[i].start_x + ICON_SIZE) && y <= (icon[i].start_y + ICON_SIZE) && y >= icon[i].start_y && x >= icon[i].start_x){
@@ -142,8 +150,12 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
             icon[i].touch_flag = 0; /*释放触摸标志*/
 
             icon[i].status = (icon[i].status == 0) ? 1 : 0; /* 反转用电器状态 */
-
+            
+            PANEL_DEBUG("Redraw the icon above");
+				
             icon[i].draw_icon(&icon[i]); /*重绘图标*/
+            
+            PANEL_DEBUG("Redraw the icon below");
 
             icon[i].icon_command(&icon[i]); /*执行图标的功能命令*/
 
@@ -167,7 +179,7 @@ void Draw_Icon(void *icon)
     {
         gImage_icon = *(ptr->gImage_icon + ( (ptr->status == 0 )? 0 : 1 ) );
         LCD_DisplayPicture(ptr->start_x, ptr->start_y, ICON_SIZE, ICON_SIZE, gImage_icon);
-        Delay(0xfff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
+        
     }
     else /* 图标按下 */
     {

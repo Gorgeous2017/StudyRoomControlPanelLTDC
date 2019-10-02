@@ -15,6 +15,7 @@
 #define __PANEL_H
 
 #include "icon/icon.h" /* 包含图标图片数组 */
+#include <stdarg.h>
 
 #define ICON_SIZE 96 /* 图标的大小 */
 #define ICON_NUM 4   /* 图标的数量 */
@@ -68,6 +69,14 @@ typedef struct
 #define RGB565_B(x) ((x << 3) & 0xF8)
 
 #endif
+
+#define PANEL_DEBUG_ON 1
+#define PANEL_DEBUG(fmt, arg...)                                        \
+    do                                                                  \
+    {                                                                   \
+        if (PANEL_DEBUG_ON)                                             \
+            printf("<<-PANEL-DEBUG->> [%d]" fmt "\n", __LINE__, ##arg); \
+    } while (0)
 
 void Panel_Init(void);
 void Touch_Icon_Init(void);

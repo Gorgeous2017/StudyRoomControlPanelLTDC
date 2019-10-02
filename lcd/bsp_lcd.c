@@ -91,6 +91,10 @@ static void LCD_GPIO_Config(void);
 #define VFP   22		//VSYNC前的无效行数
 
 
+#define ZOOMMAXBUFF 16384
+uint8_t zoomBuff[ZOOMMAXBUFF] = {0};	//用于缩放的缓存，最大支持到128*128
+
+
 /**
   * @brief LCD参数配置
   * @note  这个函数用于配置LTDC外设:
@@ -558,6 +562,234 @@ void LCD_DisplayStringLine(uint16_t Line, uint8_t *ptr)
     ptr++;
   }
 }
+
+
+/**
+ * @brief  在显示器上显示中英文字符串,超出液晶宽度时会自动换行。
+					 中英文混显示时，请把英文字体设置为Font16x24格式
+ * @param  Line ：行(也可理解为y坐标)
+ * @param  Column ：列（也可理解为x坐标）
+ * @param  pStr ：要显示的字符串的首地址
+ * @retval 无
+ */
+void LCD_DispString_EN_CH( uint16_t Line, uint16_t Column, const uint8_t * pStr )
+{
+	
+	while( * pStr != '\0' )
+	{
+	
+			/*自动换行*/
+			if ( ( Column + LCD_Currentfonts->Width ) > LCD_PIXEL_WIDTH )
+			{
+				Column = 0;
+				Line += LCD_Currentfonts->Height;
+			}
+			
+			if ( ( Line + LCD_Currentfonts->Height ) > LCD_PIXEL_HEIGHT )
+			{
+				Column = 0;
+				Line = 0;
+			}			
+					
+			LCD_DisplayChar(Line,Column,*pStr);
+			
+			Column += LCD_Currentfonts->Width;
+		
+		  pStr ++;
+
+		
+		
+  }
+	
+	
+} 
+
+
+
+/**
+ * @brief  缩放字模，缩放后的字模由1个像素点由8个数据位来表示
+										0x01表示笔迹，0x00表示空白区
+ * @param  in_width ：原始字符宽度
+ * @param  in_heig ：原始字符高度
+ * @param  out_width ：缩放后的字符宽度
+ * @param  out_heig：缩放后的字符高度
+ * @param  in_ptr ：字库输入指针	注意：1pixel 1bit
+ * @param  out_ptr ：缩放后的字符输出指针 注意: 1pixel 8bit
+ *		out_ptr实际上没有正常输出，改成了直接输出到全局指针zoomBuff中
+ * @param  en_cn ：0为英文，1为中文
+ * @retval 无
+ */
+void LCD_zoomChar(uint16_t in_width,	//原始字符宽度
+									uint16_t in_heig,		//原始字符高度
+									uint16_t out_width,	//缩放后的字符宽度
+									uint16_t out_heig,	//缩放后的字符高度
+									uint8_t *in_ptr,	//字库输入指针	注意：1pixel 1bit
+									uint8_t *out_ptr, //缩放后的字符输出指针 注意: 1pixel 8bit
+									uint8_t en_cn)		//0为英文，1为中文	
+{
+	uint8_t *pts,*ots;
+	//根据源字模及目标字模大小，设定运算比例因子，左移16是为了把浮点运算转成定点运算
+	unsigned int xrIntFloat_16=(in_width<<16)/out_width+1; 
+  unsigned int yrIntFloat_16=(in_heig<<16)/out_heig+1;
+	
+	unsigned int srcy_16=0;
+	unsigned int y,x;
+	uint8_t *pSrcLine;
+	uint8_t tempBuff[1024] = {0};
+	u32			uChar;
+	u16			charBit = in_width / 8;
+	u16			Bitdiff = 32 - in_width;
+	
+	//检查参数是否合法
+	if(in_width >= 32) return;												//字库不允许超过32像素
+	if(in_width * in_heig == 0) return;	
+	if(in_width * in_heig >= 1024 ) return; 					//限制输入最大 32*32
+	
+	if(out_width * out_heig == 0) return;	
+	if(out_width * out_heig >= ZOOMMAXBUFF ) return; //限制最大缩放 128*128
+	pts = (uint8_t*)&tempBuff;
+	
+	//为方便运算，字库的数据由1 pixel 1bit 映射到1pixel 8bit
+	//0x01表示笔迹，0x00表示空白区
+	if(en_cn == 0x00)//英文
+	{
+		//这里以16 * 24字库作为测试，其他大小的字库自行根据下列代码做下映射就可以
+		//英文和中文字库上下边界不对，可在此次调整。需要注意tempBuff防止溢出
+			pts+=in_width*4;
+			for(y=0;y<in_heig;y++)	
+			{
+				uChar = *(u32 *)(in_ptr + y * charBit) >> Bitdiff;
+				for(x=0;x<in_width;x++)
+					{
+						*pts++ = (uChar >> x) & 0x01;
+					}
+			}		
+	}
+	else //中文
+	{
+			for(y=0;y<in_heig;y++)	
+			{
+				/*源字模数据*/
+				uChar = in_ptr [ y * 3 ];
+				uChar = ( uChar << 8 );
+				uChar |= in_ptr [ y * 3 + 1 ];
+				uChar = ( uChar << 8 );
+				uChar |= in_ptr [ y * 3 + 2];
+				/*映射*/
+				for(x=0;x<in_width;x++)
+					{
+						if(((uChar << x) & 0x800000) == 0x800000)
+							*pts++ = 0x01;
+						else
+							*pts++ = 0x00;
+					}
+			}		
+	}
+
+	//zoom过程
+	pts = (uint8_t*)&tempBuff;	//映射后的源数据指针
+	ots = (uint8_t*)&zoomBuff;	//输出数据的指针
+	for (y=0;y<out_heig;y++)	/*行遍历*/
+    {
+				unsigned int srcx_16=0;
+        pSrcLine=pts+in_width*(srcy_16>>16);				
+        for (x=0;x<out_width;x++) /*行内像素遍历*/
+        {
+            ots[x]=pSrcLine[srcx_16>>16]; //把源字模数据复制到目标指针中
+            srcx_16+=xrIntFloat_16;			//按比例偏移源像素点
+        }
+        srcy_16+=yrIntFloat_16;				  //按比例偏移源像素点
+        ots+=out_width;						
+    }
+	/*！！！缩放后的字模数据直接存储到全局指针zoomBuff里了*/
+	out_ptr = (uint8_t*)&zoomBuff;	//out_ptr没有正确传出，后面调用直接改成了全局变量指针！
+	
+	/*实际中如果使用out_ptr不需要下面这一句！！！
+		只是因为out_ptr没有使用，会导致warning。强迫症*/
+	out_ptr++; 
+}			
+
+/**
+ * @brief  利用缩放后的字模显示字符
+ * @param  Xpos ：字符显示位置x
+ * @param  Ypos ：字符显示位置y
+ * @param  Font_width ：字符宽度
+ * @param  Font_Heig：字符高度
+ * @param  c ：要显示的字模数据
+ * @param  DrawModel ：是否反色显示 
+ * @retval 无
+ */
+void LCD_DrawChar_Ex(uint16_t Xpos, //字符显示位置x
+												uint16_t Ypos, //字符显示位置y
+												uint16_t Font_width, //字符宽度
+												uint16_t Font_Heig,  //字符高度 
+												uint8_t *c,						//字模数据
+												uint16_t DrawModel)		//是否反色显示
+{
+  uint32_t index = 0, counter = 0, xpos =0;
+  uint32_t  Xaddress = 0;
+  
+  xpos = Xpos*LCD_PIXEL_WIDTH*3;
+  Xaddress += Ypos;
+  
+  for(index = 0; index < Font_Heig; index++)
+  {
+    
+    for(counter = 0; counter < Font_width; counter++)
+    {
+      if(*c++ == DrawModel)	//根据字模及反色设置决定显示哪种颜色
+      {
+        *(__IO uint16_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos) = (0x00FFFF & CurrentBackColor);        //GB
+        *(__IO uint8_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos+2) = (0xFF0000 & CurrentBackColor) >> 16; //R
+      }
+      else
+      {
+        *(__IO uint16_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos) = (0x00FFFF & CurrentTextColor);        //GB
+        *(__IO uint8_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos+2) = (0xFF0000 & CurrentTextColor) >> 16; //R
+      }
+      Xaddress++;
+    }
+      Xaddress += (LCD_PIXEL_WIDTH - Font_width);
+  }
+}
+
+/**
+ * @brief  利用缩放后的字模显示字符串
+ * @param  Xpos ：字符显示位置x
+ * @param  Ypos ：字符显示位置y
+ * @param  Font_width ：字符宽度，英文字符在此基础上/2。注意为偶数
+ * @param  Font_Heig：字符高度，注意为偶数
+ * @param  c ：要显示的字符串
+ * @param  DrawModel ：是否反色显示 
+ * @retval 无
+ */
+void LCD_DisplayStringLineEx(uint16_t x, 		//字符显示位置x
+														 uint16_t y, 				//字符显示位置y
+														 uint16_t Font_width,	//要显示的字体宽度，英文字符在此基础上/2。注意为偶数
+														 uint16_t Font_Heig,	//要显示的字体高度，注意为偶数
+														 uint8_t *ptr,					//显示的字符内容
+														 uint16_t DrawModel)  //是否反色显示
+{
+	uint16_t refcolumn = x; //x坐标
+	uint16_t Charwidth;
+	uint8_t *psr;
+	uint8_t Ascii;	//英文
+
+	
+	while ((refcolumn < LCD_PIXEL_WIDTH) && ((*ptr != 0) & (((refcolumn + LCD_Currentfonts->Width) & 0xFFFF) >= LCD_Currentfonts->Width)))
+	{
+
+				Charwidth = Font_width / 2;
+				Ascii = *ptr - 32;
+				//缩放字模数据
+				LCD_zoomChar(16,24,Charwidth,Font_Heig,(uint8_t *)&LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height],psr,0);
+			  //显示单个字符
+				LCD_DrawChar_Ex(y,refcolumn,Charwidth,Font_Heig,(uint8_t*)&zoomBuff,DrawModel);
+				refcolumn+=Charwidth;
+				ptr++;
+	}
+}
+
 
 /**
   * @brief  Sets a display window

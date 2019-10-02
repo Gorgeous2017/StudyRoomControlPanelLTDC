@@ -404,6 +404,22 @@ void     LCD_CtrlLinesWrite(GPIO_TypeDef* GPIOx, uint16_t CtrlPins, BitAction Bi
 
 void     PutPixel(int16_t x, int16_t y);
 
+
+
+/*汉字*/
+void LCD_DispString_EN_CH( uint16_t usX, uint16_t usY, const uint8_t * pStr );
+void LCD_DisplayStringLine_EN_CH(uint16_t Line, uint8_t *ptr);
+
+/*缩放*/
+void LCD_DisplayStringLineEx(uint16_t x, //显示的x点
+														 uint16_t y, //显示的y点
+														 uint16_t Font_width,	//要显示的字体宽度，英文字符在此基础上/2。注意为偶数
+														 uint16_t Font_Heig,	//要显示的字体高度，注意为偶数
+														 uint8_t *ptr,				//显示的字符内容
+														 uint16_t DrawModel);  //是否反色显示
+
+
+
 /**
   * @}
   */    
