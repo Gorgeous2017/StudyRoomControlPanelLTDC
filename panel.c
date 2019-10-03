@@ -52,7 +52,7 @@ void Panel_Init(void)
         icon[i].draw_icon(&icon[i]);
         Delay(0xffff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
     }
-    //LCD_DisplayStringLineEx(0,96,64,96,"27(c.)",0);
+    LCD_DisplayStringLineEx(0,96,64,96,"27(c.)",0);
 
 }
 
@@ -144,6 +144,9 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
     PANEL_DEBUG("Funtion Touch_Icon_Up");
 	
     for (i = 0; i < ICON_NUM; i++){
+
+        PANEL_DEBUG("icon no = %d, x = %d, y = %d",i,icon[i].start_x,icon[i].start_y);
+
         /* 触笔在图标区域释放 */
         if (x <= (icon[i].start_x + ICON_SIZE) && y <= (icon[i].start_y + ICON_SIZE) && y >= icon[i].start_y && x >= icon[i].start_x){
         
