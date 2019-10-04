@@ -47,8 +47,6 @@ int main(void)
 	LCD_Clear(LCD_COLOR_WHITE);
 	/* 经过LCD_SetLayer(LCD_FOREGROUND_LAYER)函数后，
 	以下液晶操作都在前景层刷新，除非重新调用过LCD_SetLayer函数设置背景层 */		
-	
-
 
 	/* 面板初始化 */
 	Panel_Init();

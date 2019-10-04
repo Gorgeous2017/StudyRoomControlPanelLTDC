@@ -52,7 +52,8 @@ void Panel_Init(void)
         icon[i].draw_icon(&icon[i]);
         Delay(0xffff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
     }
-    LCD_DisplayStringLineEx(0,96,64,96,"27(c.)",0);
+    LCD_SetFont(&Font16x24);
+    LCD_DisplayStringLine(LCD_LINE_7,"29");
 
 }
 
