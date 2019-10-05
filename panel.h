@@ -71,11 +71,13 @@ typedef struct
 #endif
 
 #define PANEL_DEBUG_ON 1
-#define PANEL_DEBUG(fmt, arg...)                                        \
-    do                                                                  \
-    {                                                                   \
-        if (PANEL_DEBUG_ON)                                             \
-            printf("<<-PANEL-DEBUG->> [%d]" fmt "\n", __LINE__, ##arg); \
+#define PANEL_DEBUG(fmt, ...)                        \
+    do                                               \
+    {                                                \
+        if (PANEL_DEBUG_ON)                          \
+            printf("<<-PANEL-DEBUG->> File:"__FILE__ \
+                   "  LINE:[%d]  " fmt "\n",         \
+                   __LINE__, ##__VA_ARGS__);         \
     } while (0)
 
 void Panel_Init(void);

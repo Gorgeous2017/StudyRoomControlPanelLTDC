@@ -30,85 +30,82 @@
 #define __FONTS_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C"
+{
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 
-/** @addtogroup Utilities
-  * @{
-  */
-  
-/** @addtogroup STM32_EVAL
-  * @{
-  */ 
-
-/** @addtogroup Common
+  /** @addtogroup Utilities
   * @{
   */
 
-/** @addtogroup FONTS
+  /** @addtogroup STM32_EVAL
   * @{
-  */ 
+  */
 
-/** @defgroup FONTS_Exported_Types
+  /** @addtogroup Common
   * @{
-  */ 
-/*字体格式*/
-typedef struct _tFont
-{    
-  const uint16_t *table;    /*指向字模数据的指针*/
-  uint16_t Width;           /*字模的像素宽度*/
-  uint16_t Height;          /*字模的像素高度*/  
-} sFONT;
+  */
 
-/*这些可选的字体格式定义在fonts.c文件*/
-extern sFONT Font16x24;
-extern sFONT Font12x12;
-extern sFONT Font8x12;
-extern sFONT Font8x8;
+  /** @addtogroup FONTS
+  * @{
+  */
+
+  /** @defgroup FONTS_Exported_Types
+  * @{
+  */
+
+  /*字体格式*/
+  typedef struct _tFont
+  {
+    const uint16_t *table; /*指向字模数据的指针*/
+    uint16_t Width;        /*字模的像素宽度*/
+    uint16_t Height;       /*字模的像素高度*/
+  } sFONT;
+
+  /*这些可选的字体格式定义在fonts.c文件*/
+
+  extern sFONT Font48x96; /* 室内控制面板用 大ASCII码字模 */
+
+  extern sFONT Font16x24;
+  extern sFONT Font12x12;
+  extern sFONT Font8x12;
+  extern sFONT Font8x8;
 
 /**
   * @}
-  */ 
+  */
 
 /** @defgroup FONTS_Exported_Constants
   * @{
-  */ 
+  */
 #define LINE(x) ((x) * (((sFONT *)LCD_GetFont())->Height))
 
-/**
+  /**
   * @}
-  */ 
+  */
 
-/** @defgroup FONTS_Exported_Macros
+  /** @defgroup FONTS_Exported_Macros
   * @{
-  */ 
-/**
+  */
+  /**
   * @}
-  */ 
+  */
 
-/** @defgroup FONTS_Exported_Functions
+  /** @defgroup FONTS_Exported_Functions
   * @{
-  */ 
-/**
+  */
+  /**
   * @}
   */
 
 #ifdef __cplusplus
 }
 #endif
-  
+
 #endif /* __FONTS_H */
- 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */ 
 
 /**
   * @}
@@ -120,6 +117,14 @@ extern sFONT Font8x8;
 
 /**
   * @}
-  */      
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
