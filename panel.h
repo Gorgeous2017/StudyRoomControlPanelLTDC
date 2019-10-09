@@ -70,6 +70,7 @@ typedef struct
 
 #endif
 
+#define PANEL
 #define PANEL_DEBUG_ON 1
 #define PANEL_DEBUG(fmt, ...)                        \
     do                                               \

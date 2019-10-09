@@ -39,7 +39,7 @@ void Panel_Init(void)
     uint8_t i;
 
     /* 整屏清为白色 */
-    LCD_Clear(LCD_COLOR_WHITE); /* 清屏，显示全白 */
+    LCD_Clear(LCD_COLOR_BLACK); /* 清屏，显示全黑 */
 
 	//LCD_DisplayStringLineEx(0,0,64,96,"28%",0);
 
@@ -52,9 +52,12 @@ void Panel_Init(void)
         icon[i].draw_icon(&icon[i]);
         Delay(0xffff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
     }
-    //LCD_SetFont(&Font48x96);
-    LCD_SetFont(&Font12x12);
-    LCD_DisplayStringLine(LCD_LINE_0,"!");
+    LCD_SetFont(&Font48x96);
+    //LCD_SetFont(&Font12x12);
+    LCD_DisplayStringLine(LCD_LINE_0,"23%");
+		LCD_DisplayStringLine(LCD_LINE_1,"78%RH");
+		LCD_DisplayStringLine(LCD_LINE_2,"23C.");
+		LCD_DisplayStringLine(LCD_LINE_3,"15%");
 
 }
 

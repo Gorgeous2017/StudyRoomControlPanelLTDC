@@ -524,6 +524,50 @@ void LCD_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint16_t *c)
   }
 }
 
+
+#ifdef PANEL
+/**
+ * @brief  Draws a character with a special size(48x96) on Panel.
+ * 
+ * @param Xpos: the Line where to display the character shape.
+ * @param Ypos: start column address.
+ * @param c: pointer to the character data.
+ */
+void Panel_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint16_t *c)
+{
+  uint32_t index = 0, counter = 0, xpos =0;
+  uint32_t  Xaddress = 0;
+  
+  xpos = Xpos*LCD_PIXEL_WIDTH*3;
+  Xaddress += Ypos;
+  
+  for(index = 0; index < LCD_Currentfonts->Height; index++)
+  {
+    
+    for(counter = 0; counter < LCD_Currentfonts->Width; counter++)
+    {
+      /* 字模数组一个成员一个字节，48宽需要 48 / 8 = 6 个成员来表示，counter / 8 即当前行的成员下标 */
+      /* counter % 8 即当前成员的当前位 */
+      /* 若不理解这一段代码的话可参阅README.md中的开发日志 2019/10/05 */
+      /* !!!!注意向前扫描还是向后扫描，大端小端，FIFO、 */
+      /* 字模高度（index） x 行成员数（6） */
+      if( ( c[index * 6 + (counter / 8) ] & ( 0x80 >> (counter % 8) ) ) == 0x00 )
+      {
+        *(__IO uint16_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos) = (0x00FFFF & CurrentBackColor);        //GB
+        *(__IO uint8_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos+2) = (0xFF0000 & CurrentBackColor) >> 16; //R
+      }
+      else
+      {
+        *(__IO uint16_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos) = (0x00FFFF & CurrentTextColor);        //GB
+        *(__IO uint8_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos+2) = (0xFF0000 & CurrentTextColor) >> 16; //R
+      }
+      Xaddress++;
+    }
+      Xaddress += (LCD_PIXEL_WIDTH - LCD_Currentfonts->Width);
+  }
+}
+#endif
+
 /**
   * @brief  Displays one character (16dots width, 24dots height).
   * @param  Line: the Line where to display the character shape .
@@ -542,8 +586,12 @@ void LCD_DisplayChar(uint16_t Line, uint16_t Column, uint8_t Ascii)
   PANEL_DEBUG("table index = %d",Ascii * LCD_Currentfonts->Height);
 
   PANEL_DEBUG("fonts table in index = %#X",LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height+1]);
-
+  
+#ifdef PANEL
+  Panel_DrawChar(Line, Column, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height * 6]); /* 字模高度 x 行成员数 */
+#else
   LCD_DrawChar(Line, Column, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height]);
+#endif
 }
 
 /**
