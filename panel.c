@@ -94,7 +94,9 @@ void Device_Icon_Init(void)
     /* 四个用电器图标 */
     icon[0].start_x = ICON_START_X;
     icon[0].start_y = ICON_START_Y;
-    icon[0].device = DEVICE_FAN;
+    icon[0].width = ICON_SIZE;
+    icon[0].height = ICON_SIZE;
+    icon[0].type = DEVICE_FAN;
     icon[0].status = 0;
     icon[0].touch_flag = 0;
     icon[0].draw_icon = Draw_Icon;
@@ -105,7 +107,9 @@ void Device_Icon_Init(void)
 
     icon[1].start_x = ICON_START_X + ICON_SIZE;
     icon[1].start_y = ICON_START_Y;
-    icon[1].device = DEVICE_LIGHT;
+    icon[1].width = ICON_SIZE;
+    icon[1].height = ICON_SIZE;
+    icon[1].type = DEVICE_LIGHT;
     icon[1].status = 0;
     icon[1].touch_flag = 0;
     icon[1].draw_icon = Draw_Icon;
@@ -115,7 +119,9 @@ void Device_Icon_Init(void)
 
     icon[2].start_x = ICON_START_X + ICON_SIZE * 2;
     icon[2].start_y = ICON_START_Y;
-    icon[2].device = DEVICE_CURTAIN;
+    icon[2].width = ICON_SIZE;
+    icon[2].height = ICON_SIZE;
+    icon[2].type = DEVICE_CURTAIN;
     icon[2].status = 0;
     icon[2].touch_flag = 0;
     icon[2].draw_icon = Draw_Icon;
@@ -125,7 +131,9 @@ void Device_Icon_Init(void)
 
     icon[3].start_x = ICON_START_X + ICON_SIZE * 3;
     icon[3].start_y = ICON_START_Y;
-    icon[3].device = DEVICE_AC;
+    icon[3].width = ICON_SIZE;
+    icon[3].height = ICON_SIZE;
+    icon[3].type = DEVICE_AC;
     icon[3].status = 0;
     icon[3].touch_flag = 0;
     icon[3].draw_icon = Draw_Icon;
@@ -144,31 +152,37 @@ void Menu_Icon_Init(void){
     
     icon[MENU_INDEX + 0].start_x = MENU_ICON_START_X;
     icon[MENU_INDEX + 0].start_y = MENU_ICON_START_Y;
-    icon[MENU_INDEX + 0].device = DEVICE_AC; // 待定
+    icon[MENU_INDEX + 0].width = MENU_ICON_W;
+    icon[MENU_INDEX + 0].height = MENU_ICON_H;
+    icon[MENU_INDEX + 0].type = DEVICE_AC; // 待定
     icon[MENU_INDEX + 0].status = 1;
     icon[MENU_INDEX + 0].touch_flag = 0;
-    icon[MENU_INDEX + 0].draw_icon = Draw_Menu_Icon;
-    icon[MENU_INDEX + 0].icon_command = Control_Device;
+    icon[MENU_INDEX + 0].draw_icon = Draw_Icon;
+    icon[MENU_INDEX + 0].icon_command = Tag_Change;
     icon[MENU_INDEX + 0].gImage_icon[0] = gImage_single_sel;
     icon[MENU_INDEX + 0].gImage_icon[1] = gImage_single_unsel;
 
     icon[MENU_INDEX + 1].start_x = MENU_ICON_START_X + MENU_ICON_OFFSET;
     icon[MENU_INDEX + 1].start_y = MENU_ICON_START_Y;
-    icon[MENU_INDEX + 1].device = DEVICE_AC; // 待定
+    icon[MENU_INDEX + 1].width = MENU_ICON_W;
+    icon[MENU_INDEX + 1].height = MENU_ICON_H;
+    icon[MENU_INDEX + 1].type = DEVICE_AC; // 待定
     icon[MENU_INDEX + 1].status = 0;
     icon[MENU_INDEX + 1].touch_flag = 0;
-    icon[MENU_INDEX + 1].draw_icon = Draw_Menu_Icon;
-    icon[MENU_INDEX + 1].icon_command = Control_Device;
+    icon[MENU_INDEX + 1].draw_icon = Draw_Icon;
+    icon[MENU_INDEX + 1].icon_command = Tag_Change;
     icon[MENU_INDEX + 1].gImage_icon[0] = gImage_centre_sel;
     icon[MENU_INDEX + 1].gImage_icon[1] = gImage_centre_unsel;
 
     icon[MENU_INDEX + 2].start_x = MENU_ICON_START_X + MENU_ICON_OFFSET * 2;
     icon[MENU_INDEX + 2].start_y = MENU_ICON_START_Y;
-    icon[MENU_INDEX + 2].device = DEVICE_AC; // 待定
+    icon[MENU_INDEX + 2].width = MENU_ICON_W;
+    icon[MENU_INDEX + 2].height = MENU_ICON_H;
+    icon[MENU_INDEX + 2].type = DEVICE_AC; // 待定
     icon[MENU_INDEX + 2].status = 0;
     icon[MENU_INDEX + 2].touch_flag = 0;
-    icon[MENU_INDEX + 2].draw_icon = Draw_Menu_Icon;
-    icon[MENU_INDEX + 2].icon_command = Control_Device;
+    icon[MENU_INDEX + 2].draw_icon = Draw_Icon;
+    icon[MENU_INDEX + 2].icon_command = Tag_Change;
     icon[MENU_INDEX + 2].gImage_icon[0] = gImage_auto_sel;
     icon[MENU_INDEX + 2].gImage_icon[1] = gImage_auto_unsel;
 
@@ -181,6 +195,8 @@ void Menu_Icon_Init(void){
 void Status_Icon_Init(void){
     status_icon[0].start_x = STATUS_ICON_START_X;
     status_icon[0].start_y = STATUS_ICON_START_Y;
+    status_icon[0].width = ICON_SIZE;
+    status_icon[0].height = ICON_SIZE;
     status_icon[0].touch_flag = 0;
     status_icon[0].status = 0;
     status_icon[0].draw_icon = Draw_Icon;
@@ -188,6 +204,8 @@ void Status_Icon_Init(void){
 
     status_icon[1].start_x = STATUS_ICON_START_X;
     status_icon[1].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET;
+    status_icon[1].width = ICON_SIZE;
+    status_icon[1].height = ICON_SIZE;
     status_icon[1].touch_flag = 0;
     status_icon[1].status = 0;
     status_icon[1].draw_icon = Draw_Icon;
@@ -195,6 +213,8 @@ void Status_Icon_Init(void){
 
     status_icon[2].start_x = STATUS_ICON_START_X;
     status_icon[2].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 2;
+    status_icon[2].width = ICON_SIZE;
+    status_icon[2].height = ICON_SIZE;
     status_icon[2].touch_flag = 0;
     status_icon[2].status = 0;
     status_icon[2].draw_icon = Draw_Icon;
@@ -202,6 +222,8 @@ void Status_Icon_Init(void){
 
     status_icon[3].start_x = STATUS_ICON_START_X;
     status_icon[3].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 3;
+    status_icon[3].width = ICON_SIZE;
+    status_icon[3].height = ICON_SIZE;
     status_icon[3].touch_flag = 0;
     status_icon[3].status = 0;
     status_icon[3].draw_icon = Draw_Icon;
@@ -218,7 +240,7 @@ void Touch_Icon_Down(uint16_t x, uint16_t y){
     uint8_t i;
     for (i = 0; i < ICON_NUM; i++){
         /* 触摸到了图标 */
-        if (x <= (icon[i].start_x + ICON_SIZE) && y <= (icon[i].start_y + ICON_SIZE) && y >= icon[i].start_y && x >= icon[i].start_x){
+        if (x <= (icon[i].start_x + icon[i].width ) && y <= (icon[i].start_y + icon[i].height ) && y >= icon[i].start_y && x >= icon[i].start_x){
         
             if (icon[i].touch_flag == 0){ /*原本的状态为没有按下，则更新状态*/
 
@@ -251,19 +273,21 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
         PANEL_DEBUG("icon no = %d, x = %d, y = %d",i,icon[i].start_x,icon[i].start_y);
 
         /* 触笔在图标区域释放 */
-        if (x <= (icon[i].start_x + ICON_SIZE) && y <= (icon[i].start_y + ICON_SIZE) && y >= icon[i].start_y && x >= icon[i].start_x){
+        if (x <= (icon[i].start_x + icon[i].width) && y <= (icon[i].start_y + icon[i].height) && y >= icon[i].start_y && x >= icon[i].start_x){
         
             icon[i].touch_flag = 0; /*释放触摸标志*/
 
-            icon[i].status = (icon[i].status == 0) ? 1 : 0; /* 反转用电器状态 */
-            
+            //icon[i].status = (icon[i].status == 0) ? 1 : 0; /* 反转用电器状态 */
+
+            icon[i].icon_command(&icon[i]); /*执行图标的功能命令*/
+
             PANEL_DEBUG("Redraw the icon above");
 				
             icon[i].draw_icon(&icon[i]); /*重绘图标*/
             
             PANEL_DEBUG("Redraw the icon below");
 
-            icon[i].icon_command(&icon[i]); /*执行图标的功能命令*/
+            
 
             break;
         }
@@ -284,7 +308,7 @@ void Draw_Icon(void *icon)
     if (ptr->touch_flag == 0)
     {
         gImage_icon = *(ptr->gImage_icon + ( (ptr->status == 0 )? 0 : 1 ) );
-        LCD_DisplayPicture(ptr->start_x, ptr->start_y, ICON_SIZE, ICON_SIZE, gImage_icon);
+        LCD_DisplayPicture(ptr->start_x, ptr->start_y, ptr->width, ptr->height, gImage_icon);
         
     }
     else /* 图标按下 */
@@ -316,10 +340,46 @@ void Draw_Menu_Icon(void *icon)
  * 
  * @param icon Touch_Icon 类型的图标参数
  */
-void Control_Device(void *icon)
-{
+void Control_Device(void *icon){
+
     Touch_Icon *ptr = (Touch_Icon *)icon;
+
+    ptr->status = (ptr->status == 0) ? 1 : 0; /* 反转用电器状态 */
+
     /*
     ptr->device, ptr->
     */
 }
+
+/**
+ * @brief 用于切换菜单栏的页签，并显示不同的页面
+ * 
+ * @param icon Touch_Icon 类型的图标参数
+ */
+void Tag_Change(void *ic){
+
+    Touch_Icon *ptr = (Touch_Icon *)ic;
+    uint8_t i,target_index;
+
+    for(i = 0; i < 3; i++){
+        if( ptr->start_x == (MENU_ICON_START_X + MENU_ICON_OFFSET * i)){
+            break;
+        }
+    }
+
+    ptr->status = 1;
+
+    target_index = MENU_INDEX + ((i + 1) % 3);
+    icon[target_index].status = 0;
+    icon[target_index].draw_icon(&icon[target_index]);
+    
+    PANEL_DEBUG("i = %d, target_index = %d",i,target_index);
+
+    target_index = MENU_INDEX + ((i + 2) % 3);
+    icon[target_index].status = 0;
+    icon[target_index].draw_icon(&icon[target_index]);
+
+    PANEL_DEBUG("i = %d, target_index = %d",i,target_index);
+
+}
+

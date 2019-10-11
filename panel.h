@@ -50,7 +50,9 @@ typedef struct
 {
     uint16_t start_x;   /* 图标的x起始坐标  */
     uint16_t start_y;   /* 图标的y起始坐标  */
-    uint8_t device;     /* 用电器类型       */
+    uint8_t width;      /* 图标宽度         */
+    uint8_t height;     /* 图标高度        */
+    uint8_t type;       /* 图标类型        */
     uint8_t status;     /* 用电器状态       */
     uint8_t no;         /* 用电器编号       */
     uint8_t touch_flag; /* 图标按下的标志   */
@@ -102,6 +104,8 @@ void Menu_Icon_Init(void);
 void Status_Icon_Init(void);
 void Draw_Icon(void *icon);
 void Draw_Menu_Icon(void *icon);
+
+void Tag_Change(void *icon);
 void Control_Device(void *icon);
 /* 定义成外部函数，可以被触摸屏调用 */
 extern void Touch_Icon_Down(uint16_t x, uint16_t y);
