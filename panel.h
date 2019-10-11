@@ -102,8 +102,13 @@ void Touch_Icon_Init(void);
 void Device_Icon_Init(void);
 void Menu_Icon_Init(void);
 void Status_Icon_Init(void);
+void Single_Ctrl_Icon_Init(void);
+
 void Draw_Icon(void *icon);
 void Draw_Menu_Icon(void *icon);
+void Draw_Single_Ctrl_Page(void *icon);
+void Draw_Centre_Ctrl_Page(void *icon);
+void Draw_Auto_Ctrl_Page(void *icon);
 
 void Tag_Change(void *icon);
 void Control_Device(void *icon);

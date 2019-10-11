@@ -17,6 +17,8 @@
  
 /* 图标结构体数组 */
 Touch_Icon icon[ICON_NUM];
+Touch_Icon single_ctrl_icon[4];
+Touch_Icon centre_ctrl_icon[4];
 Touch_Icon status_icon[4];
 Touch_Icon menu_icon[3];
 static void Draw_Icon(void *icon);
@@ -29,6 +31,35 @@ static void Draw_Icon(void *icon);
 void Delay(__IO uint32_t nCount)
 {
 	for(; nCount != 0; nCount--);
+}
+
+
+/**
+ * @brief 按照给定的icon结构体初始化目标结构体数组
+ * 
+ * @param source_icon 初始化好的图标结构体，由用户初始化后传入
+ * @param aim_icon 需要被初始化的图标结构体数组
+ * @param icon_num 需要被初始化的图标数
+ */
+void Icon_Struct_Init(Touch_Icon *source_icon, Touch_Icon *aim_icon, uint8_t icon_num){
+    uint8_t i;
+
+    for(i = 0; i < icon_num; i++ ){
+
+        aim_icon[i].start_x        =  source_icon->start_x;
+        aim_icon[i].start_y        =  source_icon->start_y;
+        aim_icon[i].width          =  source_icon->width;
+        aim_icon[i].height         =  source_icon->height;
+        aim_icon[i].type           =  source_icon->type;
+        aim_icon[i].status         =  source_icon->status;
+        aim_icon[i].touch_flag     =  source_icon->touch_flag;
+        aim_icon[i].draw_icon      =  source_icon->draw_icon;
+        aim_icon[i].icon_command   =  source_icon->icon_command;
+        aim_icon[i].gImage_icon[0] =  source_icon->gImage_icon[0];
+        aim_icon[i].gImage_icon[1] =  source_icon->gImage_icon[1];
+
+    }
+
 }
 
 
@@ -52,6 +83,9 @@ void Panel_Init(void)
     for (i = 0; i < ICON_NUM; i++)
     {
        icon[i].draw_icon(&icon[i]);
+
+       PANEL_DEBUG("Draw no %d icon",i);
+
        Delay(0xffff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
     }
     
@@ -83,6 +117,7 @@ void Touch_Icon_Init(void)
     Device_Icon_Init();
     Menu_Icon_Init();
     Status_Icon_Init();
+    Single_Ctrl_Icon_Init();
 }
 
 /**
@@ -103,7 +138,6 @@ void Device_Icon_Init(void)
     icon[0].icon_command = Control_Device;
     icon[0].gImage_icon[0] = gImage_fan_off;
     icon[0].gImage_icon[1] = gImage_fan_on;
-
 
     icon[1].start_x = ICON_START_X + ICON_SIZE;
     icon[1].start_y = ICON_START_Y;
@@ -149,40 +183,40 @@ void Device_Icon_Init(void)
  * 
  */
 void Menu_Icon_Init(void){
+
+    Touch_Icon Icon_InitStruct;
+
+    Icon_InitStruct.start_x = MENU_ICON_START_X;
+    Icon_InitStruct.start_y = MENU_ICON_START_Y;
+    Icon_InitStruct.width = MENU_ICON_W;
+    Icon_InitStruct.height = MENU_ICON_H;
+    Icon_InitStruct.type = DEVICE_AC; // 待定
+    Icon_InitStruct.status = 0;
+    Icon_InitStruct.touch_flag = 0;
+    Icon_InitStruct.draw_icon = Draw_Icon;
+    Icon_InitStruct.icon_command = Draw_Single_Ctrl_Page;
+    Icon_InitStruct.gImage_icon[0] = gImage_single_sel;
+    Icon_InitStruct.gImage_icon[1] = gImage_single_unsel;
+
+    PANEL_DEBUG("Menu icon struct init above");
+
+    Icon_Struct_Init(&Icon_InitStruct, icon + MENU_INDEX, 3);
+
+    PANEL_DEBUG("Menu icon struct init below");
     
     icon[MENU_INDEX + 0].start_x = MENU_ICON_START_X;
-    icon[MENU_INDEX + 0].start_y = MENU_ICON_START_Y;
-    icon[MENU_INDEX + 0].width = MENU_ICON_W;
-    icon[MENU_INDEX + 0].height = MENU_ICON_H;
-    icon[MENU_INDEX + 0].type = DEVICE_AC; // 待定
     icon[MENU_INDEX + 0].status = 1;
-    icon[MENU_INDEX + 0].touch_flag = 0;
-    icon[MENU_INDEX + 0].draw_icon = Draw_Icon;
-    icon[MENU_INDEX + 0].icon_command = Tag_Change;
+    icon[MENU_INDEX + 0].icon_command = Draw_Single_Ctrl_Page;
     icon[MENU_INDEX + 0].gImage_icon[0] = gImage_single_sel;
     icon[MENU_INDEX + 0].gImage_icon[1] = gImage_single_unsel;
 
     icon[MENU_INDEX + 1].start_x = MENU_ICON_START_X + MENU_ICON_OFFSET;
-    icon[MENU_INDEX + 1].start_y = MENU_ICON_START_Y;
-    icon[MENU_INDEX + 1].width = MENU_ICON_W;
-    icon[MENU_INDEX + 1].height = MENU_ICON_H;
-    icon[MENU_INDEX + 1].type = DEVICE_AC; // 待定
-    icon[MENU_INDEX + 1].status = 0;
-    icon[MENU_INDEX + 1].touch_flag = 0;
-    icon[MENU_INDEX + 1].draw_icon = Draw_Icon;
-    icon[MENU_INDEX + 1].icon_command = Tag_Change;
+    icon[MENU_INDEX + 1].icon_command = Draw_Centre_Ctrl_Page;
     icon[MENU_INDEX + 1].gImage_icon[0] = gImage_centre_sel;
     icon[MENU_INDEX + 1].gImage_icon[1] = gImage_centre_unsel;
 
     icon[MENU_INDEX + 2].start_x = MENU_ICON_START_X + MENU_ICON_OFFSET * 2;
-    icon[MENU_INDEX + 2].start_y = MENU_ICON_START_Y;
-    icon[MENU_INDEX + 2].width = MENU_ICON_W;
-    icon[MENU_INDEX + 2].height = MENU_ICON_H;
-    icon[MENU_INDEX + 2].type = DEVICE_AC; // 待定
-    icon[MENU_INDEX + 2].status = 0;
-    icon[MENU_INDEX + 2].touch_flag = 0;
-    icon[MENU_INDEX + 2].draw_icon = Draw_Icon;
-    icon[MENU_INDEX + 2].icon_command = Tag_Change;
+    icon[MENU_INDEX + 2].icon_command = Draw_Auto_Ctrl_Page;
     icon[MENU_INDEX + 2].gImage_icon[0] = gImage_auto_sel;
     icon[MENU_INDEX + 2].gImage_icon[1] = gImage_auto_unsel;
 
@@ -193,40 +227,30 @@ void Menu_Icon_Init(void){
  * 
  */
 void Status_Icon_Init(void){
-    status_icon[0].start_x = STATUS_ICON_START_X;
+
+    Touch_Icon Icon_InitStruct;
+
+    Icon_InitStruct.start_x = STATUS_ICON_START_X;
+    Icon_InitStruct.start_y = STATUS_ICON_START_Y;
+    Icon_InitStruct.width = ICON_SIZE;
+    Icon_InitStruct.height = ICON_SIZE;
+    Icon_InitStruct.touch_flag = 0;
+    Icon_InitStruct.status = 0;
+    Icon_InitStruct.draw_icon = Draw_Icon;
+    Icon_InitStruct.gImage_icon[0] = gImage_people;
+
+    Icon_Struct_Init(&Icon_InitStruct, status_icon, 4);
+
     status_icon[0].start_y = STATUS_ICON_START_Y;
-    status_icon[0].width = ICON_SIZE;
-    status_icon[0].height = ICON_SIZE;
-    status_icon[0].touch_flag = 0;
-    status_icon[0].status = 0;
-    status_icon[0].draw_icon = Draw_Icon;
     status_icon[0].gImage_icon[0] = gImage_people;
 
-    status_icon[1].start_x = STATUS_ICON_START_X;
     status_icon[1].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET;
-    status_icon[1].width = ICON_SIZE;
-    status_icon[1].height = ICON_SIZE;
-    status_icon[1].touch_flag = 0;
-    status_icon[1].status = 0;
-    status_icon[1].draw_icon = Draw_Icon;
     status_icon[1].gImage_icon[0] = gImage_noise;
 
-    status_icon[2].start_x = STATUS_ICON_START_X;
     status_icon[2].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 2;
-    status_icon[2].width = ICON_SIZE;
-    status_icon[2].height = ICON_SIZE;
-    status_icon[2].touch_flag = 0;
-    status_icon[2].status = 0;
-    status_icon[2].draw_icon = Draw_Icon;
     status_icon[2].gImage_icon[0] = gImage_temp;
 
-    status_icon[3].start_x = STATUS_ICON_START_X;
     status_icon[3].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 3;
-    status_icon[3].width = ICON_SIZE;
-    status_icon[3].height = ICON_SIZE;
-    status_icon[3].touch_flag = 0;
-    status_icon[3].status = 0;
-    status_icon[3].draw_icon = Draw_Icon;
     status_icon[3].gImage_icon[0] = gImage_humi;
 }
 
@@ -277,8 +301,6 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
         
             icon[i].touch_flag = 0; /*释放触摸标志*/
 
-            //icon[i].status = (icon[i].status == 0) ? 1 : 0; /* 反转用电器状态 */
-
             icon[i].icon_command(&icon[i]); /*执行图标的功能命令*/
 
             PANEL_DEBUG("Redraw the icon above");
@@ -286,8 +308,6 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
             icon[i].draw_icon(&icon[i]); /*重绘图标*/
             
             PANEL_DEBUG("Redraw the icon below");
-
-            
 
             break;
         }
@@ -316,23 +336,38 @@ void Draw_Icon(void *icon)
 
     }
 }
-
-void Draw_Menu_Icon(void *icon)
+/**
+ * @brief  用于切换菜单栏的页签，并显示不同的页面
+ * 
+ * @param icon 
+ */
+void Draw_Menu_Icon(void *ic)
 {
-    Touch_Icon *ptr = (Touch_Icon *)icon;
-    const unsigned char *gImage_icon;
+    Touch_Icon *ptr = (Touch_Icon *)ic;
 
-    /* 释放图标 */
-    if (ptr->touch_flag == 0)
-    {
-        gImage_icon = *(ptr->gImage_icon + ( (ptr->status == 0 )? 0 : 1 ) );
-        LCD_DisplayPicture(ptr->start_x, ptr->start_y, MENU_ICON_W, MENU_ICON_H, gImage_icon);
-        
-    }
-    else /* 图标按下 */
-    {
+    PANEL_DEBUG("Draw_Menu_Icon in");
+    
+    /* 重置菜单栏页签状态 */
+    icon[MENU_INDEX + 0].status = 0;
 
-    }
+    PANEL_DEBUG("Draw 0 menu icon above");
+
+    Draw_Icon(&icon[MENU_INDEX + 0]);
+
+    PANEL_DEBUG("Draw 0 menu icon below");
+
+    Delay(0xfff);
+    icon[MENU_INDEX + 1].status = 0;
+    Draw_Icon(&icon[MENU_INDEX + 1]);
+    Delay(0xfff);
+    icon[MENU_INDEX + 2].status = 0;
+    Draw_Icon(&icon[MENU_INDEX + 2]);
+
+    /* 将当前页签置为选中状态 */
+    ptr->status = 1;
+
+    Draw_Icon(ptr);
+
 }
 
 /**
@@ -357,19 +392,121 @@ void Control_Device(void *icon){
  * @param icon Touch_Icon 类型的图标参数
  */
 void Tag_Change(void *ic){
-
     Touch_Icon *ptr = (Touch_Icon *)ic;
 
+    PANEL_DEBUG("Draw_Menu_Icon in");
+    
     /* 重置菜单栏页签状态 */
     icon[MENU_INDEX + 0].status = 0;
-    icon[MENU_INDEX + 0].draw_icon(&icon[MENU_INDEX + 0]);
+
+    PANEL_DEBUG("Draw 0 menu icon above");
+
+    Draw_Icon(&icon[MENU_INDEX + 0]);
+
+    PANEL_DEBUG("Draw 0 menu icon below");
+
+    Delay(0xfff);
     icon[MENU_INDEX + 1].status = 0;
-    icon[MENU_INDEX + 1].draw_icon(&icon[MENU_INDEX + 1]);
+    Draw_Icon(&icon[MENU_INDEX + 1]);
+    Delay(0xfff);
     icon[MENU_INDEX + 2].status = 0;
-    icon[MENU_INDEX + 2].draw_icon(&icon[MENU_INDEX + 2]);
+    Draw_Icon(&icon[MENU_INDEX + 2]);
+    Delay(0xfff);
 
     /* 将当前页签置为选中状态 */
     ptr->status = 1;
 
 }
 
+/**
+ * @brief 
+ * 
+ */
+void Draw_Single_Ctrl_Page(void *icon){
+
+    uint8_t i;
+
+    /* 反转标签状态 */
+    Tag_Change(icon);
+
+    /* 绘制白色矩形背景 */
+    LCD_SetTextColor(0xffffff);
+    LCD_DrawFullRect(400, 40, 390, 430);
+
+    for (i = 0; i < 4; i++ ) {
+
+        single_ctrl_icon[i].draw_icon(&single_ctrl_icon[i]);
+        Delay(0xffff);
+
+    }
+    
+}
+
+/**
+ * @brief 选择需要控制用电器的总图标
+ * 
+ */
+void Single_Ctrl_Icon_Init(void)
+{
+    Touch_Icon Icon_InitStruct;
+
+    Icon_InitStruct.start_x = 410;
+    Icon_InitStruct.start_y = 140;
+    Icon_InitStruct.width = ICON_SIZE;
+    Icon_InitStruct.height = ICON_SIZE;
+    Icon_InitStruct.type = DEVICE_FAN;
+    Icon_InitStruct.status = 0;
+    Icon_InitStruct.touch_flag = 0;
+    Icon_InitStruct.draw_icon = Draw_Icon;
+    Icon_InitStruct.icon_command = Control_Device;
+    Icon_InitStruct.gImage_icon[0] = gImage_fan_on;
+
+    Icon_Struct_Init(&Icon_InitStruct, single_ctrl_icon, 4);
+
+    single_ctrl_icon[0].start_x = 410;
+    single_ctrl_icon[0].start_y = 140;
+    single_ctrl_icon[0].type = DEVICE_FAN;
+    single_ctrl_icon[0].icon_command = Control_Device;
+    single_ctrl_icon[0].gImage_icon[0] = gImage_fan_on;
+
+    single_ctrl_icon[1].start_x = 490;
+    single_ctrl_icon[1].start_y = 50;
+    single_ctrl_icon[1].type = DEVICE_LIGHT;
+    single_ctrl_icon[1].icon_command = Control_Device;
+    single_ctrl_icon[1].gImage_icon[0] = gImage_light_on;
+
+    single_ctrl_icon[2].start_x = 600;
+    single_ctrl_icon[2].start_y = 50;
+    single_ctrl_icon[2].type = DEVICE_CURTAIN;
+    single_ctrl_icon[2].icon_command = Control_Device;
+    single_ctrl_icon[2].gImage_icon[0] = gImage_curtain_on;
+
+    single_ctrl_icon[3].start_x = 680;
+    single_ctrl_icon[3].start_y = 140;
+    single_ctrl_icon[3].type = DEVICE_AC;
+    single_ctrl_icon[3].icon_command = Control_Device;
+    single_ctrl_icon[3].gImage_icon[0] = gImage_ac_on;
+
+}
+
+
+
+/**
+ * @brief 
+ * 
+ */
+void Draw_Centre_Ctrl_Page(void *icon){
+
+    Tag_Change(icon);
+
+}
+
+/**
+ * @brief 
+ * 
+ */
+void Draw_Auto_Ctrl_Page(void *icon){
+
+    Tag_Change(icon);
+
+}
