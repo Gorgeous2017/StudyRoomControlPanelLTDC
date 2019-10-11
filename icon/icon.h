@@ -33,6 +33,19 @@ extern const unsigned char gImage_noise[27648];  /* 环境噪音 */
 extern const unsigned char gImage_humi[27648];   /* 环境湿度 */
 extern const unsigned char gImage_temp[27648];   /* 环境温度 */
 
+/* 控制模式菜单栏标签 */
+extern const unsigned char gImage_auto_sel[11310];     /* 自动控制模式选中   */
+extern const unsigned char gImage_auto_unsel[11310];   /* 自动控制模式未选中 */
+extern const unsigned char gImage_centre_sel[11310];   /* 集中控制模式选中   */
+extern const unsigned char gImage_centre_unsel[11310]; /* 集中控制模式未选中 */
+extern const unsigned char gImage_single_sel[11310];   /* 独立控制模式选中   */
+extern const unsigned char gImage_single_unsel[11310]; /* 独立控制模式未选中 */
+
+/* 自动模式标签及开关图标 */
+extern const unsigned char gImage_auto_ctrl[35820];  /* 自动控制标签 */
+extern const unsigned char gImage_switch_off[20001]; /* 控制开关 关  */
+extern const unsigned char gImage_switch_on[20001];  /* 控制开关 开  */
+
 /* 图标显示函数 */
 void LCD_DisplayPicture(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height, const uint8_t *image);
 

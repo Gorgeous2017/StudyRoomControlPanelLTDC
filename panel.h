@@ -18,11 +18,24 @@
 #include <stdarg.h>
 
 #define ICON_SIZE 96 /* 图标的大小 */
-#define ICON_NUM 4   /* 图标的数量 */
+#define ICON_NUM 7   /* 图标的数量 */
+
+#define MENU_ICON_W 130
+#define MENU_ICON_H 30
 
 /* 图标的起始位置 */
-#define ICON_START_X 300
+#define ICON_START_X 400
 #define ICON_START_Y 240
+
+#define STATUS_ICON_START_X 40
+#define STATUS_ICON_START_Y 30
+#define STATUS_ICON_OFFSET (ICON_SIZE + 14)
+
+#define MENU_ICON_START_X 400
+#define MENU_ICON_START_Y 10
+#define MENU_ICON_OFFSET MENU_ICON_W
+
+#define MENU_INDEX 4
 
 /* 用电器类型 */
 #define DEVICE_FAN 0x00
@@ -32,6 +45,7 @@
 
 /* 拼接字符串的宏指令 */
 #define DEVICE_STATUS_TOGGLE(device, status) (status) ? (gImage_##device##_off) : (gImage_##device##_on)
+
 typedef struct
 {
     uint16_t start_x;   /* 图标的x起始坐标  */
@@ -83,7 +97,11 @@ typedef struct
 
 void Panel_Init(void);
 void Touch_Icon_Init(void);
+void Device_Icon_Init(void);
+void Menu_Icon_Init(void);
+void Status_Icon_Init(void);
 void Draw_Icon(void *icon);
+void Draw_Menu_Icon(void *icon);
 void Control_Device(void *icon);
 /* 定义成外部函数，可以被触摸屏调用 */
 extern void Touch_Icon_Down(uint16_t x, uint16_t y);

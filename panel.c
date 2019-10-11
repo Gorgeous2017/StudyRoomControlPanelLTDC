@@ -17,6 +17,8 @@
  
 /* 图标结构体数组 */
 Touch_Icon icon[ICON_NUM];
+Touch_Icon status_icon[4];
+Touch_Icon menu_icon[3];
 static void Draw_Icon(void *icon);
 
 /**
@@ -39,7 +41,7 @@ void Panel_Init(void)
     uint8_t i;
 
     /* 整屏清为白色 */
-    LCD_Clear(LCD_COLOR_BLACK); /* 清屏，显示全黑 */
+    LCD_Clear(0xDBF0F9); /* 淡蓝背景色 */
 
 	//LCD_DisplayStringLineEx(0,0,64,96,"28%",0);
 
@@ -49,15 +51,26 @@ void Panel_Init(void)
     /* 描绘图标 */
     for (i = 0; i < ICON_NUM; i++)
     {
-        icon[i].draw_icon(&icon[i]);
-        Delay(0xffff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
+       icon[i].draw_icon(&icon[i]);
+       Delay(0xffff); /* 用于测试是否是因为连续显示时间间隔过短而导致初次上电只显示第一个图标 */
     }
+    
+    PANEL_DEBUG("Draw 8 icon down");
+
+    for (i = 0; i < 4; i++)
+    {
+        status_icon[i].draw_icon(&status_icon[i]);
+        Delay(0xffff);
+    }
+
+    PANEL_DEBUG("Draw 4 icon down");
+
     LCD_SetFont(&Font48x96);
     //LCD_SetFont(&Font12x12);
-    LCD_DisplayStringLine(LCD_LINE_0,"23%");
-		LCD_DisplayStringLine(LCD_LINE_1,"78%RH");
-		LCD_DisplayStringLine(LCD_LINE_2,"23C.");
-		LCD_DisplayStringLine(LCD_LINE_3,"15%");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y,"15%");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET,"36db");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 2,"25");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 3,"15%");
 
 }
 
@@ -66,6 +79,17 @@ void Panel_Init(void)
  * 
  */
 void Touch_Icon_Init(void)
+{
+    Device_Icon_Init();
+    Menu_Icon_Init();
+    Status_Icon_Init();
+}
+
+/**
+ * @brief Touch_Icon_Init 初始化图标参数
+ * 
+ */
+void Device_Icon_Init(void)
 {
     /* 四个用电器图标 */
     icon[0].start_x = ICON_START_X;
@@ -108,6 +132,80 @@ void Touch_Icon_Init(void)
     icon[3].icon_command = Control_Device;
     icon[3].gImage_icon[0] = gImage_ac_off;
     icon[3].gImage_icon[1] = gImage_ac_on;
+
+}
+
+
+/**
+ * @brief 环境信息图标初始化 位于面板左侧
+ * 
+ */
+void Menu_Icon_Init(void){
+    
+    icon[MENU_INDEX + 0].start_x = MENU_ICON_START_X;
+    icon[MENU_INDEX + 0].start_y = MENU_ICON_START_Y;
+    icon[MENU_INDEX + 0].device = DEVICE_AC; // 待定
+    icon[MENU_INDEX + 0].status = 1;
+    icon[MENU_INDEX + 0].touch_flag = 0;
+    icon[MENU_INDEX + 0].draw_icon = Draw_Menu_Icon;
+    icon[MENU_INDEX + 0].icon_command = Control_Device;
+    icon[MENU_INDEX + 0].gImage_icon[0] = gImage_single_sel;
+    icon[MENU_INDEX + 0].gImage_icon[1] = gImage_single_unsel;
+
+    icon[MENU_INDEX + 1].start_x = MENU_ICON_START_X + MENU_ICON_OFFSET;
+    icon[MENU_INDEX + 1].start_y = MENU_ICON_START_Y;
+    icon[MENU_INDEX + 1].device = DEVICE_AC; // 待定
+    icon[MENU_INDEX + 1].status = 0;
+    icon[MENU_INDEX + 1].touch_flag = 0;
+    icon[MENU_INDEX + 1].draw_icon = Draw_Menu_Icon;
+    icon[MENU_INDEX + 1].icon_command = Control_Device;
+    icon[MENU_INDEX + 1].gImage_icon[0] = gImage_centre_sel;
+    icon[MENU_INDEX + 1].gImage_icon[1] = gImage_centre_unsel;
+
+    icon[MENU_INDEX + 2].start_x = MENU_ICON_START_X + MENU_ICON_OFFSET * 2;
+    icon[MENU_INDEX + 2].start_y = MENU_ICON_START_Y;
+    icon[MENU_INDEX + 2].device = DEVICE_AC; // 待定
+    icon[MENU_INDEX + 2].status = 0;
+    icon[MENU_INDEX + 2].touch_flag = 0;
+    icon[MENU_INDEX + 2].draw_icon = Draw_Menu_Icon;
+    icon[MENU_INDEX + 2].icon_command = Control_Device;
+    icon[MENU_INDEX + 2].gImage_icon[0] = gImage_auto_sel;
+    icon[MENU_INDEX + 2].gImage_icon[1] = gImage_auto_unsel;
+
+}
+
+/**
+ * @brief 环境信息图标初始化 位于面板左侧
+ * 
+ */
+void Status_Icon_Init(void){
+    status_icon[0].start_x = STATUS_ICON_START_X;
+    status_icon[0].start_y = STATUS_ICON_START_Y;
+    status_icon[0].touch_flag = 0;
+    status_icon[0].status = 0;
+    status_icon[0].draw_icon = Draw_Icon;
+    status_icon[0].gImage_icon[0] = gImage_people;
+
+    status_icon[1].start_x = STATUS_ICON_START_X;
+    status_icon[1].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET;
+    status_icon[1].touch_flag = 0;
+    status_icon[1].status = 0;
+    status_icon[1].draw_icon = Draw_Icon;
+    status_icon[1].gImage_icon[0] = gImage_noise;
+
+    status_icon[2].start_x = STATUS_ICON_START_X;
+    status_icon[2].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 2;
+    status_icon[2].touch_flag = 0;
+    status_icon[2].status = 0;
+    status_icon[2].draw_icon = Draw_Icon;
+    status_icon[2].gImage_icon[0] = gImage_temp;
+
+    status_icon[3].start_x = STATUS_ICON_START_X;
+    status_icon[3].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 3;
+    status_icon[3].touch_flag = 0;
+    status_icon[3].status = 0;
+    status_icon[3].draw_icon = Draw_Icon;
+    status_icon[3].gImage_icon[0] = gImage_humi;
 }
 
 /**
@@ -187,6 +285,24 @@ void Draw_Icon(void *icon)
     {
         gImage_icon = *(ptr->gImage_icon + ( (ptr->status == 0 )? 0 : 1 ) );
         LCD_DisplayPicture(ptr->start_x, ptr->start_y, ICON_SIZE, ICON_SIZE, gImage_icon);
+        
+    }
+    else /* 图标按下 */
+    {
+
+    }
+}
+
+void Draw_Menu_Icon(void *icon)
+{
+    Touch_Icon *ptr = (Touch_Icon *)icon;
+    const unsigned char *gImage_icon;
+
+    /* 释放图标 */
+    if (ptr->touch_flag == 0)
+    {
+        gImage_icon = *(ptr->gImage_icon + ( (ptr->status == 0 )? 0 : 1 ) );
+        LCD_DisplayPicture(ptr->start_x, ptr->start_y, MENU_ICON_W, MENU_ICON_H, gImage_icon);
         
     }
     else /* 图标按下 */

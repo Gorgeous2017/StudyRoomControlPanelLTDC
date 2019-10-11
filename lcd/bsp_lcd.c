@@ -48,8 +48,8 @@
 /*用于存储当前选择的字体格式*/
 static sFONT *LCD_Currentfonts;
 /* 用于存储当前字体颜色和字体背景颜色的变量*/
-static uint32_t CurrentTextColor   = 0x000000;
-static uint32_t CurrentBackColor   = 0xFFFFFF;
+static uint32_t CurrentTextColor   = 0x333333;
+static uint32_t CurrentBackColor   = 0xDBF0F9;
 /* 用于存储层对应的显存空间 和 当前选择的层*/
 static uint32_t CurrentFrameBuffer = LCD_FRAME_BUFFER;
 static uint32_t CurrentLayer = LCD_BACKGROUND_LAYER;
@@ -604,7 +604,8 @@ void LCD_DisplayChar(uint16_t Line, uint16_t Column, uint8_t Ascii)
   */
 void LCD_DisplayStringLine(uint16_t Line, uint8_t *ptr)
 {  
-  uint16_t refcolumn = 0;
+  //uint16_t refcolumn = 0;
+  uint16_t refcolumn = 180; /* 面板字符的起始位置 */
   /* Send the string character by character on lCD */
   while ((refcolumn < LCD_PIXEL_WIDTH) && ((*ptr != 0) & (((refcolumn + LCD_Currentfonts->Width) & 0xFFFF) >= LCD_Currentfonts->Width)))
   {
