@@ -359,27 +359,17 @@ void Control_Device(void *icon){
 void Tag_Change(void *ic){
 
     Touch_Icon *ptr = (Touch_Icon *)ic;
-    uint8_t i,target_index;
 
-    for(i = 0; i < 3; i++){
-        if( ptr->start_x == (MENU_ICON_START_X + MENU_ICON_OFFSET * i)){
-            break;
-        }
-    }
+    /* 重置菜单栏页签状态 */
+    icon[MENU_INDEX + 0].status = 0;
+    icon[MENU_INDEX + 0].draw_icon(&icon[MENU_INDEX + 0]);
+    icon[MENU_INDEX + 1].status = 0;
+    icon[MENU_INDEX + 1].draw_icon(&icon[MENU_INDEX + 1]);
+    icon[MENU_INDEX + 2].status = 0;
+    icon[MENU_INDEX + 2].draw_icon(&icon[MENU_INDEX + 2]);
 
+    /* 将当前页签置为选中状态 */
     ptr->status = 1;
-
-    target_index = MENU_INDEX + ((i + 1) % 3);
-    icon[target_index].status = 0;
-    icon[target_index].draw_icon(&icon[target_index]);
-    
-    PANEL_DEBUG("i = %d, target_index = %d",i,target_index);
-
-    target_index = MENU_INDEX + ((i + 2) % 3);
-    icon[target_index].status = 0;
-    icon[target_index].draw_icon(&icon[target_index]);
-
-    PANEL_DEBUG("i = %d, target_index = %d",i,target_index);
 
 }
 
