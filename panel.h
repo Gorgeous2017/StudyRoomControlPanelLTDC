@@ -18,6 +18,9 @@
 #include "usart/bsp_debug_usart.h"
 #include "icon/icon.h" /* 包含图标图片数组 */
 
+#define TEXT_COLOR 0x333333 /* 面板文字色 */
+#define BACK_COLOR 0xDBF0F9 /* 面板背景色 */
+
 #define ICON_SIZE 96 /* 图标的大小 */
 #define ICON_NUM 4   /* 图标的数量 */
 
@@ -109,6 +112,7 @@ void Device_Icon_Init(void);
 void Menu_Icon_Init(void);
 void Status_Icon_Init(void);
 void Single_Ctrl_Icon_Init(void);
+void Auto_Ctrl_Icon_Init(void);
 
 /* 绘制函数 */
 void Draw_Icon(void *icon);
@@ -125,6 +129,7 @@ void Device_TouchUpHandler(Touch_Icon *device_ctrl_icon, uint16_t x, uint16_t y)
 void Select_Device(void *icon);
 void Tag_Change(void *icon);
 void Control_Device(void *icon);
+void Switch_Model(void *sw);
 
 /* 定义成外部函数，可以被触摸屏调用 */
 extern void Touch_Icon_Down(uint16_t x, uint16_t y);

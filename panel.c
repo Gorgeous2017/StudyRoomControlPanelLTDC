@@ -37,11 +37,6 @@ void Panel_Init(void)
     /* 初始化图标 */
     Touch_Icon_Init();
 
-    /* 绘制菜单栏 */
-    Draw_Widget(menu_icon, 3);
-
-    PANEL_DEBUG("Draw Menu down ");
-    
     /* 绘制环境信息图标 */
     Draw_Widget(status_icon, 4);
 
@@ -49,16 +44,21 @@ void Panel_Init(void)
 
     /* 绘制独立控制页面 */
     Draw_Single_Ctrl_Page(menu_icon);
+    /* 绘制菜单栏 */
+    Draw_Widget(menu_icon, 3);
+
+    PANEL_DEBUG("Draw Menu down ");
 
     /* 显示环境信息数字 */
     LCD_SetFont(&Font48x96);
-    LCD_SetTextColor(0x333333);
+    LCD_SetTextColor(TEXT_COLOR);
     LCD_DisplayStringLine(STATUS_ICON_START_Y,"15%");
     LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET,"36db");
     LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 2,"25");
     LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 3,"15%");
 
     PANEL_DEBUG("Draw String down ");
+    
 
 }
 
@@ -77,8 +77,9 @@ void Touch_Icon_Init(void)
     PANEL_DEBUG("Init Status down ");
 
     Single_Ctrl_Icon_Init();
+    Auto_Ctrl_Icon_Init();
 
-    PANEL_DEBUG("Init Single Ctrl down ");
+    PANEL_DEBUG("Init Ctrl down ");
 
     Device_Icon_Init();
 
@@ -161,7 +162,7 @@ void Status_Icon_Init(void){
 }
 
 /**
- * @brief 选择需要控制用电器的总图标
+ * @brief 用电器类型选择图标
  * 
  */
 void Single_Ctrl_Icon_Init(void)
@@ -203,6 +204,55 @@ void Single_Ctrl_Icon_Init(void)
     single_ctrl_icon[3].gImage_icon[1] = gImage_ac_on;
 
 }
+
+
+void Device_Icon_Init(void) {
+
+    Touch_Icon Icon_InitStruct;
+
+    /* 风扇初始化 */
+    Icon_InitStruct.start_x = 430;
+    Icon_InitStruct.start_y = 260;
+    Icon_InitStruct.width = ICON_SIZE;
+    Icon_InitStruct.height = ICON_SIZE;
+    Icon_InitStruct.type = DEVICE_FAN;
+    Icon_InitStruct.status = 0;
+    Icon_InitStruct.no = 0;
+    Icon_InitStruct.touch_flag = 0;
+    Icon_InitStruct.draw_icon = Draw_Icon;
+    Icon_InitStruct.icon_command = Control_Device;
+    Icon_InitStruct.gImage_icon[0] = gImage_fan_off;
+    Icon_InitStruct.gImage_icon[1] = gImage_fan_on;
+
+    Icon_Struct_Init(&Icon_InitStruct, device[Icon_InitStruct.type], 6);
+    Matrix_Init(device[Icon_InitStruct.type], 2, 3, 14, 24);  
+
+    /* 灯泡初始化 */
+    Icon_InitStruct.type = DEVICE_LIGHT;
+    Icon_InitStruct.gImage_icon[0] = gImage_light_off;
+    Icon_InitStruct.gImage_icon[1] = gImage_light_on;
+
+    Icon_Struct_Init(&Icon_InitStruct, device[Icon_InitStruct.type], 6);
+    Matrix_Init(device[Icon_InitStruct.type], 2, 3, 14, 24);
+
+    /* 窗帘初始化 */
+    Icon_InitStruct.type = DEVICE_CURTAIN;
+    Icon_InitStruct.gImage_icon[0] = gImage_curtain_off;
+    Icon_InitStruct.gImage_icon[1] = gImage_curtain_on;
+
+    Icon_Struct_Init(&Icon_InitStruct, device[Icon_InitStruct.type], 6);
+    Matrix_Init(device[Icon_InitStruct.type], 2, 3, 14, 24);
+
+    /* 空调初始化 */
+    Icon_InitStruct.type = DEVICE_AC;
+    Icon_InitStruct.gImage_icon[0] = gImage_ac_off;
+    Icon_InitStruct.gImage_icon[1] = gImage_ac_on;
+
+    Icon_Struct_Init(&Icon_InitStruct, device[Icon_InitStruct.type], 6);
+    Matrix_Init(device[Icon_InitStruct.type], 2, 3, 14, 24);
+
+}
+
 
 
 /**
@@ -268,7 +318,7 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
                 break;
 
             case MENU_AUTO_CTRL:
-                Widget_TouchUpHandler(auto_ctrl_icon, 2, x, y);
+                Widget_TouchUpHandler(auto_ctrl_icon, 1, x, y);
                 break;
             
             default:
@@ -338,9 +388,12 @@ void Control_Device(void *icon){
 
     ptr->status = (ptr->status == 0) ? 1 : 0; /* 反转用电器状态 */
 
-    /*
-    ptr->device, ptr->
-    */
+    /******************************************************************
+     * 
+     * 将被触控的用电器的类型、编号、状态通过串口传输出去
+     * 
+     ******************************************************************/
+
 }
 
 void Select_Device(void *icon){
@@ -391,10 +444,12 @@ void Tag_Change(void *ic){
 }
 
 /**
- * @brief 
+ * @brief 独立控制页面
  * 
  */
 void Draw_Single_Ctrl_Page(void *icon){
+
+    PANEL_DEBUG("Function: Draw_Single_Ctrl_Page in ");
 
     /* 反转标签状态 */
     Tag_Change(icon);
@@ -408,53 +463,6 @@ void Draw_Single_Ctrl_Page(void *icon){
     
 }
 
-void Device_Icon_Init(void) {
-
-    Touch_Icon Icon_InitStruct;
-
-    /* 风扇初始化 */
-    Icon_InitStruct.start_x = 430;
-    Icon_InitStruct.start_y = 260;
-    Icon_InitStruct.width = ICON_SIZE;
-    Icon_InitStruct.height = ICON_SIZE;
-    Icon_InitStruct.type = DEVICE_FAN;
-    Icon_InitStruct.status = 0;
-    Icon_InitStruct.no = 0;
-    Icon_InitStruct.touch_flag = 0;
-    Icon_InitStruct.draw_icon = Draw_Icon;
-    Icon_InitStruct.icon_command = Control_Device;
-    Icon_InitStruct.gImage_icon[0] = gImage_fan_off;
-    Icon_InitStruct.gImage_icon[1] = gImage_fan_on;
-
-    Icon_Struct_Init(&Icon_InitStruct, device[Icon_InitStruct.type], 6);
-    Matrix_Init(device[Icon_InitStruct.type], 2, 3, 14, 24);  
-
-    /* 灯泡初始化 */
-    Icon_InitStruct.type = DEVICE_LIGHT;
-    Icon_InitStruct.gImage_icon[0] = gImage_light_off;
-    Icon_InitStruct.gImage_icon[1] = gImage_light_on;
-
-    Icon_Struct_Init(&Icon_InitStruct, device[Icon_InitStruct.type], 6);
-    Matrix_Init(device[Icon_InitStruct.type], 2, 3, 14, 24);
-
-    /* 窗帘初始化 */
-    Icon_InitStruct.type = DEVICE_CURTAIN;
-    Icon_InitStruct.gImage_icon[0] = gImage_curtain_off;
-    Icon_InitStruct.gImage_icon[1] = gImage_curtain_on;
-
-    Icon_Struct_Init(&Icon_InitStruct, device[Icon_InitStruct.type], 6);
-    Matrix_Init(device[Icon_InitStruct.type], 2, 3, 14, 24);
-
-    /* 空调初始化 */
-    Icon_InitStruct.type = DEVICE_AC;
-    Icon_InitStruct.gImage_icon[0] = gImage_ac_off;
-    Icon_InitStruct.gImage_icon[1] = gImage_ac_on;
-
-    Icon_Struct_Init(&Icon_InitStruct, device[Icon_InitStruct.type], 6);
-    Matrix_Init(device[Icon_InitStruct.type], 2, 3, 14, 24);
-
-}
-
 
 /**
  * @brief 
@@ -464,7 +472,7 @@ void Draw_Centre_Ctrl_Page(void *icon){
 
     Tag_Change(icon);
 
-    PANEL_DEBUG(" Function: Draw_Centre_Ctrl_Page in ");
+    PANEL_DEBUG("Function: Draw_Centre_Ctrl_Page in ");
 
 }
 
@@ -476,6 +484,58 @@ void Draw_Auto_Ctrl_Page(void *icon){
 
     Tag_Change(icon);
 
-    PANEL_DEBUG(" Function: Draw_Auto_Ctrl_Page in ");
+    PANEL_DEBUG("Function: Draw_Auto_Ctrl_Page in ");
+
+    /* 清屏菜单页面 */
+    LCD_SetTextColor(0xDBF0F9);
+    LCD_DrawFullRect(400, 40, 390, 430);
+
+    /* 绘制白色矩形背景 */
+    LCD_SetTextColor(0xffffff);
+    LCD_DrawFullRect(400, 40, 390, 200);
+
+    /* 绘制自动控制标签及开关按钮 */
+    Draw_Widget(auto_ctrl_icon, 2);
 
 }
+
+void Auto_Ctrl_Icon_Init(void) {
+    Touch_Icon Icon_InitStruct;
+
+    Icon_InitStruct.start_y = 100;
+    Icon_InitStruct.status = 0;
+    Icon_InitStruct.touch_flag = 0;
+    Icon_InitStruct.draw_icon = Draw_Icon;
+
+    Icon_Struct_Init(&Icon_InitStruct, auto_ctrl_icon, 2);
+
+    auto_ctrl_icon[0].start_x = 650;
+    auto_ctrl_icon[0].width = 113;
+    auto_ctrl_icon[0].height = 59;
+    auto_ctrl_icon[0].icon_command = Switch_Model;
+    auto_ctrl_icon[0].gImage_icon[0] = gImage_switch_off ;
+    auto_ctrl_icon[0].gImage_icon[1] = gImage_switch_on;
+
+    auto_ctrl_icon[1].start_x = 420;
+    auto_ctrl_icon[1].width = 200;
+    auto_ctrl_icon[1].height = 60;
+    auto_ctrl_icon[1].gImage_icon[0] = gImage_auto_ctrl;
+
+}
+
+void Switch_Model(void *sw){
+    Touch_Icon *ptr = (Touch_Icon *)sw;
+
+    PANEL_DEBUG("Function: Switch_Model in");
+
+    ptr->status = (ptr->status == 0) ? 1 : 0; /* 反转开关状态 */
+
+    /***************************************************************
+     * 
+     * 添加切换成自动模式的语句
+     * 
+     **************************************************************/
+
+}
+
+

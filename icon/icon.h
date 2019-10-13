@@ -42,7 +42,7 @@ extern const unsigned char gImage_single_sel[11310];   /* 独立控制模式选�
 extern const unsigned char gImage_single_unsel[11310]; /* 独立控制模式未选中 */
 
 /* 自动模式标签及开关图标 */
-extern const unsigned char gImage_auto_ctrl[35820];  /* 自动控制标签 */
+extern const unsigned char gImage_auto_ctrl[36000];  /* 自动控制标签 */
 extern const unsigned char gImage_switch_off[20001]; /* 控制开关 关  */
 extern const unsigned char gImage_switch_on[20001];  /* 控制开关 开  */
 
