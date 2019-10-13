@@ -14,34 +14,39 @@
 #ifndef __PANEL_H
 #define __PANEL_H
 
+#include "stm32f4xx.h"
+#include "usart/bsp_debug_usart.h"
 #include "icon/icon.h" /* 包含图标图片数组 */
-#include <stdarg.h>
 
 #define ICON_SIZE 96 /* 图标的大小 */
-#define ICON_NUM 7   /* 图标的数量 */
+#define ICON_NUM 4   /* 图标的数量 */
 
-#define MENU_ICON_W 130
-#define MENU_ICON_H 30
+#define MENU_ICON_W 130 /* 菜单栏页签宽度 */
+#define MENU_ICON_H 30  /* 菜单栏页签高度 */
 
 /* 图标的起始位置 */
 #define ICON_START_X 400
 #define ICON_START_Y 240
 
-#define STATUS_ICON_START_X 40
-#define STATUS_ICON_START_Y 30
-#define STATUS_ICON_OFFSET (ICON_SIZE + 14)
+#define STATUS_ICON_START_X 40              /* 环境信息图标起始横坐标 */
+#define STATUS_ICON_START_Y 30              /* 环境信息图标起始纵坐标 */
+#define STATUS_ICON_OFFSET (ICON_SIZE + 14) /* 环境信息图标之间的间距 */
 
-#define MENU_ICON_START_X 400
-#define MENU_ICON_START_Y 10
-#define MENU_ICON_OFFSET MENU_ICON_W
-
-#define MENU_INDEX 4
+#define MENU_ICON_START_X 400        /* 菜单栏起始横坐标 */
+#define MENU_ICON_START_Y 10         /* 菜单栏起始纵坐标 */
+#define MENU_ICON_OFFSET MENU_ICON_W /* 菜单栏页签之间的间距 */
 
 /* 用电器类型 */
-#define DEVICE_FAN 0x00
-#define DEVICE_LIGHT 0x01
-#define DEVICE_CURTAIN 0x02
-#define DEVICE_AC 0x03
+#define DEVICE_FAN 0x00     /* 风扇 */
+#define DEVICE_LIGHT 0x01   /* 电灯 */
+#define DEVICE_CURTAIN 0x02 /* 窗帘 */
+#define DEVICE_AC 0x03      /* 空调 */
+#define DEVICE_UNSEL 0x04   /* 未选中用电器 */
+
+/* 菜单栏类型 */
+#define MENU_SINGLE_CTRL 0x00 /* 独立控制 */
+#define MENU_CENTRE_CTRL 0x01 /* 集中控制 */
+#define MENU_AUTO_CTRL 0x02   /* 自动控制 */
 
 /* 拼接字符串的宏指令 */
 #define DEVICE_STATUS_TOGGLE(device, status) (status) ? (gImage_##device##_off) : (gImage_##device##_on)
@@ -97,6 +102,7 @@ typedef struct
                    __LINE__, ##__VA_ARGS__);         \
     } while (0)
 
+/* 参数初始化函数 */
 void Panel_Init(void);
 void Touch_Icon_Init(void);
 void Device_Icon_Init(void);
@@ -104,18 +110,31 @@ void Menu_Icon_Init(void);
 void Status_Icon_Init(void);
 void Single_Ctrl_Icon_Init(void);
 
+/* 绘制函数 */
 void Draw_Icon(void *icon);
-void Draw_Menu_Icon(void *icon);
+
+/* 菜单页签绘制函数 */
 void Draw_Single_Ctrl_Page(void *icon);
 void Draw_Centre_Ctrl_Page(void *icon);
 void Draw_Auto_Ctrl_Page(void *icon);
 
+/* 触点判断函数 */
+void Device_TouchUpHandler(Touch_Icon *device_ctrl_icon, uint16_t x, uint16_t y);
+
+/* 触控命令函数 */
+void Select_Device(void *icon);
 void Tag_Change(void *icon);
 void Control_Device(void *icon);
+
 /* 定义成外部函数，可以被触摸屏调用 */
 extern void Touch_Icon_Down(uint16_t x, uint16_t y);
 extern void Touch_Icon_Up(uint16_t x, uint16_t y);
 
+/* bsp_user_interface.c */
 extern void Delay(__IO u32 nCount);
+extern void Icon_Struct_Init(Touch_Icon *source_icon, Touch_Icon *aim_icon, uint8_t icon_num);
+extern void Matrix_Init(Touch_Icon *IconArray, uint8_t LineNum, uint8_t ColumnNum, uint8_t LineOffset, uint8_t ColumnOffset);
+extern void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t y);
+extern void Draw_Widget(Touch_Icon *icon_array, uint8_t num);
 
 #endif //__PANEL_H
