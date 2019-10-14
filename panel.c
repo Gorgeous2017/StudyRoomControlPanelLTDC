@@ -408,6 +408,10 @@ void Select_Device(void *icon){
     
     ptr->status = 1; /* 置该用电器的选择状态位为真 */
 
+    /* 将右下方的logo清为白色背景 */
+    LCD_SetTextColor(0xffffff);
+    LCD_DrawFullRect(400, 290, 390, 180);
+
     PANEL_DEBUG("Draw 6 device icon above ");
 
     Draw_Widget(device[ptr->type], 6);
@@ -457,7 +461,8 @@ void Draw_Single_Ctrl_Page(void *icon){
     LCD_SetTextColor(0xffffff);
     LCD_DrawFullRect(400, 40, 390, 250);
 
-
+    /* 在屏幕右下方绘制logo */
+    Draw_Logo();
 
     /* 绘制用电器选择图标 */
     Draw_Widget(single_ctrl_icon, 4);
@@ -484,7 +489,10 @@ void Draw_Centre_Ctrl_Page(void *icon){
     LCD_SetTextColor(0xffffff);
     LCD_DrawFullRect(400, 40, 390, 250);
 
-        /* 绘制用电器选择图标 */
+    /* 在屏幕右下方绘制logo */
+    Draw_Logo();
+
+    /* 绘制用电器选择图标 */
     Draw_Widget(centre_ctrl_icon, 4);
 
 }
@@ -567,6 +575,9 @@ void Draw_Auto_Ctrl_Page(void *icon){
     LCD_SetTextColor(0xffffff);
     LCD_DrawFullRect(400, 40, 390, 250);
 
+    /* 在屏幕右下方绘制logo */
+    Draw_Logo();
+
     /* 绘制自动控制标签及开关按钮 */
     Draw_Widget(auto_ctrl_icon, 2);
 
@@ -612,4 +623,9 @@ void Switch_Model(void *sw){
 
 }
 
+void Draw_Logo(void){
+
+    LCD_DisplayPicture(400, 290, 390, 180, gImage_logo);
+
+}
 

@@ -17,6 +17,9 @@
 
 #include "stm32f4xx.h"
 
+/* 团队LOGO图标 */
+extern const unsigned char gImage_logo[210600]; /* Immense ocean Team logo及名称 */
+
 /* 用电器状态图标 */
 extern const unsigned char gImage_ac_off[27648];      /* 空调关 */
 extern const unsigned char gImage_ac_on[27648];       /* 空调开 */
