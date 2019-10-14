@@ -33,7 +33,7 @@ extern const unsigned char gImage_noise[27648];  /* 环境噪音 */
 extern const unsigned char gImage_humi[27648];   /* 环境湿度 */
 extern const unsigned char gImage_temp[27648];   /* 环境温度 */
 
-/* 控制模式菜单栏标签 */
+/* 控制模式菜单栏页签 */
 extern const unsigned char gImage_auto_sel[11310];     /* 自动控制模式选中   */
 extern const unsigned char gImage_auto_unsel[11310];   /* 自动控制模式未选中 */
 extern const unsigned char gImage_centre_sel[11310];   /* 集中控制模式选中   */

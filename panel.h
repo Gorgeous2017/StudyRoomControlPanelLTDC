@@ -28,9 +28,6 @@
 #define MENU_ICON_H 30  /* 菜单栏页签高度 */
 
 /* 图标的起始位置 */
-#define ICON_START_X 400
-#define ICON_START_Y 240
-
 #define STATUS_ICON_START_X 40              /* 环境信息图标起始横坐标 */
 #define STATUS_ICON_START_Y 30              /* 环境信息图标起始纵坐标 */
 #define STATUS_ICON_OFFSET (ICON_SIZE + 14) /* 环境信息图标之间的间距 */
@@ -113,9 +110,11 @@ void Menu_Icon_Init(void);
 void Status_Icon_Init(void);
 void Single_Ctrl_Icon_Init(void);
 void Auto_Ctrl_Icon_Init(void);
+void Centre_Ctrl_Icon_Init(void);
 
 /* 绘制函数 */
 void Draw_Icon(void *icon);
+void Draw_Logo(void);
 
 /* 菜单页签绘制函数 */
 void Draw_Single_Ctrl_Page(void *icon);
@@ -130,6 +129,7 @@ void Select_Device(void *icon);
 void Tag_Change(void *icon);
 void Control_Device(void *icon);
 void Switch_Model(void *sw);
+void Control_All_Device(void *icon);
 
 /* 定义成外部函数，可以被触摸屏调用 */
 extern void Touch_Icon_Down(uint16_t x, uint16_t y);

@@ -16,7 +16,6 @@
 #include "panel.h"
  
 /* 图标结构体数组 */
-Touch_Icon icon[ICON_NUM];
 Touch_Icon single_ctrl_icon[4];
 Touch_Icon centre_ctrl_icon[4];
 Touch_Icon auto_ctrl_icon[2];
@@ -59,7 +58,6 @@ void Panel_Init(void)
 
     PANEL_DEBUG("Draw String down ");
     
-
 }
 
 /**
@@ -78,6 +76,7 @@ void Touch_Icon_Init(void)
 
     Single_Ctrl_Icon_Init();
     Auto_Ctrl_Icon_Init();
+    Centre_Ctrl_Icon_Init();
 
     PANEL_DEBUG("Init Ctrl down ");
 
@@ -451,30 +450,104 @@ void Draw_Single_Ctrl_Page(void *icon){
 
     PANEL_DEBUG("Function: Draw_Single_Ctrl_Page in ");
 
-    /* 反转标签状态 */
+    /* 变换页签状态 */
     Tag_Change(icon);
 
     /* 绘制白色矩形背景 */
     LCD_SetTextColor(0xffffff);
-    LCD_DrawFullRect(400, 40, 390, 430);
+    LCD_DrawFullRect(400, 40, 390, 250);
+
+
 
     /* 绘制用电器选择图标 */
     Draw_Widget(single_ctrl_icon, 4);
     
 }
 
-
 /**
  * @brief 
  * 
  */
 void Draw_Centre_Ctrl_Page(void *icon){
-
-    Tag_Change(icon);
-
+    
     PANEL_DEBUG("Function: Draw_Centre_Ctrl_Page in ");
 
+    /* 变换页签状态 */
+    
+    Tag_Change(icon);
+
+    /* 清屏菜单页面 */
+    LCD_SetTextColor(BACK_COLOR);
+    LCD_DrawFullRect(400, 40, 390, 430);
+
+    /* 绘制白色矩形背景 */
+    LCD_SetTextColor(0xffffff);
+    LCD_DrawFullRect(400, 40, 390, 250);
+
+        /* 绘制用电器选择图标 */
+    Draw_Widget(centre_ctrl_icon, 4);
+
 }
+
+
+void Centre_Ctrl_Icon_Init(void) {
+
+    Touch_Icon Icon_InitStruct;
+
+    Icon_InitStruct.start_x = 470;
+    Icon_InitStruct.start_y = 60;
+    Icon_InitStruct.width = ICON_SIZE;
+    Icon_InitStruct.height = ICON_SIZE;
+    Icon_InitStruct.status = 0;
+    Icon_InitStruct.no = 0;
+    Icon_InitStruct.touch_flag = 0;
+    Icon_InitStruct.draw_icon = Draw_Icon;
+    Icon_InitStruct.icon_command = Control_All_Device;
+
+    Icon_Struct_Init(&Icon_InitStruct, centre_ctrl_icon, 4);
+    Matrix_Init(centre_ctrl_icon, 2, 2, 24, 64);  
+
+    /* 风扇初始化 */
+    centre_ctrl_icon[0].type = DEVICE_FAN;
+    centre_ctrl_icon[0].gImage_icon[0] = gImage_fan_off;
+    centre_ctrl_icon[0].gImage_icon[1] = gImage_fan_on;
+
+    /* 灯泡初始化 */
+    centre_ctrl_icon[1].type = DEVICE_LIGHT;
+    centre_ctrl_icon[1].gImage_icon[0] = gImage_light_off;
+    centre_ctrl_icon[1].gImage_icon[1] = gImage_light_on;
+
+    /* 窗帘初始化 */
+    centre_ctrl_icon[2].type = DEVICE_CURTAIN;
+    centre_ctrl_icon[2].gImage_icon[0] = gImage_curtain_off;
+    centre_ctrl_icon[2].gImage_icon[1] = gImage_curtain_on;
+
+    /* 空调初始化 */
+    centre_ctrl_icon[3].type = DEVICE_AC;
+    centre_ctrl_icon[3].gImage_icon[0] = gImage_ac_off;
+    centre_ctrl_icon[3].gImage_icon[1] = gImage_ac_on;
+
+}
+
+/**
+ * @brief Control_All_Device 用电器集中控制命令函数
+ * 
+ * @param icon Touch_Icon 类型的图标参数
+ */
+void Control_All_Device(void *icon){
+
+    Touch_Icon *ptr = (Touch_Icon *)icon;
+
+    ptr->status = (ptr->status == 0) ? 1 : 0; /* 反转用电器状态 */
+
+    /******************************************************************
+     * 
+     * 将被触控的用电器的类型、编号、状态通过串口传输出去
+     * 
+     ******************************************************************/
+
+}
+
 
 /**
  * @brief 
@@ -487,12 +560,12 @@ void Draw_Auto_Ctrl_Page(void *icon){
     PANEL_DEBUG("Function: Draw_Auto_Ctrl_Page in ");
 
     /* 清屏菜单页面 */
-    LCD_SetTextColor(0xDBF0F9);
+    LCD_SetTextColor(BACK_COLOR);
     LCD_DrawFullRect(400, 40, 390, 430);
 
     /* 绘制白色矩形背景 */
     LCD_SetTextColor(0xffffff);
-    LCD_DrawFullRect(400, 40, 390, 200);
+    LCD_DrawFullRect(400, 40, 390, 250);
 
     /* 绘制自动控制标签及开关按钮 */
     Draw_Widget(auto_ctrl_icon, 2);
@@ -500,9 +573,10 @@ void Draw_Auto_Ctrl_Page(void *icon){
 }
 
 void Auto_Ctrl_Icon_Init(void) {
+
     Touch_Icon Icon_InitStruct;
 
-    Icon_InitStruct.start_y = 100;
+    Icon_InitStruct.start_y = 135;
     Icon_InitStruct.status = 0;
     Icon_InitStruct.touch_flag = 0;
     Icon_InitStruct.draw_icon = Draw_Icon;
