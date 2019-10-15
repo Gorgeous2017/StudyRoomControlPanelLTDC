@@ -133,8 +133,8 @@
   position:absolute;
   left:0px;
   top:0px;
-  width:224px;
-  height:130px;
+  width:214px;
+  height:120px;
 }
 #u5 {
   border-width:0px;
@@ -154,15 +154,16 @@
 }
 #u5 .text {
   position:absolute;
-  align-self:flex-start;
-  padding:0px 0px 0px 0px;
+  align-self:center;
+  padding:2px 2px 2px 2px;
   box-sizing:border-box;
   width:100%;
 }
 #u5_text {
   border-width:0px;
-  white-space:nowrap;
+  word-wrap:break-word;
   text-transform:none;
+  visibility:hidden;
 }
 #u6_img {
   border-width:0px;
@@ -1975,7 +1976,37 @@
   width:0px;
   height:0px;
 }
-#u55_div {
+#u55_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:113px;
+  height:60px;
+}
+#u55 {
+  border-width:0px;
+  position:absolute;
+  left:250px;
+  top:125px;
+  width:113px;
+  height:60px;
+  display:flex;
+}
+#u55 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u55_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+  visibility:hidden;
+}
+#u56_div {
   border-width:0px;
   position:absolute;
   left:0px;
@@ -1995,7 +2026,7 @@
   font-size:30px;
   letter-spacing:6.2px;
 }
-#u55 {
+#u56 {
   border-width:0px;
   position:absolute;
   left:20px;
@@ -2009,35 +2040,6 @@
   font-size:30px;
   letter-spacing:6.2px;
 }
-#u55 .text {
-  position:absolute;
-  align-self:center;
-  padding:2px 2px 2px 2px;
-  box-sizing:border-box;
-  width:100%;
-}
-#u55_text {
-  border-width:0px;
-  word-wrap:break-word;
-  text-transform:none;
-}
-#u56_img {
-  border-width:0px;
-  position:absolute;
-  left:0px;
-  top:0px;
-  width:113px;
-  height:60px;
-}
-#u56 {
-  border-width:0px;
-  position:absolute;
-  left:250px;
-  top:125px;
-  width:113px;
-  height:60px;
-  display:flex;
-}
 #u56 .text {
   position:absolute;
   align-self:center;
@@ -2049,7 +2051,6 @@
   border-width:0px;
   word-wrap:break-word;
   text-transform:none;
-  visibility:hidden;
 }
 #u57 {
   border-width:0px;
@@ -2095,8 +2096,8 @@
   width:130px;
   height:30px;
   display:flex;
-  font-family:'方正兰亭特黑简体';
-  font-weight:400;
+  font-family:'微软雅黑 Bold', '微软雅黑';
+  font-weight:700;
   font-style:normal;
   font-size:16px;
   letter-spacing:3px;
@@ -2134,8 +2135,8 @@
   width:130px;
   height:30px;
   display:flex;
-  font-family:'方正兰亭特黑简体';
-  font-weight:400;
+  font-family:'微软雅黑 Bold', '微软雅黑';
+  font-weight:700;
   font-style:normal;
   font-size:16px;
   letter-spacing:3px;
@@ -2173,8 +2174,8 @@
   width:130px;
   height:30px;
   display:flex;
-  font-family:'方正兰亭特黑简体';
-  font-weight:400;
+  font-family:'微软雅黑 Bold', '微软雅黑';
+  font-weight:700;
   font-style:normal;
   font-size:16px;
   letter-spacing:3px;
