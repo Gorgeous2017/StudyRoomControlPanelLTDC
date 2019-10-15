@@ -14,27 +14,25 @@
 #ifndef __PANEL_H
 #define __PANEL_H
 
-#include "stm32f4xx.h"
-#include "usart/bsp_debug_usart.h"
 #include "icon/icon.h" /* 包含图标图片数组 */
 
 #define TEXT_COLOR 0x333333 /* 面板文字色 */
 #define BACK_COLOR 0xDBF0F9 /* 面板背景色 */
 
+/* 图标大小 */
 #define ICON_SIZE 96 /* 图标的大小 */
-#define ICON_NUM 4   /* 图标的数量 */
 
 #define MENU_ICON_W 130 /* 菜单栏页签宽度 */
 #define MENU_ICON_H 30  /* 菜单栏页签高度 */
 
-/* 图标的起始位置 */
-#define STATUS_ICON_START_X 40              /* 环境信息图标起始横坐标 */
-#define STATUS_ICON_START_Y 30              /* 环境信息图标起始纵坐标 */
-#define STATUS_ICON_OFFSET (ICON_SIZE + 14) /* 环境信息图标之间的间距 */
+/* 图标起始位置 */
+#define STATUS_ICON_START_X 40 /* 环境信息图标起始横坐标 */
+#define STATUS_ICON_START_Y 30 /* 环境信息图标起始纵坐标 */
+#define STATUS_ICON_OFFSET 14  /* 环境信息图标之间的间距 */
 
-#define MENU_ICON_START_X 400        /* 菜单栏起始横坐标 */
-#define MENU_ICON_START_Y 10         /* 菜单栏起始纵坐标 */
-#define MENU_ICON_OFFSET MENU_ICON_W /* 菜单栏页签之间的间距 */
+#define MENU_ICON_START_X 400 /* 菜单栏起始横坐标 */
+#define MENU_ICON_START_Y 10  /* 菜单栏起始纵坐标 */
+#define MENU_ICON_OFFSET 0    /* 菜单栏页签之间的间距 */
 
 /* 用电器类型 */
 #define DEVICE_FAN 0x00     /* 风扇 */

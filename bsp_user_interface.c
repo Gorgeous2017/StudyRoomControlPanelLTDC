@@ -10,6 +10,8 @@
  * 
  * none
  */
+#include "stm32f4xx.h"
+#include "usart/bsp_debug_usart.h"
 #include "panel.h"
 
 /**
@@ -164,8 +166,8 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
  * @param IconArray 需要初始化的图标数组
  * @param LineNum 每行的图标数量
  * @param ColumnNum 每列的图标数量
- * @param LineOffset 图标间的水平间距
- * @param ColumnOffset 图标间的垂直间距
+ * @param LineOffset 图标间的垂直间距
+ * @param ColumnOffset 图标间的水平间距
  * 
  * @note 用法示例：初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
  * 
@@ -186,8 +188,8 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
  * 调用语句如下：
  *     Matrix_Init(IconArray, 2, 3, 30, 20);
  * 
- * @note 若要将Matrix_Init()与Icon_Struct_Init()一起使用，务必将Matrix_Init()置于Icon_Struct_Init()
- * 之后调用，并在Icon_Struct_Init()中将矩阵第一个图标的坐标赋值 start_x 和 start_y 成员
+ * @note 若要将Matrix_Init()与Icon_Struct_Init()一起使用，务必将Matrix_Init()于Icon_Struct_Init()
+ * 之后调用，并在Icon_Struct_Init()中将矩阵第一个图标的坐标赋给 start_x 和 start_y 成员
  */
 void Matrix_Init(Touch_Icon *IconArray, uint8_t LineNum, uint8_t ColumnNum, uint8_t LineOffset, uint8_t ColumnOffset){
 
@@ -205,4 +207,6 @@ void Matrix_Init(Touch_Icon *IconArray, uint8_t LineNum, uint8_t ColumnNum, uint
     }
 
 }
+
+
 

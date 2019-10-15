@@ -104,7 +104,7 @@ void Menu_Icon_Init(void){
     PANEL_DEBUG("Menu icon struct init above");
 
     Icon_Struct_Init(&Icon_InitStruct, menu_icon, 3);
-    Matrix_Init(menu_icon, 1, 3, 0, 0); // 三个图标横向紧贴着排列
+    Matrix_Init(menu_icon, 1, 3, 0, STATUS_ICON_OFFSET); // 三个图标横向紧贴着排列
 
     PANEL_DEBUG("Menu icon struct init below");
     
@@ -256,7 +256,7 @@ void Device_Icon_Init(void) {
  * @param y 触摸位置的y坐标
  */
 void Touch_Icon_Down(uint16_t x, uint16_t y){
-    uint8_t i;
+    // uint8_t i;
     // for (i = 0; i < ICON_NUM; i++){
     //     /* 触摸到了图标 */
     //     if (x <= (icon[i].start_x + icon[i].width ) && y <= (icon[i].start_y + icon[i].height ) && y >= icon[i].start_y && x >= icon[i].start_x){
@@ -295,7 +295,7 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
         
         if( menu_icon[i].status != 0){
 
-            PANEL_DEBUG("Menu %d is choose, this mune type is %X", i, menu_icon[i].type);
+            PANEL_DEBUG("Menu %d is choose, this menu type is %X", i, menu_icon[i].type);
 
             switch (menu_icon[i].type ) {
             
@@ -473,7 +473,6 @@ void Draw_Centre_Ctrl_Page(void *icon){
     PANEL_DEBUG("Function: Draw_Centre_Ctrl_Page in ");
 
     /* 变换页签状态 */
-    
     Tag_Change(icon);
 
     /* 清屏菜单页面 */
@@ -497,8 +496,8 @@ void Centre_Ctrl_Icon_Init(void) {
 
     Touch_Icon Icon_InitStruct;
 
-    Icon_InitStruct.start_x = 470;
-    Icon_InitStruct.start_y = 60;
+    Icon_InitStruct.start_x = CENTRE_CTRL_ICON_START_X;
+    Icon_InitStruct.start_y = CENTRE_CTRL_ICON_START_Y;
     Icon_InitStruct.width = ICON_SIZE;
     Icon_InitStruct.height = ICON_SIZE;
     Icon_InitStruct.status = 0;
@@ -508,7 +507,7 @@ void Centre_Ctrl_Icon_Init(void) {
     Icon_InitStruct.icon_command = Control_All_Device;
 
     Icon_Struct_Init(&Icon_InitStruct, centre_ctrl_icon, 4);
-    Matrix_Init(centre_ctrl_icon, 2, 2, 24, 64);  
+    Matrix_Init(centre_ctrl_icon, 2, 2, CENTRE_CTRL_ICON_OFFSET_LINE, CENTRE_CTRL_ICON_OFFSET_COLUMN);  
 
     /* 风扇初始化 */
     centre_ctrl_icon[0].type = DEVICE_FAN;
@@ -555,6 +554,7 @@ void Control_All_Device(void *icon){
 /**
  * @brief 
  * 
+ * @param icon 
  */
 void Draw_Auto_Ctrl_Page(void *icon){
 
