@@ -127,10 +127,12 @@ void Draw_Widget(Touch_Icon *icon_array, uint8_t num)
 }
 
 /**
- * @brief 控件被按下时的处理函数
+ * @brief 控件的触控处理函数
  * 
  * @param widget 需要检测有无被触控的控件
  * @param num 控件中图标的数量
+ * @param x 触点横坐标
+ * @param y 触点纵坐标
  */
 void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t y){
     uint8_t i;
