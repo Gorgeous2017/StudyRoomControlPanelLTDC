@@ -34,6 +34,11 @@
 #define MENU_ICON_START_Y 10  /* 菜单栏起始纵坐标 */
 #define MENU_ICON_OFFSET 0    /* 菜单栏页签之间的间距 */
 
+#define CENTRE_CTRL_ICON_START_X 470
+#define CENTRE_CTRL_ICON_START_Y 60
+#define CENTRE_CTRL_ICON_OFFSET_COLUMN 64
+#define CENTRE_CTRL_ICON_OFFSET_LINE 24
+
 /* 用电器类型 */
 #define DEVICE_FAN 0x00     /* 风扇 */
 #define DEVICE_LIGHT 0x01   /* 电灯 */
@@ -130,6 +135,9 @@ void Tag_Change(void *icon);
 void Control_Device(void *icon);
 void Switch_Model(void *sw);
 void Control_All_Device(void *icon);
+
+/* 图标状态设置函数 */
+void Set_IconStatus(Touch_Icon *IconArray, uint8_t num, uint8_t value);
 
 /* 定义成外部函数，可以被触摸屏调用 */
 extern void Touch_Icon_Down(uint16_t x, uint16_t y);

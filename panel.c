@@ -52,9 +52,9 @@ void Panel_Init(void)
     LCD_SetFont(&Font48x96);
     LCD_SetTextColor(TEXT_COLOR);
     LCD_DisplayStringLine(STATUS_ICON_START_Y,"15%");
-    LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET,"36db");
-    LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 2,"25");
-    LCD_DisplayStringLine(STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 3,"15%");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE),"36db");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE) * 2,"25");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE) * 3,"15%");
 
     PANEL_DEBUG("Draw String down ");
     
@@ -104,7 +104,7 @@ void Menu_Icon_Init(void){
     PANEL_DEBUG("Menu icon struct init above");
 
     Icon_Struct_Init(&Icon_InitStruct, menu_icon, 3);
-    Matrix_Init(menu_icon, 1, 3, 0, STATUS_ICON_OFFSET); // 三个图标横向紧贴着排列
+    Matrix_Init(menu_icon, 1, 3, 0, MENU_ICON_OFFSET); // 三个图标横向紧贴着排列
 
     PANEL_DEBUG("Menu icon struct init below");
     
@@ -370,7 +370,6 @@ void Draw_Icon(void *icon)
     }
 }
 
-
 /**
  * @brief Control_Device 用电器控制命令函数
  * 
@@ -407,6 +406,12 @@ void Select_Device(void *icon){
     LCD_SetTextColor(0xffffff);
     LCD_DrawFullRect(400, 290, 390, 180);
 
+    /* 在选择框与用电器框之间绘制一个用于标识的小白块 */
+    LCD_SetTextColor(BACK_COLOR); /* 清屏 */
+    LCD_DrawFullRect(400, 240, 390, 10); 
+    LCD_SetTextColor(0xffffff); /* 绘制小白块 */
+    LCD_DrawFullRect(ptr->start_x, 240, 96, 10);
+
     PANEL_DEBUG("Draw 6 device icon above ");
 
     Draw_Widget(device[ptr->type], 6);
@@ -424,17 +429,21 @@ void Tag_Change(void *ic){
     Touch_Icon *ptr = (Touch_Icon *)ic;
 
     PANEL_DEBUG("Tag_Change in");
+
+    /* 重置菜单栏页签状态 */
+    Set_IconStatus(menu_icon, 3, 0);
+    Draw_Widget(menu_icon, 3);
     
     /* 重置菜单栏页签状态 */
-    menu_icon[0].status = 0;
-    Draw_Icon(&menu_icon[0]);
-    Delay(0xfff);
-    menu_icon[1].status = 0;
-    Draw_Icon(&menu_icon[1]);
-    Delay(0xfff);
-    menu_icon[2].status = 0;
-    Draw_Icon(&menu_icon[2]);
-    Delay(0xfff);
+    // menu_icon[0].status = 0;
+    // Draw_Icon(&menu_icon[0]);
+    // Delay(0xfff);
+    // menu_icon[1].status = 0;
+    // Draw_Icon(&menu_icon[1]);
+    // Delay(0xfff);
+    // menu_icon[2].status = 0;
+    // Draw_Icon(&menu_icon[2]);
+    // Delay(0xfff);
 
     /* 将当前页签置为选中状态 */
     ptr->status = 1;
@@ -474,6 +483,9 @@ void Draw_Centre_Ctrl_Page(void *icon){
 
     /* 变换页签状态 */
     Tag_Change(icon);
+
+    /* 重置用电器选择状态 */
+    Set_IconStatus(single_ctrl_icon, 4, 0);
 
     /* 清屏菜单页面 */
     LCD_SetTextColor(BACK_COLOR);
@@ -624,3 +636,21 @@ void Draw_Logo(void){
 
 }
 
+/**
+ * @brief 设置 Touch_Icon 结构体数组 status 成员的状态
+ * 
+ * @param IconArray 需要设置状态的 Touch_Icon 结构体数组
+ * @param num 需要设置状态的数组成员数量
+ * @param value 需要设置的 status 值
+ */
+void Set_IconStatus(Touch_Icon *IconArray, uint8_t num, uint8_t value){
+
+    uint8_t i;
+    
+    for ( i = 0; i < num; i++) {
+
+        IconArray[i].status = value;
+
+    }
+
+}
