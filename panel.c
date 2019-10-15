@@ -104,23 +104,21 @@ void Menu_Icon_Init(void){
     PANEL_DEBUG("Menu icon struct init above");
 
     Icon_Struct_Init(&Icon_InitStruct, menu_icon, 3);
+    Matrix_Init(menu_icon, 1, 3, 0, 0); // 三个图标横向紧贴着排列
 
     PANEL_DEBUG("Menu icon struct init below");
     
-    menu_icon[0].start_x = MENU_ICON_START_X;
-    menu_icon[0].status = 1;
+    menu_icon[0].status = 1; // 上电显示第独立控制界面
     menu_icon[0].type = MENU_SINGLE_CTRL;
     menu_icon[0].icon_command = Draw_Single_Ctrl_Page;
     menu_icon[0].gImage_icon[0] = gImage_single_sel;
     menu_icon[0].gImage_icon[1] = gImage_single_unsel;
 
-    menu_icon[1].start_x = MENU_ICON_START_X + MENU_ICON_OFFSET;
     menu_icon[1].type = MENU_CENTRE_CTRL;
     menu_icon[1].icon_command = Draw_Centre_Ctrl_Page;
     menu_icon[1].gImage_icon[0] = gImage_centre_sel;
     menu_icon[1].gImage_icon[1] = gImage_centre_unsel;
 
-    menu_icon[2].start_x = MENU_ICON_START_X + MENU_ICON_OFFSET * 2;
     menu_icon[2].type = MENU_AUTO_CTRL;
     menu_icon[2].icon_command = Draw_Auto_Ctrl_Page;
     menu_icon[2].gImage_icon[0] = gImage_auto_sel;
@@ -146,17 +144,14 @@ void Status_Icon_Init(void){
     Icon_InitStruct.gImage_icon[0] = gImage_people;
 
     Icon_Struct_Init(&Icon_InitStruct, status_icon, 4);
+    Matrix_Init(status_icon, 4, 1, 14, 0); // 四个图标纵向排列，间距为14 pixel
 
-    status_icon[0].start_y = STATUS_ICON_START_Y;
     status_icon[0].gImage_icon[0] = gImage_people;
 
-    status_icon[1].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET;
     status_icon[1].gImage_icon[0] = gImage_noise;
 
-    status_icon[2].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 2;
     status_icon[2].gImage_icon[0] = gImage_temp;
 
-    status_icon[3].start_y = STATUS_ICON_START_Y + STATUS_ICON_OFFSET * 3;
     status_icon[3].gImage_icon[0] = gImage_humi;
 }
 

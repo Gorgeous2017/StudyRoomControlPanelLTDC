@@ -53,18 +53,20 @@
 
 typedef struct
 {
-    uint16_t start_x;   /* 图标的x起始坐标  */
-    uint16_t start_y;   /* 图标的y起始坐标  */
-    uint8_t width;      /* 图标宽度         */
-    uint8_t height;     /* 图标高度        */
-    uint8_t type;       /* 图标类型        */
-    uint8_t status;     /* 用电器状态       */
-    uint8_t no;         /* 用电器编号       */
-    uint8_t touch_flag; /* 图标按下的标志   */
+    uint16_t start_x;   /* 图标的x起始坐标 */
+    uint16_t start_y;   /* 图标的y起始坐标 */
+    uint8_t width;      /* 图标宽度 */
+    uint8_t height;     /* 图标高度 */
+    uint8_t type;       /* 图标类型 */
+    uint8_t status;     /* 图标状态 */
+    uint8_t no;         /* 图标编号 */
+    uint8_t touch_flag; /* 图标按下的标志 */
 
-    const unsigned char *gImage_icon[2]; /* 图标图片数组     */
+    const unsigned char *gImage_icon[2]; /* 图标图片数组 */
+                                         /* gImage_icon[0]为status等于0时显示的图标 */
+                                         /* gImage_icon[1]为status等于1时显示的图标 */
 
-    void (*draw_icon)(void *icon);    /* 图标描绘函数     */
+    void (*draw_icon)(void *icon);    /* 图标描绘函数 */
     void (*icon_command)(void *icon); /* 图标功能执行函数 */
 
 } Touch_Icon;
