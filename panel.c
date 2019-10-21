@@ -76,7 +76,6 @@ void Touch_Icon_Init(void)
 
 }
 
-
 /**
  * @brief menu_icon 菜单栏初始化，位于面板右上方
  * 
