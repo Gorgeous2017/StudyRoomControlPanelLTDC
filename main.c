@@ -25,8 +25,8 @@
   */
 int main(void)
 {
-	/* 调试串口初始化 */
-	Debug_USART_Config();    
+	/* 面板串口初始化 */
+	PANEL_USART_Config();    
 
 	/* 触摸屏初始化 */
 	GTP_Init_Panel(); 

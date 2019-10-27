@@ -30,7 +30,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
 
-#include "./usart/bsp_debug_usart.h"
+#include "panel.h"
 #include "./touch/bsp_i2c_touch.h"
 
 extern void GTP_TouchProcess(void);
@@ -71,7 +71,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   
-    DEBUG("hardfault err");
+  PANEL_DEBUG("hardfault err");
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {}

@@ -1,37 +1,102 @@
-#ifndef __DEBUG_USART_H
-#define __DEBUG_USART_H
+#ifndef __PANEL_USART_H
+#define __PANEL_USART_H
 
 #include "stm32f4xx.h"
 #include <stdio.h>
 
-#define DEBUG_USART USART1
-#define DEBUG_USART_CLK RCC_APB2Periph_USART1
-#define DEBUG_USART_BAUDRATE 115200
+/**
+ * @defgroup UART
+ * @{
+ */
 
-#define DEBUG_USART_RX_GPIO_PORT GPIOA
-#define DEBUG_USART_RX_GPIO_CLK RCC_AHB1Periph_GPIOA
-#define DEBUG_USART_RX_PIN GPIO_Pin_10
-#define DEBUG_USART_RX_AF GPIO_AF_USART1
-#define DEBUG_USART_RX_SOURCE GPIO_PinSource10
+/**
+ * @defgroup AP_UART
+ * @brief AP??????????
+ * @{
+ */
 
-#define DEBUG_USART_TX_GPIO_PORT GPIOA
-#define DEBUG_USART_TX_GPIO_CLK RCC_AHB1Periph_GPIOA
-#define DEBUG_USART_TX_PIN GPIO_Pin_9
-#define DEBUG_USART_TX_AF GPIO_AF_USART1
-#define DEBUG_USART_TX_SOURCE GPIO_PinSource9
+/**
+ * @defgroup Macro
+ * @{
+ */
+#define AP_USART USART1
+#define AP_USART_CLK RCC_APB2Periph_USART1
+#define AP_USART_BAUDRATE 115200
 
-#define __DEBUG //¿ªÆô´®¿Úµ÷ÊÔ
+#define AP_USART_RX_GPIO_PORT GPIOA
+#define AP_USART_RX_GPIO_CLK RCC_AHB1Periph_GPIOA
+#define AP_USART_RX_PIN GPIO_Pin_10
+#define AP_USART_RX_AF GPIO_AF_USART1
+#define AP_USART_RX_SOURCE GPIO_PinSource10
 
-#ifdef __DEBUG
-#define DEBUG(format, ...) printf("File:"__FILE__            \
-                                  ",Line:%03d:" format "\n", \
-                                  __LINE__, ##__VA_ARGS__)
-#else
+#define AP_USART_TX_GPIO_PORT GPIOA
+#define AP_USART_TX_GPIO_CLK RCC_AHB1Periph_GPIOA
+#define AP_USART_TX_PIN GPIO_Pin_9
+#define AP_USART_TX_AF GPIO_AF_USART1
+#define AP_USART_TX_SOURCE GPIO_PinSource9
 
-#define DEBUG(format, ...)
+#define AP_USART_IRQHandler USART1_IRQHandler
+#define AP_USART_IRQ USART1_IRQn
 
-#endif
+/**
+ * @} 
+ */
 
-void Debug_USART_Config(void);
+/**
+ * @} 
+ */
+
+/**
+ * @defgroup ST_UART
+ * @brief ST??????????
+ * @{
+ */
+
+/**
+ * @defgroup Macro
+ * @{
+ */
+#define ST_USART USART3
+#define ST_USART_CLK RCC_APB1Periph_USART3
+#define ST_USART_BAUDRATE 115200
+
+#define ST_USART_RX_GPIO_PORT GPIOC
+#define ST_USART_RX_GPIO_CLK RCC_AHB1Periph_GPIOC
+#define ST_USART_RX_PIN GPIO_Pin_11
+#define ST_USART_RX_AF GPIO_AF_USART3
+#define ST_USART_RX_SOURCE GPIO_PinSource11
+
+#define ST_USART_TX_GPIO_PORT GPIOC
+#define ST_USART_TX_GPIO_CLK RCC_AHB1Periph_GPIOC
+#define ST_USART_TX_PIN GPIO_Pin_10
+#define ST_USART_TX_AF GPIO_AF_USART3
+#define ST_USART_TX_SOURCE GPIO_PinSource10
+
+#define ST_USART_IRQHandler USART3_IRQHandler
+#define ST_USART_IRQ USART3_IRQn
+
+/**
+ * @} 
+ */
+
+/**
+ * @} 
+ */
+
+/**
+ * @defgroup Function
+ * @{
+ */
+void PANEL_USART_Config(void);
+void AP_USART_Config(void);
+void ST_USART_Config(void);
+void NVIC_Configuration(void);
+/**
+ * @} 
+ */
+
+/**
+ * @} 
+ */
 
 #endif /* __USART1_H */
