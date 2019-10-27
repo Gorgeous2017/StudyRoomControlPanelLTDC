@@ -3,7 +3,7 @@
  * @author Gump 
  * @version V0.1
  * @date 2019-09-26
- * @brief LTDC°æ±¾µÄÊÒÄÚ¿ØÖÆÃæ°å³ÌĞò
+ * @brief LTDCç‰ˆæœ¬çš„å®¤å†…æ§åˆ¶é¢æ¿ç¨‹åº
  * 
  * @copyright Copyright (c) <2019> <HANSHAN NORMAL UNIVERSITY(CHAOZHOU)> All rights Reserved.
  *   Media Recognition and Intelligent System Team
@@ -12,43 +12,45 @@
  */
 
 #include "stm32f4xx.h"
-#include "./usart/bsp_debug_usart.h"
+
 #include "./sdram/bsp_sdram.h"
 #include "./lcd/bsp_lcd.h"
 #include "./touch/gt9xx.h"
+
+#include "panel_usart.h"
 #include "panel.h"
 
  /**
-  * @brief Ö÷º¯Êı
+  * @brief ä¸»å‡½æ•°
   * 
   * @return int 
   */
 int main(void)
 {
-	/* Ãæ°å´®¿Ú³õÊ¼»¯ */
+	/* é¢æ¿ä¸²å£åˆå§‹åŒ– */
 	PANEL_USART_Config();    
 
-	/* ´¥ÃşÆÁ³õÊ¼»¯ */
+	/* è§¦æ‘¸å±åˆå§‹åŒ– */
 	GTP_Init_Panel(); 
 	
-	/* ³õÊ¼»¯Òº¾§ÆÁ */
+	/* åˆå§‹åŒ–æ¶²æ™¶å± */
 	LCD_Init();
 	LCD_LayerInit();
 	LTDC_Cmd(ENABLE);
 	
-	/* °Ñ±³¾°²ãË¢ºÚÉ« */
+	/* æŠŠèƒŒæ™¯å±‚åˆ·é»‘è‰² */
 	LCD_SetLayer(LCD_BACKGROUND_LAYER);  
 	LCD_Clear(LCD_COLOR_BLACK);
 	
-	/* ³õÊ¼»¯ºóÄ¬ÈÏÊ¹ÓÃÇ°¾°²ã */
+	/* åˆå§‹åŒ–åé»˜è®¤ä½¿ç”¨å‰æ™¯å±‚ */
 	LCD_SetLayer(LCD_FOREGROUND_LAYER); 
-	/* Ä¬ÈÏÉèÖÃ²»Í¸Ã÷£¬¸Ãº¯Êı²ÎÊıÎª²»Í¸Ã÷¶È£¬·¶Î§ 0-0xff £¬0ÎªÈ«Í¸Ã÷£¬0xffÎª²»Í¸Ã÷ */
+	/* é»˜è®¤è®¾ç½®ä¸é€æ˜ï¼Œè¯¥å‡½æ•°å‚æ•°ä¸ºä¸é€æ˜åº¦ï¼ŒèŒƒå›´ 0-0xff ï¼Œ0ä¸ºå…¨é€æ˜ï¼Œ0xffä¸ºä¸é€æ˜ */
 	LCD_SetTransparency(0xFF);
 	LCD_Clear(LCD_COLOR_WHITE);
-	/* ¾­¹ıLCD_SetLayer(LCD_FOREGROUND_LAYER)º¯Êıºó£¬
-	ÒÔÏÂÒº¾§²Ù×÷¶¼ÔÚÇ°¾°²ãË¢ĞÂ£¬³ı·ÇÖØĞÂµ÷ÓÃ¹ıLCD_SetLayerº¯ÊıÉèÖÃ±³¾°²ã */		
+	/* ç»è¿‡LCD_SetLayer(LCD_FOREGROUND_LAYER)å‡½æ•°åï¼Œ
+	ä»¥ä¸‹æ¶²æ™¶æ“ä½œéƒ½åœ¨å‰æ™¯å±‚åˆ·æ–°ï¼Œé™¤éé‡æ–°è°ƒç”¨è¿‡LCD_SetLayerå‡½æ•°è®¾ç½®èƒŒæ™¯å±‚ */		
 
-	/* Ãæ°å³õÊ¼»¯ */
+	/* é¢æ¿åˆå§‹åŒ– */
 	Panel_Init();
 	
 	Delay(0xfff);

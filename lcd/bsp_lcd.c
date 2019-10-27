@@ -4,13 +4,13 @@
   * @author  fire
   * @version V1.0
   * @date    2015-xx-xx
-  * @brief   LCDӦ�ú����ӿڣ�֧��RGB888/565 (����������ʾ)
+  * @brief   LCD应用函数接口，支持RGB888/565 (不含中文显示)
   ******************************************************************************
   * @attention
   *
-  * ʵ��ƽ̨:����  STM32 F429 ������  
-  * ��̳    :http://www.firebbs.cn
-  * �Ա�    :https://fire-stm32.taobao.com
+  * 实验平台:秉火  STM32 F429 开发板  
+  * 论坛    :http://www.firebbs.cn
+  * 淘宝    :https://fire-stm32.taobao.com
   *
   ******************************************************************************
   */
@@ -39,18 +39,18 @@
 	
 
 #if  LCD_RGB_888
-/****************RGB888����*****************************RGB888����*****************************RGB888����**********************************RGB888����**********************************RGB888����*********************************/
+/****************RGB888驱动*****************************RGB888驱动*****************************RGB888驱动**********************************RGB888驱动**********************************RGB888驱动*********************************/
 	
   
 /** @defgroup STM32F429I_DISCOVERY_LCD_Private_Variables
   * @{
   */ 
-/*���ڴ洢��ǰѡ��������ʽ*/
+/*用于存储当前选择的字体格式*/
 static sFONT *LCD_Currentfonts;
-/* ���ڴ洢��ǰ������ɫ�����屳����ɫ�ı���*/
+/* 用于存储当前字体颜色和字体背景颜色的变量*/
 static uint32_t CurrentTextColor   = 0x333333;
 static uint32_t CurrentBackColor   = 0xDBF0F9;
-/* ���ڴ洢���Ӧ���Դ�ռ� �� ��ǰѡ��Ĳ�*/
+/* 用于存储层对应的显存空间 和 当前选择的层*/
 static uint32_t CurrentFrameBuffer = LCD_FRAME_BUFFER;
 static uint32_t CurrentLayer = LCD_BACKGROUND_LAYER;
 /**
@@ -70,104 +70,104 @@ static void LCD_GPIO_Config(void);
 /**
   * @}
   */ 
-/*ʵ�ʲ��Կ��õĽϿ������(5��)*/
-//#define HBP  24		//HSYNC�����Ч����
-//#define VBP   3		//VSYNC�����Ч����
+/*实际测试可用的较快的配置(5寸)*/
+//#define HBP  24		//HSYNC后的无效像素
+//#define VBP   3		//VSYNC后的无效行数
 
-//#define HSW   1		//HSYNC����
-//#define VSW   1		//VSYNC����
+//#define HSW   1		//HSYNC宽度
+//#define VSW   1		//VSYNC宽度
 
-//#define HFP  10		//HSYNCǰ����Ч����
-//#define VFP   4		//VSYNCǰ����Ч����
+//#define HFP  10		//HSYNC前的无效像素
+//#define VFP   4		//VSYNC前的无效行数
 
-/*����Һ�������ֲ�Ĳ�������*/
-#define HBP  46		//HSYNC�����Ч����
-#define VBP  23		//VSYNC�����Ч����
+/*根据液晶数据手册的参数配置*/
+#define HBP  46		//HSYNC后的无效像素
+#define VBP  23		//VSYNC后的无效行数
 
-#define HSW   1		//HSYNC����
-#define VSW   1		//VSYNC����
+#define HSW   1		//HSYNC宽度
+#define VSW   1		//VSYNC宽度
 
-#define HFP  20		//HSYNCǰ����Ч����
-#define VFP   22		//VSYNCǰ����Ч����
+#define HFP  20		//HSYNC前的无效像素
+#define VFP   22		//VSYNC前的无效行数
 
 
 #define ZOOMMAXBUFF 16384
-uint8_t zoomBuff[ZOOMMAXBUFF] = {0};	//�������ŵĻ��棬���֧�ֵ�128*128
+uint8_t zoomBuff[ZOOMMAXBUFF] = {0};	//用于缩放的缓存，最大支持到128*128
 
 
 /**
-  * @brief LCD��������
-  * @note  ���������������LTDC����:
-  *        1)��������ͬ��ʱ��CLK
-  *        2)����LTDCʱ��������źż���
+  * @brief LCD参数配置
+  * @note  这个函数用于配置LTDC外设:
+  *        1)配置像素同步时钟CLK
+  *        2)配置LTDC时间参数及信号极性
   * @retval  None 
   */
 void LCD_Init(void)
 { 
   LTDC_InitTypeDef       LTDC_InitStruct;
   
-  /* ʹ��LTDC����ʱ�� */
+  /* 使能LTDC外设时钟 */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_LTDC, ENABLE);
   
-  /* ʹ��DMA2Dʱ�� */
+  /* 使能DMA2D时钟 */
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2D, ENABLE);
 	
-	/* ��ʼ��LCD�Ŀ������� */
+	/* 初始化LCD的控制引脚 */
   LCD_GPIO_Config();   
 	
-	/* ��ʼ��SDRAM���Ա�ʹ��SDRAM���Դ� */
+	/* 初始化SDRAM，以便使用SDRAM作显存 */
   SDRAM_Init();
 	
-	/* ���� PLLSAI ��Ƶ�������������Ϊ����ͬ��ʱ��CLK*/
-  /* PLLSAI_VCO ����ʱ�� = HSE_VALUE/PLL_M = 1 Mhz */
-  /* PLLSAI_VCO ���ʱ�� = PLLSAI_VCO���� * PLLSAI_N = 420 Mhz */
-  /* PLLLCDCLK = PLLSAI_VCO ���/PLLSAI_R = 420/6  Mhz */
-  /* LTDC ʱ��Ƶ�� = PLLLCDCLK / DIV = 420/6/8 = 8.75 Mhz */
-	/* LTDCʱ��̫�߻ᵼ����������ˢ���ٶ�Ҫ�󲻸ߣ�����ʱ��Ƶ�ʿɼ��ٻ�������*/
-	/* ���º������������ֱ�Ϊ��PLLSAIN,PLLSAIQ,PLLSAIR������PLLSAIQ��LTDC�޹�*/
+	/* 配置 PLLSAI 分频器，它的输出作为像素同步时钟CLK*/
+  /* PLLSAI_VCO 输入时钟 = HSE_VALUE/PLL_M = 1 Mhz */
+  /* PLLSAI_VCO 输出时钟 = PLLSAI_VCO输入 * PLLSAI_N = 420 Mhz */
+  /* PLLLCDCLK = PLLSAI_VCO 输出/PLLSAI_R = 420/6  Mhz */
+  /* LTDC 时钟频率 = PLLLCDCLK / DIV = 420/6/8 = 8.75 Mhz */
+	/* LTDC时钟太高会导花屏，若对刷屏速度要求不高，降低时钟频率可减少花屏现象*/
+	/* 以下函数三个参数分别为：PLLSAIN,PLLSAIQ,PLLSAIR，其中PLLSAIQ与LTDC无关*/
   RCC_PLLSAIConfig(420,7, 6);
-	/*���º����Ĳ���ΪDIVֵ*/
+	/*以下函数的参数为DIV值*/
   RCC_LTDCCLKDivConfig(RCC_PLLSAIDivR_Div8);
   
-  /* ʹ�� PLLSAI ʱ�� */
+  /* 使能 PLLSAI 时钟 */
   RCC_PLLSAICmd(ENABLE);
-  /* �ȴ� PLLSAI ��ʼ����� */
+  /* 等待 PLLSAI 初始化完成 */
   while(RCC_GetFlagStatus(RCC_FLAG_PLLSAIRDY) == RESET)
   {
   }
   
-  /* LTDC����*********************************************************/  
-  /*�źż�������*/
-  /* ��ͬ���źż��� */
+  /* LTDC配置*********************************************************/  
+  /*信号极性配置*/
+  /* 行同步信号极性 */
   LTDC_InitStruct.LTDC_HSPolarity = LTDC_HSPolarity_AL;     
-  /* ��ֱͬ���źż��� */  
+  /* 垂直同步信号极性 */  
   LTDC_InitStruct.LTDC_VSPolarity = LTDC_VSPolarity_AL;     
-  /* ����ʹ���źż��� */
+  /* 数据使能信号极性 */
   LTDC_InitStruct.LTDC_DEPolarity = LTDC_DEPolarity_AL;     
-  /* ����ͬ��ʱ�Ӽ��� */ 
+  /* 像素同步时钟极性 */ 
   LTDC_InitStruct.LTDC_PCPolarity = LTDC_PCPolarity_IPC;
   
-  /* ����LCD������ɫ */                   
+  /* 配置LCD背景颜色 */                   
   LTDC_InitStruct.LTDC_BackgroundRedValue = 0;            
   LTDC_InitStruct.LTDC_BackgroundGreenValue = 0;          
   LTDC_InitStruct.LTDC_BackgroundBlueValue = 0;    
  
-  /* ʱ��������� */  
- /* ������ͬ���źſ���(HSW-1) */
+  /* 时间参数配置 */  
+ /* 配置行同步信号宽度(HSW-1) */
  LTDC_InitStruct.LTDC_HorizontalSync =HSW-1;
- /* ���ô�ֱͬ���źſ���(VSW-1) */
+ /* 配置垂直同步信号宽度(VSW-1) */
  LTDC_InitStruct.LTDC_VerticalSync = VSW-1;
- /* ����(HSW+HBP-1) */
+ /* 配置(HSW+HBP-1) */
  LTDC_InitStruct.LTDC_AccumulatedHBP =HSW+HBP-1;
- /* ����(VSW+VBP-1) */
+ /* 配置(VSW+VBP-1) */
  LTDC_InitStruct.LTDC_AccumulatedVBP = VSW+VBP-1;
- /* ����(HSW+HBP+��Ч���ؿ���-1) */
+ /* 配置(HSW+HBP+有效像素宽度-1) */
  LTDC_InitStruct.LTDC_AccumulatedActiveW = HSW+HBP+LCD_PIXEL_WIDTH-1;
- /* ����(VSW+VBP+��Ч���ظ߶�-1) */
+ /* 配置(VSW+VBP+有效像素高度-1) */
  LTDC_InitStruct.LTDC_AccumulatedActiveH = VSW+VBP+LCD_PIXEL_HEIGHT-1;
- /* �����ܿ���(HSW+HBP+��Ч���ؿ���+HFP-1) */
+ /* 配置总宽度(HSW+HBP+有效像素宽度+HFP-1) */
  LTDC_InitStruct.LTDC_TotalWidth =HSW+ HBP+LCD_PIXEL_WIDTH  + HFP-1; 
- /* �����ܸ߶�(VSW+VBP+��Ч���ظ߶�+VFP-1) */
+ /* 配置总高度(VSW+VBP+有效像素高度+VFP-1) */
  LTDC_InitStruct.LTDC_TotalHeigh =VSW+ VBP+LCD_PIXEL_HEIGHT  + VFP-1;
 
   LTDC_Init(&LTDC_InitStruct);
@@ -176,9 +176,9 @@ void LCD_Init(void)
 }  
 
 /**
-  * @brief ��ʼ��LTD�� �� ����
-  *           - �����Դ�ռ�
-  *           - ���÷ֱ���
+  * @brief 初始化LTD的 层 参数
+  *           - 设置显存空间
+  *           - 设置分辨率
   * @param  None
   * @retval None
   */
@@ -186,79 +186,79 @@ void LCD_LayerInit(void)
 {
   LTDC_Layer_InitTypeDef LTDC_Layer_InitStruct; 
   
-  /* �㴰������ */
-  /* ���ñ���Ĵ��ڱ߽磬ע����Щ�����ǰ���HBP HSW VBP VSW�� */    
-	//һ�еĵ�һ����ʼ���أ��ó�ԱֵӦ��Ϊ (LTDC_InitStruct.LTDC_AccumulatedHBP+1)��ֵ
+  /* 层窗口配置 */
+  /* 配置本层的窗口边界，注意这些参数是包含HBP HSW VBP VSW的 */    
+	//一行的第一个起始像素，该成员值应用为 (LTDC_InitStruct.LTDC_AccumulatedHBP+1)的值
 	LTDC_Layer_InitStruct.LTDC_HorizontalStart = HBP + HSW;
-	//һ�е����һ�����أ��ó�ԱֵӦ��Ϊ (LTDC_InitStruct.LTDC_AccumulatedActiveW)��ֵ
+	//一行的最后一个像素，该成员值应用为 (LTDC_InitStruct.LTDC_AccumulatedActiveW)的值
 	LTDC_Layer_InitStruct.LTDC_HorizontalStop = HSW+HBP+LCD_PIXEL_WIDTH-1;
-	//һ�еĵ�һ����ʼ���أ��ó�ԱֵӦ��Ϊ (LTDC_InitStruct.LTDC_AccumulatedVBP+1)��ֵ
+	//一列的第一个起始像素，该成员值应用为 (LTDC_InitStruct.LTDC_AccumulatedVBP+1)的值
 	LTDC_Layer_InitStruct.LTDC_VerticalStart =  VBP + VSW;
-	//һ�е����һ�����أ��ó�ԱֵӦ��Ϊ (LTDC_InitStruct.LTDC_AccumulatedActiveH)��ֵ
+	//一列的最后一个像素，该成员值应用为 (LTDC_InitStruct.LTDC_AccumulatedActiveH)的值
 	LTDC_Layer_InitStruct.LTDC_VerticalStop = VSW+VBP+LCD_PIXEL_HEIGHT-1;
 	
-  /* ���ظ�ʽ����*/
+  /* 像素格式配置*/
   LTDC_Layer_InitStruct.LTDC_PixelFormat = LTDC_Pixelformat_RGB888;
-  /* �㶨Alphaֵ���ã�0-255 */
+  /* 恒定Alpha值配置，0-255 */
   LTDC_Layer_InitStruct.LTDC_ConstantAlpha = 255; 
-  /* Ĭ�ϱ�����ɫ������ɫ�ڶ���Ĳ㴰������ڲ��ֹʱʹ�á� */          
+  /* 默认背景颜色，该颜色在定义的层窗口外或在层禁止时使用。 */          
   LTDC_Layer_InitStruct.LTDC_DefaultColorBlue = 0xFF;        
   LTDC_Layer_InitStruct.LTDC_DefaultColorGreen = 0xFF;       
   LTDC_Layer_InitStruct.LTDC_DefaultColorRed = 0xFF;         
   LTDC_Layer_InitStruct.LTDC_DefaultColorAlpha = 0xFF;
-  /* ���û������ CA��ʾʹ�ú㶨Alphaֵ��PAxCA��ʾʹ������Alpha x �㶨Alphaֵ */       
+  /* 配置混合因子 CA表示使用恒定Alpha值，PAxCA表示使用像素Alpha x 恒定Alpha值 */       
   LTDC_Layer_InitStruct.LTDC_BlendingFactor_1 = LTDC_BlendingFactor1_CA;    
   LTDC_Layer_InitStruct.LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_PAxCA;
   
-  /* �ó�ԱӦд��(һ����������ռ�õ��ֽ���+3)
-  Line Lenth = ����Ч���ظ��� x ÿ�����ص��ֽ��� + 3 
-  ����Ч���ظ��� = LCD_PIXEL_WIDTH 
-  ÿ�����ص��ֽ��� = 2��RGB565/RGB1555��/ 3 (RGB888)/ 4��ARGB8888�� 
+  /* 该成员应写入(一行像素数据占用的字节数+3)
+  Line Lenth = 行有效像素个数 x 每个像素的字节数 + 3 
+  行有效像素个数 = LCD_PIXEL_WIDTH 
+  每个像素的字节数 = 2（RGB565/RGB1555）/ 3 (RGB888)/ 4（ARGB8888） 
   */
   LTDC_Layer_InitStruct.LTDC_CFBLineLength = ((LCD_PIXEL_WIDTH * 3) + 3);
-  /* ��ĳ�е���ʼλ�õ���һ����ʼλ�ô�����������
-  Pitch = ����Ч���ظ��� x ÿ�����ص��ֽ��� */ 
+  /* 从某行的起始位置到下一行起始位置处的像素增量
+  Pitch = 行有效像素个数 x 每个像素的字节数 */ 
   LTDC_Layer_InitStruct.LTDC_CFBPitch = (LCD_PIXEL_WIDTH * 3);
   
-  /* ������Ч������ */  
+  /* 配置有效的行数 */  
   LTDC_Layer_InitStruct.LTDC_CFBLineNumber = LCD_PIXEL_HEIGHT;
   
-  /* ���ñ�����Դ��׵�ַ */    
+  /* 配置本层的显存首地址 */    
   LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_FRAME_BUFFER;
   
-  /* ����������ó�ʼ���� 1 ��*/
+  /* 以上面的配置初始化第 1 层*/
   LTDC_LayerInit(LTDC_Layer1, &LTDC_Layer_InitStruct);
 
-  /*���õ� 2 �㣬��û����дĳ����Ա��ֵ����ó�Աʹ�ø���1��һ�������� */
-  /* ���ñ�����Դ��׵�ַ�����������������ڵ�1��ĺ���*/     
+  /*配置第 2 层，若没有重写某个成员的值，则该成员使用跟第1层一样的配置 */
+  /* 配置本层的显存首地址，这里配置它紧挨在第1层的后面*/     
   LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_FRAME_BUFFER+ BUFFER_OFFSET;
 
-	/* ���û�����ӣ�ʹ������Alpha������ */       
+	/* 配置混合因子，使用像素Alpha参与混合 */       
   LTDC_Layer_InitStruct.LTDC_BlendingFactor_1 = LTDC_BlendingFactor1_PAxCA;    
   LTDC_Layer_InitStruct.LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_PAxCA;
 
-  /* ��ʼ����2�� */
+  /* 初始化第2层 */
   LTDC_LayerInit(LTDC_Layer2, &LTDC_Layer_InitStruct);
  
- /* ������������ */  
+ /* 立即重载配置 */  
  LTDC_ReloadConfig(LTDC_IMReload);
 
- /*ʹ��ǰ���������� */
+ /*使能前景及背景层 */
   LTDC_LayerCmd(LTDC_Layer1, ENABLE); 
   LTDC_LayerCmd(LTDC_Layer2, ENABLE);
  
-  /* ������������ */  
+  /* 立即重载配置 */  
   LTDC_ReloadConfig(LTDC_IMReload);
 
-  /* �趨����(Ӣ��) */    
+  /* 设定字体(英文) */    
   LCD_SetFont(&LCD_DEFAULT_FONT); 
 }
 
 
 
 /**
-  * @brief  ѡ��Ҫ���ƵĲ�.
-  * @param  Layerx: ѡ��Ҫ����ǰ����(��2��)���Ǳ�����(��1��)
+  * @brief  选择要控制的层.
+  * @param  Layerx: 选择要操作前景层(第2层)还是背景层(第1层)
   * @retval None
   */
 void LCD_SetLayer(uint32_t Layerx)
@@ -276,9 +276,9 @@ void LCD_SetLayer(uint32_t Layerx)
 }  
 
 /**
-  * @brief  �����������ɫ������ı�����ɫ
-  * @param  TextColor: ������ɫ
-  * @param  BackColor: ����ı�����ɫ
+  * @brief  设置字体的颜色及字体的背景颜色
+  * @param  TextColor: 字体颜色
+  * @param  BackColor: 字体的背景颜色
   * @retval None
   */
 void LCD_SetColors(uint32_t TextColor, uint32_t BackColor) 
@@ -288,9 +288,9 @@ void LCD_SetColors(uint32_t TextColor, uint32_t BackColor)
 }
 
 /**
-  * @brief ��ȡ��ǰ���õ�������ɫ������ı�����ɫ
-  * @param  TextColor: ָ��������ɫ��ָ��
-  * @param  BackColor: ָ�����屳����ɫ��ָ��
+  * @brief 获取当前设置的字体颜色和字体的背景颜色
+  * @param  TextColor: 指向字体颜色的指针
+  * @param  BackColor: 指向字体背景颜色的指针
   * @retval None
   */
 void LCD_GetColors(uint32_t *TextColor, uint32_t *BackColor)
@@ -300,8 +300,8 @@ void LCD_GetColors(uint32_t *TextColor, uint32_t *BackColor)
 }
 
 /**
-  * @brief  ����������ɫ
-  * @param  Color: ������ɫ
+  * @brief  设置字体颜色
+  * @param  Color: 字体颜色
   * @retval None
   */
 void LCD_SetTextColor(uint32_t Color)
@@ -310,8 +310,8 @@ void LCD_SetTextColor(uint32_t Color)
 }
 
 /**
-  * @brief  ��������ı�����ɫ
-  * @param  Color: ����ı�����ɫ
+  * @brief  设置字体的背景颜色
+  * @param  Color: 字体的背景颜色
   * @retval None
   */
 void LCD_SetBackColor(uint32_t Color)
@@ -320,8 +320,8 @@ void LCD_SetBackColor(uint32_t Color)
 }
 
 /**
-  * @brief  ���������ʽ(Ӣ��)
-  * @param  fonts: ѡ��Ҫ���õ������ʽ
+  * @brief  设置字体格式(英文)
+  * @param  fonts: 选择要设置的字体格式
   * @retval None
   */
 void LCD_SetFont(sFONT *fonts)
@@ -546,11 +546,11 @@ void Panel_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint16_t *c)
     
     for(counter = 0; counter < LCD_Currentfonts->Width; counter++)
     {
-      /* ��ģ����һ����Աһ���ֽڣ�48����Ҫ 48 / 8 = 6 ����Ա����ʾ��counter / 8 ����ǰ�еĳ�Ա�±� */
-      /* counter % 8 ����ǰ��Ա�ĵ�ǰλ */
-      /* ����������һ�δ���Ļ��ɲ���README.md�еĿ�����־ 2019/10/05 */
-      /* !!!!ע����ǰɨ�軹�����ɨ�裬���С�ˣ�FIFO�� */
-      /* ��ģ�߶ȣ�index�� x �г�Ա����6�� */
+      /* 字模数组一个成员一个字节，48宽需要 48 / 8 = 6 个成员来表示，counter / 8 即当前行的成员下标 */
+      /* counter % 8 即当前成员的当前位 */
+      /* 若不理解这一段代码的话可参阅README.md中的开发日志 2019/10/05 */
+      /* !!!!注意向前扫描还是向后扫描，大端小端，FIFO、 */
+      /* 字模高度（index） x 行成员数（6） */
       if( ( c[index * 6 + (counter / 8) ] & ( 0x80 >> (counter % 8) ) ) == 0x00 )
       {
         *(__IO uint16_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos) = (0x00FFFF & CurrentBackColor);        //GB
@@ -588,7 +588,7 @@ void LCD_DisplayChar(uint16_t Line, uint16_t Column, uint8_t Ascii)
   PANEL_DEBUG("fonts table in index = %#X",LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height+1]);
   
 #ifdef PANEL
-  Panel_DrawChar(Line, Column, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height * 6]); /* ��ģ�߶� x �г�Ա�� */
+  Panel_DrawChar(Line, Column, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height * 6]); /* 字模高度 x 行成员数 */
 #else
   LCD_DrawChar(Line, Column, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height]);
 #endif
@@ -605,7 +605,7 @@ void LCD_DisplayChar(uint16_t Line, uint16_t Column, uint8_t Ascii)
 void LCD_DisplayStringLine(uint16_t Line, uint8_t *ptr)
 {  
   //uint16_t refcolumn = 0;
-  uint16_t refcolumn = 180; /* ����ַ�����ʼλ�� */
+  uint16_t refcolumn = 180; /* 面板字符的起始位置 */
   /* Send the string character by character on lCD */
   while ((refcolumn < LCD_PIXEL_WIDTH) && ((*ptr != 0) & (((refcolumn + LCD_Currentfonts->Width) & 0xFFFF) >= LCD_Currentfonts->Width)))
   {
@@ -622,12 +622,12 @@ void LCD_DisplayStringLine(uint16_t Line, uint8_t *ptr)
 
 
 /**
- * @brief  ����ʾ������ʾ��Ӣ���ַ���,����Һ������ʱ���Զ����С�
-					 ��Ӣ�Ļ���ʾʱ�����Ӣ����������ΪFont16x24��ʽ
- * @param  Line ����(Ҳ������Ϊy����)
- * @param  Column ���У�Ҳ������Ϊx���꣩
- * @param  pStr ��Ҫ��ʾ���ַ������׵�ַ
- * @retval ��
+ * @brief  在显示器上显示中英文字符串,超出液晶宽度时会自动换行。
+					 中英文混显示时，请把英文字体设置为Font16x24格式
+ * @param  Line ：行(也可理解为y坐标)
+ * @param  Column ：列（也可理解为x坐标）
+ * @param  pStr ：要显示的字符串的首地址
+ * @retval 无
  */
 void LCD_DispString_EN_CH( uint16_t Line, uint16_t Column, const uint8_t * pStr )
 {
@@ -635,7 +635,7 @@ void LCD_DispString_EN_CH( uint16_t Line, uint16_t Column, const uint8_t * pStr 
 	while( * pStr != '\0' )
 	{
 	
-			/*�Զ�����*/
+			/*自动换行*/
 			if ( ( Column + LCD_Currentfonts->Width ) > LCD_PIXEL_WIDTH )
 			{
 				Column = 0;
@@ -664,28 +664,28 @@ void LCD_DispString_EN_CH( uint16_t Line, uint16_t Column, const uint8_t * pStr 
 
 
 /**
- * @brief  ������ģ�����ź����ģ��1�����ص���8������λ����ʾ
-										0x01��ʾ�ʼ���0x00��ʾ�հ���
- * @param  in_width ��ԭʼ�ַ�����
- * @param  in_heig ��ԭʼ�ַ��߶�
- * @param  out_width �����ź���ַ�����
- * @param  out_heig�����ź���ַ��߶�
- * @param  in_ptr ���ֿ�����ָ��	ע�⣺1pixel 1bit
- * @param  out_ptr �����ź���ַ����ָ�� ע��: 1pixel 8bit
- *		out_ptrʵ����û������������ĳ���ֱ�������ȫ��ָ��zoomBuff��
- * @param  en_cn ��0ΪӢ�ģ�1Ϊ����
- * @retval ��
+ * @brief  缩放字模，缩放后的字模由1个像素点由8个数据位来表示
+										0x01表示笔迹，0x00表示空白区
+ * @param  in_width ：原始字符宽度
+ * @param  in_heig ：原始字符高度
+ * @param  out_width ：缩放后的字符宽度
+ * @param  out_heig：缩放后的字符高度
+ * @param  in_ptr ：字库输入指针	注意：1pixel 1bit
+ * @param  out_ptr ：缩放后的字符输出指针 注意: 1pixel 8bit
+ *		out_ptr实际上没有正常输出，改成了直接输出到全局指针zoomBuff中
+ * @param  en_cn ：0为英文，1为中文
+ * @retval 无
  */
-void LCD_zoomChar(uint16_t in_width,	//ԭʼ�ַ�����
-									uint16_t in_heig,		//ԭʼ�ַ��߶�
-									uint16_t out_width,	//���ź���ַ�����
-									uint16_t out_heig,	//���ź���ַ��߶�
-									uint8_t *in_ptr,	//�ֿ�����ָ��	ע�⣺1pixel 1bit
-									uint8_t *out_ptr, //���ź���ַ����ָ�� ע��: 1pixel 8bit
-									uint8_t en_cn)		//0ΪӢ�ģ�1Ϊ����	
+void LCD_zoomChar(uint16_t in_width,	//原始字符宽度
+									uint16_t in_heig,		//原始字符高度
+									uint16_t out_width,	//缩放后的字符宽度
+									uint16_t out_heig,	//缩放后的字符高度
+									uint8_t *in_ptr,	//字库输入指针	注意：1pixel 1bit
+									uint8_t *out_ptr, //缩放后的字符输出指针 注意: 1pixel 8bit
+									uint8_t en_cn)		//0为英文，1为中文	
 {
 	uint8_t *pts,*ots;
-	//����Դ��ģ��Ŀ����ģ��С���趨����������ӣ�����16��Ϊ�˰Ѹ�������ת�ɶ�������
+	//根据源字模及目标字模大小，设定运算比例因子，左移16是为了把浮点运算转成定点运算
 	unsigned int xrIntFloat_16=(in_width<<16)/out_width+1; 
   unsigned int yrIntFloat_16=(in_heig<<16)/out_heig+1;
 	
@@ -697,21 +697,21 @@ void LCD_zoomChar(uint16_t in_width,	//ԭʼ�ַ�����
 	u16			charBit = in_width / 8;
 	u16			Bitdiff = 32 - in_width;
 	
-	//�������Ƿ�Ϸ�
-	if(in_width >= 32) return;												//�ֿⲻ��������32����
+	//检查参数是否合法
+	if(in_width >= 32) return;												//字库不允许超过32像素
 	if(in_width * in_heig == 0) return;	
-	if(in_width * in_heig >= 1024 ) return; 					//����������� 32*32
+	if(in_width * in_heig >= 1024 ) return; 					//限制输入最大 32*32
 	
 	if(out_width * out_heig == 0) return;	
-	if(out_width * out_heig >= ZOOMMAXBUFF ) return; //����������� 128*128
+	if(out_width * out_heig >= ZOOMMAXBUFF ) return; //限制最大缩放 128*128
 	pts = (uint8_t*)&tempBuff;
 	
-	//Ϊ�������㣬�ֿ��������1 pixel 1bit ӳ�䵽1pixel 8bit
-	//0x01��ʾ�ʼ���0x00��ʾ�հ���
-	if(en_cn == 0x00)//Ӣ��
+	//为方便运算，字库的数据由1 pixel 1bit 映射到1pixel 8bit
+	//0x01表示笔迹，0x00表示空白区
+	if(en_cn == 0x00)//英文
 	{
-		//������16 * 24�ֿ���Ϊ���ԣ�������С���ֿ����и������д�������ӳ��Ϳ���
-		//Ӣ�ĺ������ֿ����±߽粻�ԣ����ڴ˴ε�������Ҫע��tempBuff��ֹ���
+		//这里以16 * 24字库作为测试，其他大小的字库自行根据下列代码做下映射就可以
+		//英文和中文字库上下边界不对，可在此次调整。需要注意tempBuff防止溢出
 			pts+=in_width*4;
 			for(y=0;y<in_heig;y++)	
 			{
@@ -722,17 +722,17 @@ void LCD_zoomChar(uint16_t in_width,	//ԭʼ�ַ�����
 					}
 			}		
 	}
-	else //����
+	else //中文
 	{
 			for(y=0;y<in_heig;y++)	
 			{
-				/*Դ��ģ����*/
+				/*源字模数据*/
 				uChar = in_ptr [ y * 3 ];
 				uChar = ( uChar << 8 );
 				uChar |= in_ptr [ y * 3 + 1 ];
 				uChar = ( uChar << 8 );
 				uChar |= in_ptr [ y * 3 + 2];
-				/*ӳ��*/
+				/*映射*/
 				for(x=0;x<in_width;x++)
 					{
 						if(((uChar << x) & 0x800000) == 0x800000)
@@ -743,45 +743,45 @@ void LCD_zoomChar(uint16_t in_width,	//ԭʼ�ַ�����
 			}		
 	}
 
-	//zoom����
-	pts = (uint8_t*)&tempBuff;	//ӳ����Դ����ָ��
-	ots = (uint8_t*)&zoomBuff;	//������ݵ�ָ��
-	for (y=0;y<out_heig;y++)	/*�б���*/
+	//zoom过程
+	pts = (uint8_t*)&tempBuff;	//映射后的源数据指针
+	ots = (uint8_t*)&zoomBuff;	//输出数据的指针
+	for (y=0;y<out_heig;y++)	/*行遍历*/
     {
 				unsigned int srcx_16=0;
         pSrcLine=pts+in_width*(srcy_16>>16);				
-        for (x=0;x<out_width;x++) /*�������ر���*/
+        for (x=0;x<out_width;x++) /*行内像素遍历*/
         {
-            ots[x]=pSrcLine[srcx_16>>16]; //��Դ��ģ���ݸ��Ƶ�Ŀ��ָ����
-            srcx_16+=xrIntFloat_16;			//������ƫ��Դ���ص�
+            ots[x]=pSrcLine[srcx_16>>16]; //把源字模数据复制到目标指针中
+            srcx_16+=xrIntFloat_16;			//按比例偏移源像素点
         }
-        srcy_16+=yrIntFloat_16;				  //������ƫ��Դ���ص�
+        srcy_16+=yrIntFloat_16;				  //按比例偏移源像素点
         ots+=out_width;						
     }
-	/*���������ź����ģ����ֱ�Ӵ洢��ȫ��ָ��zoomBuff����*/
-	out_ptr = (uint8_t*)&zoomBuff;	//out_ptrû����ȷ�������������ֱ�Ӹĳ���ȫ�ֱ���ָ�룡
+	/*！！！缩放后的字模数据直接存储到全局指针zoomBuff里了*/
+	out_ptr = (uint8_t*)&zoomBuff;	//out_ptr没有正确传出，后面调用直接改成了全局变量指针！
 	
-	/*ʵ�������ʹ��out_ptr����Ҫ������һ�䣡����
-		ֻ����Ϊout_ptrû��ʹ�ã��ᵼ��warning��ǿ��֢*/
+	/*实际中如果使用out_ptr不需要下面这一句！！！
+		只是因为out_ptr没有使用，会导致warning。强迫症*/
 	out_ptr++; 
 }			
 
 /**
- * @brief  �������ź����ģ��ʾ�ַ�
- * @param  Xpos ���ַ���ʾλ��x
- * @param  Ypos ���ַ���ʾλ��y
- * @param  Font_width ���ַ�����
- * @param  Font_Heig���ַ��߶�
- * @param  c ��Ҫ��ʾ����ģ����
- * @param  DrawModel ���Ƿ�ɫ��ʾ 
- * @retval ��
+ * @brief  利用缩放后的字模显示字符
+ * @param  Xpos ：字符显示位置x
+ * @param  Ypos ：字符显示位置y
+ * @param  Font_width ：字符宽度
+ * @param  Font_Heig：字符高度
+ * @param  c ：要显示的字模数据
+ * @param  DrawModel ：是否反色显示 
+ * @retval 无
  */
-void LCD_DrawChar_Ex(uint16_t Xpos, //�ַ���ʾλ��x
-												uint16_t Ypos, //�ַ���ʾλ��y
-												uint16_t Font_width, //�ַ�����
-												uint16_t Font_Heig,  //�ַ��߶� 
-												uint8_t *c,						//��ģ����
-												uint16_t DrawModel)		//�Ƿ�ɫ��ʾ
+void LCD_DrawChar_Ex(uint16_t Xpos, //字符显示位置x
+												uint16_t Ypos, //字符显示位置y
+												uint16_t Font_width, //字符宽度
+												uint16_t Font_Heig,  //字符高度 
+												uint8_t *c,						//字模数据
+												uint16_t DrawModel)		//是否反色显示
 {
   uint32_t index = 0, counter = 0, xpos =0;
   uint32_t  Xaddress = 0;
@@ -794,7 +794,7 @@ void LCD_DrawChar_Ex(uint16_t Xpos, //�ַ���ʾλ��x
     
     for(counter = 0; counter < Font_width; counter++)
     {
-      if(*c++ == DrawModel)	//������ģ����ɫ���þ�����ʾ������ɫ
+      if(*c++ == DrawModel)	//根据字模及反色设置决定显示哪种颜色
       {
         *(__IO uint16_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos) = (0x00FFFF & CurrentBackColor);        //GB
         *(__IO uint8_t*)(CurrentFrameBuffer + (3*Xaddress) + xpos+2) = (0xFF0000 & CurrentBackColor) >> 16; //R
@@ -811,26 +811,26 @@ void LCD_DrawChar_Ex(uint16_t Xpos, //�ַ���ʾλ��x
 }
 
 /**
- * @brief  �������ź����ģ��ʾ�ַ���
- * @param  Xpos ���ַ���ʾλ��x
- * @param  Ypos ���ַ���ʾλ��y
- * @param  Font_width ���ַ����ȣ�Ӣ���ַ��ڴ˻�����/2��ע��Ϊż��
- * @param  Font_Heig���ַ��߶ȣ�ע��Ϊż��
- * @param  c ��Ҫ��ʾ���ַ���
- * @param  DrawModel ���Ƿ�ɫ��ʾ 
- * @retval ��
+ * @brief  利用缩放后的字模显示字符串
+ * @param  Xpos ：字符显示位置x
+ * @param  Ypos ：字符显示位置y
+ * @param  Font_width ：字符宽度，英文字符在此基础上/2。注意为偶数
+ * @param  Font_Heig：字符高度，注意为偶数
+ * @param  c ：要显示的字符串
+ * @param  DrawModel ：是否反色显示 
+ * @retval 无
  */
-void LCD_DisplayStringLineEx(uint16_t x, 		//�ַ���ʾλ��x
-														 uint16_t y, 				//�ַ���ʾλ��y
-														 uint16_t Font_width,	//Ҫ��ʾ��������ȣ�Ӣ���ַ��ڴ˻�����/2��ע��Ϊż��
-														 uint16_t Font_Heig,	//Ҫ��ʾ������߶ȣ�ע��Ϊż��
-														 uint8_t *ptr,					//��ʾ���ַ�����
-														 uint16_t DrawModel)  //�Ƿ�ɫ��ʾ
+void LCD_DisplayStringLineEx(uint16_t x, 		//字符显示位置x
+														 uint16_t y, 				//字符显示位置y
+														 uint16_t Font_width,	//要显示的字体宽度，英文字符在此基础上/2。注意为偶数
+														 uint16_t Font_Heig,	//要显示的字体高度，注意为偶数
+														 uint8_t *ptr,					//显示的字符内容
+														 uint16_t DrawModel)  //是否反色显示
 {
-	uint16_t refcolumn = x; //x����
+	uint16_t refcolumn = x; //x坐标
 	uint16_t Charwidth;
 	uint8_t *psr;
-	uint8_t Ascii;	//Ӣ��
+	uint8_t Ascii;	//英文
 
 	
 	while ((refcolumn < LCD_PIXEL_WIDTH) && ((*ptr != 0) & (((refcolumn + LCD_Currentfonts->Width) & 0xFFFF) >= LCD_Currentfonts->Width)))
@@ -838,9 +838,9 @@ void LCD_DisplayStringLineEx(uint16_t x, 		//�ַ���ʾλ��x
 
 				Charwidth = Font_width / 2;
 				Ascii = *ptr - 32;
-				//������ģ����
+				//缩放字模数据
 				LCD_zoomChar(16,24,Charwidth,Font_Heig,(uint8_t *)&LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height],psr,0);
-			  //��ʾ�����ַ�
+			  //显示单个字符
 				LCD_DrawChar_Ex(y,refcolumn,Charwidth,Font_Heig,(uint8_t*)&zoomBuff,DrawModel);
 				refcolumn+=Charwidth;
 				ptr++;
@@ -957,11 +957,11 @@ void LCD_DisplayPicture(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t H
 
 
 /**
-  * @brief ��ʾһ��ֱ��
-  * @param Xpos: ֱ������x����
-  * @param Ypos: ֱ������y����
-  * @param Length: ֱ�ߵĳ���
-  * @param Direction: ֱ�ߵķ��򣬿�����LCD_DIR_HORIZONTAL(ˮƽ����) LCD_DIR_VERTICAL(��ֱ����).
+  * @brief 显示一条直线
+  * @param Xpos: 直线起点的x坐标
+  * @param Ypos: 直线起点的y坐标
+  * @param Length: 直线的长度
+  * @param Direction: 直线的方向，可输入LCD_DIR_HORIZONTAL(水平方向) LCD_DIR_VERTICAL(垂直方向).
   * @retval None
   */
 void LCD_DrawLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, uint8_t Direction)
@@ -971,15 +971,15 @@ void LCD_DrawLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, uint8_t Directi
   uint32_t  Xaddress = 0;
   uint16_t Red_Value = 0, Green_Value = 0, Blue_Value = 0;
   
-	/*����Ŀ���ַ*/
+	/*计算目标地址*/
   Xaddress = CurrentFrameBuffer + 3*(LCD_PIXEL_WIDTH*Ypos + Xpos);
  
-	/*��ȡ��ɫ����*/
+	/*提取颜色分量*/
   Red_Value = (0xFF0000 & CurrentTextColor) >>16;
   Blue_Value = 0x0000FF & CurrentTextColor;
   Green_Value = (0x00FF00 & CurrentTextColor)>>8 ;
 
-  /* ����DMA2D */    
+  /* 配置DMA2D */    
   DMA2D_DeInit();  
   DMA2D_InitStruct.DMA2D_Mode = DMA2D_R2M;       
   DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB888;      
@@ -989,14 +989,14 @@ void LCD_DrawLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, uint8_t Directi
   DMA2D_InitStruct.DMA2D_OutputAlpha = 0x0F;                  
   DMA2D_InitStruct.DMA2D_OutputMemoryAdd = Xaddress;                  
   
-	/*ˮƽ����*/
+	/*水平方向*/
   if(Direction == LCD_DIR_HORIZONTAL)
   {                                                      
     DMA2D_InitStruct.DMA2D_OutputOffset = 0;                
     DMA2D_InitStruct.DMA2D_NumberOfLine = 1;            
     DMA2D_InitStruct.DMA2D_PixelPerLine = Length; 
   }
-  else /*��ֱ����*/
+  else /*垂直方向*/
   {                                                            
     DMA2D_InitStruct.DMA2D_OutputOffset = LCD_PIXEL_WIDTH - 1;                
     DMA2D_InitStruct.DMA2D_NumberOfLine = Length;            
@@ -1004,9 +1004,9 @@ void LCD_DrawLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, uint8_t Directi
   }
   
   DMA2D_Init(&DMA2D_InitStruct);  
-  /*��ʼDMA2D���� */ 
+  /*开始DMA2D传输 */ 
   DMA2D_StartTransfer();  
-  /*�ȴ�������� */
+  /*等待传输结束 */
   while(DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET)
   {
   }  
@@ -1341,11 +1341,11 @@ void LCD_WriteBMP(uint32_t BmpAddress)
 }
 
 /**
-  * @brief  ����ʵ�ľ���
-  * @param  Xpos: ��ʼX����
-  * @param  Ypos: ��ʼY����
-  * @param  Height: ���θ�
-  * @param  Width: ���ο�
+  * @brief  绘制实心矩形
+  * @param  Xpos: 起始X坐标
+  * @param  Ypos: 起始Y坐标
+  * @param  Height: 矩形高
+  * @param  Width: 矩形宽
   * @retval None
   */
 void LCD_DrawFullRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height)
@@ -1361,7 +1361,7 @@ void LCD_DrawFullRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Hei
   
   Xaddress = CurrentFrameBuffer + 3*(LCD_PIXEL_WIDTH*Ypos + Xpos);
   
-  /* ����DMA2D DMA2D */
+  /* 配置DMA2D DMA2D */
   DMA2D_DeInit();
   DMA2D_InitStruct.DMA2D_Mode = DMA2D_R2M;       
   DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB888;      
@@ -1375,10 +1375,10 @@ void LCD_DrawFullRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Hei
   DMA2D_InitStruct.DMA2D_PixelPerLine = Width;
   DMA2D_Init(&DMA2D_InitStruct); 
   
-  /* ��ʼDMA2D���� */ 
+  /* 开始DMA2D传输 */ 
   DMA2D_StartTransfer();
   
-  /* �ȴ�������� */
+  /* 等待传输结束 */
   while(DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET)
   {
   } 
@@ -1790,34 +1790,34 @@ void LCD_CtrlLinesWrite(GPIO_TypeDef* GPIOx, uint16_t CtrlPins, BitAction BitVal
 
 
  /**
-  * @brief  ��ʼ������LCD��IO
-  * @param  ��
-  * @retval ��
+  * @brief  初始化控制LCD的IO
+  * @param  无
+  * @retval 无
   */
 static void LCD_GPIO_Config(void)
 { 
 	GPIO_InitTypeDef GPIO_InitStruct;
   
-  /* ʹ��LCDʹ�õ�������ʱ�� */
-                          //��ɫ������
+  /* 使能LCD使用到的引脚时钟 */
+                          //红色数据线
   RCC_AHB1PeriphClockCmd(LTDC_R0_GPIO_CLK | LTDC_R1_GPIO_CLK | LTDC_R2_GPIO_CLK| 
                          LTDC_R3_GPIO_CLK | LTDC_R4_GPIO_CLK | LTDC_R5_GPIO_CLK|
                          LTDC_R6_GPIO_CLK | LTDC_R7_GPIO_CLK |
-                          //��ɫ������
+                          //绿色数据线
                           LTDC_G0_GPIO_CLK|LTDC_G1_GPIO_CLK|LTDC_G2_GPIO_CLK|
                           LTDC_G3_GPIO_CLK|LTDC_G4_GPIO_CLK|LTDC_G5_GPIO_CLK|
                           LTDC_G6_GPIO_CLK|LTDC_G7_GPIO_CLK|
-                          //��ɫ������
+                          //蓝色数据线
                           LTDC_B0_GPIO_CLK|LTDC_B1_GPIO_CLK|LTDC_B2_GPIO_CLK|
                           LTDC_B3_GPIO_CLK|LTDC_B4_GPIO_CLK|LTDC_B5_GPIO_CLK|
                           LTDC_B6_GPIO_CLK|LTDC_B7_GPIO_CLK|
-                          //�����ź���
+                          //控制信号线
                           LTDC_CLK_GPIO_CLK | LTDC_HSYNC_GPIO_CLK |LTDC_VSYNC_GPIO_CLK|
                           LTDC_DE_GPIO_CLK  | LTDC_BL_GPIO_CLK    |LTDC_DISP_GPIO_CLK ,ENABLE);
 
-/* GPIO���� */
+/* GPIO配置 */
 
- /* ��ɫ������ */
+ /* 红色数据线 */
   GPIO_InitStruct.GPIO_Pin = LTDC_R0_GPIO_PIN;                             
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
@@ -1855,7 +1855,7 @@ static void LCD_GPIO_Config(void)
   GPIO_Init(LTDC_R7_GPIO_PORT, &GPIO_InitStruct);
   GPIO_PinAFConfig(LTDC_R7_GPIO_PORT, LTDC_R7_PINSOURCE, LTDC_R7_AF);
   
-  //��ɫ������
+  //绿色数据线
   GPIO_InitStruct.GPIO_Pin = LTDC_G0_GPIO_PIN;
   GPIO_Init(LTDC_G0_GPIO_PORT, &GPIO_InitStruct);
   GPIO_PinAFConfig(LTDC_G0_GPIO_PORT, LTDC_G0_PINSOURCE, LTDC_G0_AF);
@@ -1888,7 +1888,7 @@ static void LCD_GPIO_Config(void)
   GPIO_Init(LTDC_G7_GPIO_PORT, &GPIO_InitStruct);
   GPIO_PinAFConfig(LTDC_G7_GPIO_PORT, LTDC_G7_PINSOURCE, LTDC_G7_AF);
   
-  //��ɫ������
+  //蓝色数据线
   GPIO_InitStruct.GPIO_Pin = LTDC_B0_GPIO_PIN;
   GPIO_Init(LTDC_B0_GPIO_PORT, &GPIO_InitStruct);
   GPIO_PinAFConfig(LTDC_B0_GPIO_PORT, LTDC_B0_PINSOURCE, LTDC_B0_AF);
@@ -1921,7 +1921,7 @@ static void LCD_GPIO_Config(void)
   GPIO_Init(LTDC_B7_GPIO_PORT, &GPIO_InitStruct);
   GPIO_PinAFConfig(LTDC_B7_GPIO_PORT, LTDC_B7_PINSOURCE, LTDC_B7_AF);
   
-  //�����ź���
+  //控制信号线
   GPIO_InitStruct.GPIO_Pin = LTDC_CLK_GPIO_PIN;
   GPIO_Init(LTDC_CLK_GPIO_PORT, &GPIO_InitStruct);
   GPIO_PinAFConfig(LTDC_CLK_GPIO_PORT, LTDC_CLK_PINSOURCE, LTDC_CLK_AF);
@@ -1938,7 +1938,7 @@ static void LCD_GPIO_Config(void)
   GPIO_Init(LTDC_DE_GPIO_PORT, &GPIO_InitStruct);
   GPIO_PinAFConfig(LTDC_DE_GPIO_PORT, LTDC_DE_PINSOURCE, LTDC_DE_AF);
   
-  //����BL ��Һ��ʹ���ź�DISP
+  //背光BL 及液晶使能信号DISP
   GPIO_InitStruct.GPIO_Pin = LTDC_DISP_GPIO_PIN;                             
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
@@ -1951,7 +1951,7 @@ static void LCD_GPIO_Config(void)
   GPIO_InitStruct.GPIO_Pin = LTDC_BL_GPIO_PIN; 
   GPIO_Init(LTDC_BL_GPIO_PORT, &GPIO_InitStruct);
   
-  //����ʹ��lcd
+  //拉高使能lcd
   GPIO_SetBits(LTDC_DISP_GPIO_PORT,LTDC_DISP_GPIO_PIN);
   GPIO_SetBits(LTDC_BL_GPIO_PORT,LTDC_BL_GPIO_PIN);
 
@@ -1959,9 +1959,9 @@ static void LCD_GPIO_Config(void)
 }
 
 /**
-  * @brief  ��ʾһ�����ص�
-  * @param  x: ���ص��x����
-  * @param  y: ���ص��y����
+  * @brief  显示一个像素点
+  * @param  x: 像素点的x坐标
+  * @param  y: 像素点的y坐标
   * @retval None
   */
 void PutPixel(int16_t x, int16_t y)
@@ -1972,7 +1972,7 @@ void PutPixel(int16_t x, int16_t y)
   }
 #if 0
  LCD_DrawLine(x, y, 1, LCD_DIR_HORIZONTAL);
-#else /*����ֱ�����Ч�ʹ��ƻ�ߵ�*/
+#else /*这样直接描点效率估计会高点*/
  {
 	  /*RGB888*/
 	  uint32_t  Xaddress =0;
@@ -2008,7 +2008,7 @@ void PutPixel(int16_t x, int16_t y)
   */ 
 	
 #else	
-/****************RG565����***************************RGB565����**********************************RGB565����*****************************RGB565����*****************************RGB565����*****************************/
+/****************RG565驱动***************************RGB565驱动**********************************RGB565驱动*****************************RGB565驱动*****************************RGB565驱动*****************************/
 
 
 /**
@@ -2071,15 +2071,15 @@ static void LCD_GPIO_Config(void);
  */
 
 
-/*����Һ�������ֲ�Ĳ�������*/
-#define HBP  46		//HSYNC�����Ч����
-#define VBP  23		//VSYNC�����Ч����
+/*根据液晶数据手册的参数配置*/
+#define HBP  46		//HSYNC后的无效像素
+#define VBP  23		//VSYNC后的无效行数
 
-#define HSW   1		//HSYNC����
-#define VSW   1		//VSYNC����
+#define HSW   1		//HSYNC宽度
+#define VSW   1		//VSYNC宽度
 
-#define HFP  20		//HSYNCǰ����Ч����
-#define VFP   22		//VSYNCǰ����Ч����
+#define HFP  20		//HSYNC前的无效像素
+#define VFP   22		//VSYNC前的无效行数
 
 
 
@@ -2115,15 +2115,15 @@ void LCD_Init(void)
  LTDC_InitStruct.LTDC_BackgroundGreenValue = 0;
  LTDC_InitStruct.LTDC_BackgroundBlueValue = 0;
 
-	/* ���� PLLSAI ��Ƶ�������������Ϊ����ͬ��ʱ��CLK*/
-  /* PLLSAI_VCO ����ʱ�� = HSE_VALUE/PLL_M = 1 Mhz */
-  /* PLLSAI_VCO ���ʱ�� = PLLSAI_VCO���� * PLLSAI_N = 384 Mhz */
-  /* PLLLCDCLK = PLLSAI_VCO ���/PLLSAI_R = 384/6  Mhz */
-  /* LTDC ʱ��Ƶ�� = PLLLCDCLK / DIV = 384/4/4 = 24 Mhz */
-	/* LTDCʱ��̫�߻ᵼ����������ˢ���ٶ�Ҫ�󲻸ߣ�����ʱ��Ƶ�ʿɼ��ٻ�������*/
-	/* ���º������������ֱ�Ϊ��PLLSAIN,PLLSAIQ,PLLSAIR������PLLSAIQ��LTDC�޹�*/
+	/* 配置 PLLSAI 分频器，它的输出作为像素同步时钟CLK*/
+  /* PLLSAI_VCO 输入时钟 = HSE_VALUE/PLL_M = 1 Mhz */
+  /* PLLSAI_VCO 输出时钟 = PLLSAI_VCO输入 * PLLSAI_N = 384 Mhz */
+  /* PLLLCDCLK = PLLSAI_VCO 输出/PLLSAI_R = 384/6  Mhz */
+  /* LTDC 时钟频率 = PLLLCDCLK / DIV = 384/4/4 = 24 Mhz */
+	/* LTDC时钟太高会导花屏，若对刷屏速度要求不高，降低时钟频率可减少花屏现象*/
+	/* 以下函数三个参数分别为：PLLSAIN,PLLSAIQ,PLLSAIR，其中PLLSAIQ与LTDC无关*/
  RCC_PLLSAIConfig(384, 7, 4);
- 	/*���º����Ĳ���ΪDIVֵ*/
+ 	/*以下函数的参数为DIV值*/
  RCC_LTDCCLKDivConfig(RCC_PLLSAIDivR_Div4);
 
  /* Enable PLLSAI Clock */
@@ -2133,22 +2133,22 @@ void LCD_Init(void)
  {
  }
 
-  /* ʱ��������� */  
- /* ������ͬ���źſ���(HSW-1) */
+  /* 时间参数配置 */  
+ /* 配置行同步信号宽度(HSW-1) */
  LTDC_InitStruct.LTDC_HorizontalSync =HSW-1;
- /* ���ô�ֱͬ���źſ���(VSW-1) */
+ /* 配置垂直同步信号宽度(VSW-1) */
  LTDC_InitStruct.LTDC_VerticalSync = VSW-1;
- /* ����(HSW+HBP-1) */
+ /* 配置(HSW+HBP-1) */
  LTDC_InitStruct.LTDC_AccumulatedHBP =HSW+HBP-1;
- /* ����(VSW+VBP-1) */
+ /* 配置(VSW+VBP-1) */
  LTDC_InitStruct.LTDC_AccumulatedVBP = VSW+VBP-1;
- /* ����(HSW+HBP+��Ч���ؿ���-1) */
+ /* 配置(HSW+HBP+有效像素宽度-1) */
  LTDC_InitStruct.LTDC_AccumulatedActiveW = HSW+HBP+LCD_PIXEL_WIDTH-1;
- /* ����(VSW+VBP+��Ч���ظ߶�-1) */
+ /* 配置(VSW+VBP+有效像素高度-1) */
  LTDC_InitStruct.LTDC_AccumulatedActiveH = VSW+VBP+LCD_PIXEL_HEIGHT-1;
- /* �����ܿ���(HSW+HBP+��Ч���ؿ���+HFP-1) */
+ /* 配置总宽度(HSW+HBP+有效像素宽度+HFP-1) */
  LTDC_InitStruct.LTDC_TotalWidth =HSW+ HBP+LCD_PIXEL_WIDTH  + HFP-1; 
- /* �����ܸ߶�(VSW+VBP+��Ч���ظ߶�+VFP-1) */
+ /* 配置总高度(VSW+VBP+有效像素高度+VFP-1) */
  LTDC_InitStruct.LTDC_TotalHeigh =VSW+ VBP+LCD_PIXEL_HEIGHT  + VFP-1;
 
  LTDC_Init(&LTDC_InitStruct);
@@ -2163,15 +2163,15 @@ void LCD_LayerInit(void)
 {
  LTDC_Layer_InitTypeDef LTDC_Layer_InitStruct;
 
-  /* �㴰������ */
-  /* ���ñ���Ĵ��ڱ߽磬ע����Щ�����ǰ���HBP HSW VBP VSW�� */    
-	//һ�еĵ�һ����ʼ���أ��ó�ԱֵӦ��Ϊ (LTDC_InitStruct.LTDC_AccumulatedHBP+1)��ֵ
+  /* 层窗口配置 */
+  /* 配置本层的窗口边界，注意这些参数是包含HBP HSW VBP VSW的 */    
+	//一行的第一个起始像素，该成员值应用为 (LTDC_InitStruct.LTDC_AccumulatedHBP+1)的值
 	LTDC_Layer_InitStruct.LTDC_HorizontalStart = HBP + HSW;
-	//һ�е����һ�����أ��ó�ԱֵӦ��Ϊ (LTDC_InitStruct.LTDC_AccumulatedActiveW)��ֵ
+	//一行的最后一个像素，该成员值应用为 (LTDC_InitStruct.LTDC_AccumulatedActiveW)的值
 	LTDC_Layer_InitStruct.LTDC_HorizontalStop = HSW+HBP+LCD_PIXEL_WIDTH-1;
-	//һ�еĵ�һ����ʼ���أ��ó�ԱֵӦ��Ϊ (LTDC_InitStruct.LTDC_AccumulatedVBP+1)��ֵ
+	//一列的第一个起始像素，该成员值应用为 (LTDC_InitStruct.LTDC_AccumulatedVBP+1)的值
 	LTDC_Layer_InitStruct.LTDC_VerticalStart =  VBP + VSW;
-	//һ�е����һ�����أ��ó�ԱֵӦ��Ϊ (LTDC_InitStruct.LTDC_AccumulatedActiveH)��ֵ
+	//一列的最后一个像素，该成员值应用为 (LTDC_InitStruct.LTDC_AccumulatedActiveH)的值
 	LTDC_Layer_InitStruct.LTDC_VerticalStop = VSW+VBP+LCD_PIXEL_HEIGHT-1;
 
  /* Pixel Format configuration*/
@@ -2391,7 +2391,7 @@ void LCD_Clear(uint16_t Color)
  DMA2D_InitStruct.DMA2D_OutputGreen = Green_Value;
  DMA2D_InitStruct.DMA2D_OutputBlue = Blue_Value;
  DMA2D_InitStruct.DMA2D_OutputRed = Red_Value;
- DMA2D_InitStruct.DMA2D_OutputAlpha = (Color&0x8000) ? 0xFF:0x00;		//����͸����
+ DMA2D_InitStruct.DMA2D_OutputAlpha = (Color&0x8000) ? 0xFF:0x00;		//设置透明度
  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CurrentFrameBuffer;
  DMA2D_InitStruct.DMA2D_OutputOffset = 0;
  DMA2D_InitStruct.DMA2D_NumberOfLine = LCD_PIXEL_HEIGHT;
@@ -3420,27 +3420,27 @@ static void LCD_GPIO_Config(void)
 {
  GPIO_InitTypeDef GPIO_InitStruct;
 
- /* ʹ��LCDʹ�õ�������ʱ�� */
-                         //��ɫ������
+ /* 使能LCD使用到的引脚时钟 */
+                         //红色数据线
  RCC_AHB1PeriphClockCmd(LTDC_R0_GPIO_CLK | LTDC_R1_GPIO_CLK | LTDC_R2_GPIO_CLK|
                         LTDC_R3_GPIO_CLK | LTDC_R4_GPIO_CLK | LTDC_R5_GPIO_CLK|
                         LTDC_R6_GPIO_CLK | LTDC_R7_GPIO_CLK |
-                         //��ɫ������
+                         //绿色数据线
                          LTDC_G0_GPIO_CLK|LTDC_G1_GPIO_CLK|LTDC_G2_GPIO_CLK|
                          LTDC_G3_GPIO_CLK|LTDC_G4_GPIO_CLK|LTDC_G5_GPIO_CLK|
                          LTDC_G6_GPIO_CLK|LTDC_G7_GPIO_CLK|
-                         //��ɫ������
+                         //蓝色数据线
                          LTDC_B0_GPIO_CLK|LTDC_B1_GPIO_CLK|LTDC_B2_GPIO_CLK|
                          LTDC_B3_GPIO_CLK|LTDC_B4_GPIO_CLK|LTDC_B5_GPIO_CLK|
                          LTDC_B6_GPIO_CLK|LTDC_B7_GPIO_CLK|
-                         //�����ź���
+                         //控制信号线
                          LTDC_CLK_GPIO_CLK | LTDC_HSYNC_GPIO_CLK |LTDC_VSYNC_GPIO_CLK|
                          LTDC_DE_GPIO_CLK  | LTDC_BL_GPIO_CLK    |LTDC_DISP_GPIO_CLK ,ENABLE);
 
 
-/* GPIO���� */
+/* GPIO配置 */
 
-/* ��ɫ������ */
+/* 红色数据线 */
  GPIO_InitStruct.GPIO_Pin = LTDC_R0_GPIO_PIN;
  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
@@ -3478,7 +3478,7 @@ static void LCD_GPIO_Config(void)
  GPIO_Init(LTDC_R7_GPIO_PORT, &GPIO_InitStruct);
  GPIO_PinAFConfig(LTDC_R7_GPIO_PORT, LTDC_R7_PINSOURCE, LTDC_R7_AF);
 
- //��ɫ������
+ //绿色数据线
  GPIO_InitStruct.GPIO_Pin = LTDC_G0_GPIO_PIN;
  GPIO_Init(LTDC_G0_GPIO_PORT, &GPIO_InitStruct);
  GPIO_PinAFConfig(LTDC_G0_GPIO_PORT, LTDC_G0_PINSOURCE, LTDC_G0_AF);
@@ -3511,7 +3511,7 @@ static void LCD_GPIO_Config(void)
  GPIO_Init(LTDC_G7_GPIO_PORT, &GPIO_InitStruct);
  GPIO_PinAFConfig(LTDC_G7_GPIO_PORT, LTDC_G7_PINSOURCE, LTDC_G7_AF);
 
- //��ɫ������
+ //蓝色数据线
  GPIO_InitStruct.GPIO_Pin = LTDC_B0_GPIO_PIN;
  GPIO_Init(LTDC_B0_GPIO_PORT, &GPIO_InitStruct);
  GPIO_PinAFConfig(LTDC_B0_GPIO_PORT, LTDC_B0_PINSOURCE, LTDC_B0_AF);
@@ -3544,7 +3544,7 @@ static void LCD_GPIO_Config(void)
  GPIO_Init(LTDC_B7_GPIO_PORT, &GPIO_InitStruct);
  GPIO_PinAFConfig(LTDC_B7_GPIO_PORT, LTDC_B7_PINSOURCE, LTDC_B7_AF);
 
- //�����ź���
+ //控制信号线
  GPIO_InitStruct.GPIO_Pin = LTDC_CLK_GPIO_PIN;
  GPIO_Init(LTDC_CLK_GPIO_PORT, &GPIO_InitStruct);
  GPIO_PinAFConfig(LTDC_CLK_GPIO_PORT, LTDC_CLK_PINSOURCE, LTDC_CLK_AF);
@@ -3574,7 +3574,7 @@ static void LCD_GPIO_Config(void)
  GPIO_InitStruct.GPIO_Pin = LTDC_BL_GPIO_PIN;
  GPIO_Init(LTDC_BL_GPIO_PORT, &GPIO_InitStruct);
 
- //����ʹ��lcd
+ //拉高使能lcd
  GPIO_SetBits(LTDC_DISP_GPIO_PORT,LTDC_DISP_GPIO_PIN);
  GPIO_SetBits(LTDC_BL_GPIO_PORT,LTDC_BL_GPIO_PIN);
 }

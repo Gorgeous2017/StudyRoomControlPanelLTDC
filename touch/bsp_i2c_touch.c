@@ -17,7 +17,7 @@
 
 #include "./touch/bsp_i2c_touch.h"
 #include "./touch/gt9xx.h"
-#include "./usart/bsp_debug_usart.h"
+#include "panel_usart.h"
 
 
 /* STM32 I2C 快速模式 */

@@ -12,12 +12,12 @@
 #include "panel.h"
 #include "./icon/icon.h"
 
-/*����������óɷ�0ֵ Һ����ʹ��RGB888ɫ�ʣ���Ϊ0��ʹ��ARGB1555ɫ��*/
+/*把这个宏设置成非0值 液晶屏使用RGB888色彩，若为0则使用ARGB1555色彩*/
 #define LCD_RGB_888  1
 
 #if  LCD_RGB_888
 
-/*******RGB888ͷ�ļ�***********************RGB888ͷ�ļ�***********************RGB888ͷ�ļ�***********************RGB888ͷ�ļ�***********************RGB888ͷ�ļ�***********************RGB888ͷ�ļ�***********************RGB888ͷ�ļ�***********************RGB888ͷ�ļ�***********************/
+/*******RGB888头文件***********************RGB888头文件***********************RGB888头文件***********************RGB888头文件***********************RGB888头文件***********************RGB888头文件***********************RGB888头文件***********************RGB888头文件***********************/
 
 
 /** @addtogroup Utilities
@@ -57,8 +57,8 @@ typedef struct
 #define  LCD_PIXEL_WIDTH    ((uint16_t)800)
 #define  LCD_PIXEL_HEIGHT   ((uint16_t)480)
 
-#define LCD_FRAME_BUFFER       ((uint32_t)0xD0000000)		//��һ���׵�ַ
-#define BUFFER_OFFSET          ((uint32_t)800*480*3)     //һ��Һ����������
+#define LCD_FRAME_BUFFER       ((uint32_t)0xD0000000)		//第一层首地址
+#define BUFFER_OFFSET          ((uint32_t)800*480*3)     //一层液晶的数据量
 #define LCD_PIXCELS            ((uint32_t)800*480) 
 
 
@@ -163,14 +163,14 @@ typedef struct
   
   
 
-/*����Һ���ź��ߵ����Ÿ��ñ����AF9*/
+/*部分液晶信号线的引脚复用编号是AF9*/
 #define GPIO_AF_LTDC_AF9          ((uint8_t)0x09)  
 
 
 /**
   * @}
   */ 
-//��ɫ������
+//红色数据线
 #define LTDC_R0_GPIO_PORT        	GPIOH
 #define LTDC_R0_GPIO_CLK         	RCC_AHB1Periph_GPIOH
 #define LTDC_R0_GPIO_PIN         	GPIO_Pin_2
@@ -218,7 +218,7 @@ typedef struct
 #define LTDC_R7_GPIO_PIN         	GPIO_Pin_6
 #define LTDC_R7_PINSOURCE        	GPIO_PinSource6
 #define LTDC_R7_AF			          GPIO_AF_LTDC
-//��ɫ������
+//绿色数据线
 #define LTDC_G0_GPIO_PORT        	GPIOE
 #define LTDC_G0_GPIO_CLK         	RCC_AHB1Periph_GPIOE
 #define LTDC_G0_GPIO_PIN         	GPIO_Pin_5
@@ -267,7 +267,7 @@ typedef struct
 #define LTDC_G7_PINSOURCE        	GPIO_PinSource2
 #define LTDC_G7_AF			          GPIO_AF_LTDC
 
-//��ɫ������
+//蓝色数据线
 #define LTDC_B0_GPIO_PORT        	GPIOE
 #define LTDC_B0_GPIO_CLK         	RCC_AHB1Periph_GPIOE
 #define LTDC_B0_GPIO_PIN         	GPIO_Pin_4
@@ -316,37 +316,37 @@ typedef struct
 #define LTDC_B7_PINSOURCE        	GPIO_PinSource9
 #define LTDC_B7_AF			          GPIO_AF_LTDC
 
-//�����ź���
-/*����ʱ��CLK*/
+//控制信号线
+/*像素时钟CLK*/
 #define LTDC_CLK_GPIO_PORT        GPIOG
 #define LTDC_CLK_GPIO_CLK         RCC_AHB1Periph_GPIOG
 #define LTDC_CLK_GPIO_PIN         GPIO_Pin_7
 #define LTDC_CLK_PINSOURCE        GPIO_PinSource7
 #define LTDC_CLK_AF			          GPIO_AF_LTDC
-/*ˮƽͬ���ź�HSYNC*/
+/*水平同步信号HSYNC*/
 #define LTDC_HSYNC_GPIO_PORT      GPIOI
 #define LTDC_HSYNC_GPIO_CLK       RCC_AHB1Periph_GPIOI
 #define LTDC_HSYNC_GPIO_PIN       GPIO_Pin_10
 #define LTDC_HSYNC_PINSOURCE      GPIO_PinSource10
 #define LTDC_HSYNC_AF			        GPIO_AF_LTDC
-/*��ֱͬ���ź�VSYNC*/
+/*垂直同步信号VSYNC*/
 #define LTDC_VSYNC_GPIO_PORT      GPIOI
 #define LTDC_VSYNC_GPIO_CLK       RCC_AHB1Periph_GPIOI
 #define LTDC_VSYNC_GPIO_PIN       GPIO_Pin_9
 #define LTDC_VSYNC_PINSOURCE      GPIO_PinSource9
 #define LTDC_VSYNC_AF			        GPIO_AF_LTDC
 
-/*����ʹ���ź�DE*/
+/*数据使能信号DE*/
 #define LTDC_DE_GPIO_PORT         GPIOF
 #define LTDC_DE_GPIO_CLK          RCC_AHB1Periph_GPIOF
 #define LTDC_DE_GPIO_PIN          GPIO_Pin_10
 #define LTDC_DE_PINSOURCE         GPIO_PinSource10
 #define LTDC_DE_AF			          GPIO_AF_LTDC
-/*Һ����ʹ���ź�DISP���ߵ�ƽʹ��*/
+/*液晶屏使能信号DISP，高电平使能*/
 #define LTDC_DISP_GPIO_PORT        GPIOD
 #define LTDC_DISP_GPIO_CLK         RCC_AHB1Periph_GPIOD
 #define LTDC_DISP_GPIO_PIN         GPIO_Pin_4
-/*Һ���������źţ��ߵ�ƽʹ��*/
+/*液晶屏背光信号，高电平使能*/
 #define LTDC_BL_GPIO_PORT         GPIOD
 #define LTDC_BL_GPIO_CLK          RCC_AHB1Periph_GPIOD
 #define LTDC_BL_GPIO_PIN          GPIO_Pin_7
@@ -407,17 +407,17 @@ void     PutPixel(int16_t x, int16_t y);
 
 
 
-/*����*/
+/*汉字*/
 void LCD_DispString_EN_CH( uint16_t usX, uint16_t usY, const uint8_t * pStr );
 void LCD_DisplayStringLine_EN_CH(uint16_t Line, uint8_t *ptr);
 
-/*����*/
-void LCD_DisplayStringLineEx(uint16_t x, //��ʾ��x��
-														 uint16_t y, //��ʾ��y��
-														 uint16_t Font_width,	//Ҫ��ʾ��������ȣ�Ӣ���ַ��ڴ˻�����/2��ע��Ϊż��
-														 uint16_t Font_Heig,	//Ҫ��ʾ������߶ȣ�ע��Ϊż��
-														 uint8_t *ptr,				//��ʾ���ַ�����
-														 uint16_t DrawModel);  //�Ƿ�ɫ��ʾ
+/*缩放*/
+void LCD_DisplayStringLineEx(uint16_t x, //显示的x点
+														 uint16_t y, //显示的y点
+														 uint16_t Font_width,	//要显示的字体宽度，英文字符在此基础上/2。注意为偶数
+														 uint16_t Font_Heig,	//要显示的字体高度，注意为偶数
+														 uint8_t *ptr,				//显示的字符内容
+														 uint16_t DrawModel);  //是否反色显示
 
 
 
@@ -428,7 +428,7 @@ void LCD_DisplayStringLineEx(uint16_t x, //��ʾ��x��
   
 
 #else
-/***RGB565ͷ�ļ�*****************************RGB565ͷ�ļ�*****************************RGB565ͷ�ļ�*****************************RGB565ͷ�ļ�*****************************RGB565ͷ�ļ�*****************************RGB565ͷ�ļ�*****************************RGB565ͷ�ļ�*****************************/
+/***RGB565头文件*****************************RGB565头文件*****************************RGB565头文件*****************************RGB565头文件*****************************RGB565头文件*****************************RGB565头文件*****************************RGB565头文件*****************************/
 
 
 /** @defgroup STM32F429I_DISCOVERY_LCD_Exported_Types
@@ -459,14 +459,14 @@ typedef struct
   * @brief  LCD color
   */
 /*
- *   ʹ������������ɫ�����LCD_LayerInit()�����ж�ÿ������ö�Ӧ����Ȼ�ᵼ����ɫ��ʾ����
- * �ر�Ϊʵ������ͬʱ������ʾ��Ҫ���ϲ�(LCD_FOREGROUND_LAYER)����ΪLTDC_Pixelformat_ARGB1555
- * ��ʽ����Ӧ�ı���ʹ��LCD_COLOR1555_XXX��ɫ���ø�ʽ��1λ͸������λ������ʵ��û��ʵ����ɫ��
- * ������ص�ͨ͸��ʾ,�Ӷ�ʹ����ʾ�²�(LCD_BACKGROUND_LAYER)��Ϊ���ܡ�����ϲ���ʹ��
- * LTDC_Pixelformat_ARGB565��ʽ�������޷�������ʾ˫��ġ�
- *   ��Ȼ�����԰��²�����ΪLTDC_Pixelformat_ARGB1555��ʽ��ʹ����LCD_COLOR1555_XXXҲ�ǿ�����
- * ����ʾ�ġ�
- * �ر�ע�⣺ARGB1555���е�A��Ӧ������Һ����˵����Ϊ1��ʾ��͸��������Ϊ0��͸����
+ *   使用以下两组颜色必须跟LCD_LayerInit()函数中对每层的设置对应，不然会导致颜色显示错误。
+ * 特别为实现两层同时正常显示需要把上层(LCD_FOREGROUND_LAYER)设置为LTDC_Pixelformat_ARGB1555
+ * 格式，对应的必须使用LCD_COLOR1555_XXX颜色，该格式在1位透明控制位，可以实现没有实际颜色填
+ * 充的像素点通透显示,从而使得显示下层(LCD_BACKGROUND_LAYER)成为可能。如果上层是使用
+ * LTDC_Pixelformat_ARGB565格式设置是无法正常显示双层的。
+ *   当然，可以把下层设置为LTDC_Pixelformat_ARGB1555格式，使用用LCD_COLOR1555_XXX也是可以正
+ * 常显示的。
+ * 特别注意：ARGB1555其中的A对应开发板液晶来说设置为1表示不透明，设置为0表透明。
 */
                                                    //RGB565
 #define LCD_COLOR565_WHITE           0xFFFF        //11111 111111 11111
@@ -494,7 +494,7 @@ typedef struct
 #define LCD_COLOR1555_CLEAR               0
 
 
-/*Ĭ����ɫ��RGB565��RGB888ͨ�ýӿ�*/
+/*默认颜色，RGB565与RGB888通用接口*/
 #define LCD_COLOR_WHITE          LCD_COLOR1555_WHITE
 #define LCD_COLOR_BLACK          LCD_COLOR1555_BLACK
 #define LCD_COLOR_GREY           LCD_COLOR1555_GREY
@@ -506,7 +506,7 @@ typedef struct
 #define LCD_COLOR_CYAN           LCD_COLOR1555_CYAN
 #define LCD_COLOR_YELLOW         LCD_COLOR1555_YELLOW
 
-#define TRANSPARENCY 							0x7FFF	//͸��
+#define TRANSPARENCY 							0x7FFF	//透明
 
 /**
   * @brief  LCD Lines depending on the chosen fonts.
@@ -584,14 +584,14 @@ typedef struct
 
 
 
-/*����Һ���ź��ߵ����Ÿ��ñ����AF9*/
+/*部分液晶信号线的引脚复用编号是AF9*/
 #define GPIO_AF_LTDC_AF9          ((uint8_t)0x09)
 
 
 /**
   * @}
   */
-//��ɫ������
+//红色数据线
 #define LTDC_R0_GPIO_PORT        	GPIOH
 #define LTDC_R0_GPIO_CLK         	RCC_AHB1Periph_GPIOH
 #define LTDC_R0_GPIO_PIN         	GPIO_Pin_2
@@ -639,7 +639,7 @@ typedef struct
 #define LTDC_R7_GPIO_PIN         	GPIO_Pin_6
 #define LTDC_R7_PINSOURCE        	GPIO_PinSource6
 #define LTDC_R7_AF			          GPIO_AF_LTDC
-//��ɫ������
+//绿色数据线
 #define LTDC_G0_GPIO_PORT        	GPIOE
 #define LTDC_G0_GPIO_CLK         	RCC_AHB1Periph_GPIOE
 #define LTDC_G0_GPIO_PIN         	GPIO_Pin_5
@@ -688,7 +688,7 @@ typedef struct
 #define LTDC_G7_PINSOURCE        	GPIO_PinSource2
 #define LTDC_G7_AF			          GPIO_AF_LTDC
 
-//��ɫ������
+//蓝色数据线
 #define LTDC_B0_GPIO_PORT        	GPIOE
 #define LTDC_B0_GPIO_CLK         	RCC_AHB1Periph_GPIOE
 #define LTDC_B0_GPIO_PIN         	GPIO_Pin_4
@@ -737,7 +737,7 @@ typedef struct
 #define LTDC_B7_PINSOURCE        	GPIO_PinSource9
 #define LTDC_B7_AF			          GPIO_AF_LTDC
 
-//�����ź���
+//控制信号线
 #define LTDC_CLK_GPIO_PORT        GPIOG
 #define LTDC_CLK_GPIO_CLK         RCC_AHB1Periph_GPIOG
 #define LTDC_CLK_GPIO_PIN         GPIO_Pin_7

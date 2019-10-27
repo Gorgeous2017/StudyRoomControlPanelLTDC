@@ -11,7 +11,7 @@
 
 /**
  * @defgroup AP_UART
- * @brief AP??????????
+ * @brief AP与面板进行通讯的串口
  * @{
  */
 
@@ -48,7 +48,7 @@
 
 /**
  * @defgroup ST_UART
- * @brief ST??????????
+ * @brief ST与面板进行通讯的串口
  * @{
  */
 

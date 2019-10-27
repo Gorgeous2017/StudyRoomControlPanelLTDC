@@ -8,5 +8,9 @@
 			"path": "C:\\Root Path"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"panel_usart.h": "c"
+		}
+	}
 }

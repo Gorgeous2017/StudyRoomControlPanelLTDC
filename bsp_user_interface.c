@@ -11,7 +11,7 @@
  * none
  */
 #include "stm32f4xx.h"
-#include "usart/bsp_debug_usart.h"
+#include "panel_usart.h"
 #include "panel.h"
 
 /**
