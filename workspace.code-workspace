@@ -10,7 +10,9 @@
 	],
 	"settings": {
 		"files.associations": {
-			"panel_usart.h": "c"
+			"panel_usart.h": "c",
+			"stm32f4xx.h": "c",
+			"stm32f4xx_it.h": "c"
 		}
 	}
 }

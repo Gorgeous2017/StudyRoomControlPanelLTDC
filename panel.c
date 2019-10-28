@@ -374,7 +374,7 @@ void Touch_Icon_Up(uint16_t x, uint16_t y){
         
         if( menu_icon[i].status != 0){ /* 当某页签被选中时 */
 
-            PANEL_DEBUG("Menu %d is choose, this menu type is %X", i, menu_icon[i].type);
+            PANEL_DEBUG("Menu %d is choose, this menu type is %#X", i, menu_icon[i].type);
 
             switch (menu_icon[i].type ) { /* 判断当前所处的页签 */
             
