@@ -231,7 +231,7 @@ void AP_USART_IRQHandler(void) {
 
 		ucTemp = USART_ReceiveData( AP_USART );
 
-		PANEL_DEBUG("Receive char is %#X",ucTemp);
+		PANEL_DEBUG("Receive char is %#X, count is %d", ucTemp, uCount);
 
 		if ( (ucTemp == statusMsg.MsgFlag) && (uCount == 0) ) { /* 接收到开始标志位，且之前没有收到消息 */
 
@@ -239,34 +239,33 @@ void AP_USART_IRQHandler(void) {
 
 			statusMsg.MsgBuff[ uCount++ ] = ucTemp; /* uCount自增一，下一次进入中断处理函数会执行下一条if语句 */
 
-		} else if ( (uCount > 0) && (uCount < statusMsg.MsgLenth) ) { /* 接收数据位 */
+		} else if ( (uCount > 0) && (uCount < statusMsg.MsgLenth - 1 ) ) { /* 接收数据位 */
 
 			PANEL_DEBUG("Receiving");
 
 			statusMsg.MsgBuff[ uCount++ ] = ucTemp;
 
-		} else if ( statusMsg.MsgBuff[uCount] == statusMsg.MsgFlag) { /* 接收完全部串口信息，且收到了结束标志位 */
+		} else if ( ucTemp == statusMsg.MsgFlag) { /* 接收完全部串口信息，且收到了结束标志位 */
 			
 			PANEL_DEBUG("Receive over");
 
-			uCount = 0; /* 重置串口信息长度计数 */
+			statusMsg.MsgBuff[ uCount ] = ucTemp;
+			statusMsg.MsgHandler(&statusMsg); /* 将接收到的信息发送到UART3 */
 
-			/* 清空信息接收缓存区 */
-			
+			uCount = 0; /* 重置串口信息长度计数 */
+			/* 清空信息接收缓存区 */			
 			for ( i = 0; i < statusMsg.MsgLenth; i++)	{
-				statusMsg.MsgBuff[uCount] = 0;
+				statusMsg.MsgBuff[i] = 0;
 			}
-			
-			statusMsg.MsgHandler(&statusMsg);
-			
+
 		} else { /* 非正常的出错情况 */
 			
-			uCount = 0; /* 重置串口信息长度计数 */
+			PANEL_DEBUG("Receive error ");
 
+			uCount = 0; /* 重置串口信息长度计数 */
 			/* 清空信息接收缓存区 */
-			
 			for ( i = 0; i < statusMsg.MsgLenth; i++)	{
-				statusMsg.MsgBuff[uCount] = 0;
+				statusMsg.MsgBuff[i] = 0;
 			}
 
 		}
