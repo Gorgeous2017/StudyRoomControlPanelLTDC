@@ -30,9 +30,8 @@ void Delay(__IO uint32_t nCount)
  * @param source_icon 初始化好的图标结构体，由用户初始化后传入
  * @param aim_icon 需要被初始化的图标结构体数组
  * @param icon_num 需要被初始化的图标数
- * 
- * @note 用法示例：    
-    
+ * @par 用法示例：    
+ *  @code
     Touch_Icon Icon_InitStruct; // Touch_Icon 结构体初始化变量
 
     // 设置初始化成员的值
@@ -67,6 +66,7 @@ void Delay(__IO uint32_t nCount)
     user_icon[1].gImage_icon[1] = gImage_centre_unsel;
 
     // ...more member 
+    @endcode
 
  * @note 用于初始化的变量不一定要赋值所有的成员，可以只赋值每个结构体中都相同的成员。但是这样的话在初始化变
  * 量中没有赋值的成员必须在后面“设置结构体中与初始化值不一样的成员”中赋值，否则容易出现“硬错误(HardFault)”
@@ -171,7 +171,7 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
  * @param LineOffset 图标间的垂直间距
  * @param ColumnOffset 图标间的水平间距
  * 
- * @note 用法示例：初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
+ * @par 用法示例：初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
  * 
  *         ——————              ——————              ——————  
  *        |      | <-- 20 --> |      | <-- 20 --> |      | 

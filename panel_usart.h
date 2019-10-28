@@ -10,6 +10,29 @@
  */
 
 /**
+ * @brief Data Structure
+ * @{
+ */
+
+/**
+ * @brief 串口信息结构体
+ * 
+ */
+typedef struct
+{
+    uint8_t MsgBuff[10]; /*!< 串口信息缓存区 */
+    const uint8_t MsgLenth;    /*!< 串口信息的长度 */
+    const uint8_t MsgFlag;     /*!< 串口信息的首部和尾部标志 */
+
+    void (*MsgHandler)(void* uartMsg);
+
+} UartMsg;
+
+/**
+ * @} 
+ */
+
+/**
  * @defgroup AP_UART
  * @brief AP与面板进行通讯的串口
  * @{
@@ -91,6 +114,7 @@ void PANEL_USART_Config(void);
 void AP_USART_Config(void);
 void ST_USART_Config(void);
 void NVIC_Configuration(void);
+
 /**
  * @} 
  */

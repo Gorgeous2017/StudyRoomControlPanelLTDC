@@ -16,23 +16,23 @@
 
 #include "icon/icon.h" /* 包含图标图片数组 */
 
-#define TEXT_COLOR 0x333333 /* 面板文字色 */
-#define BACK_COLOR 0xDBF0F9 /* 面板背景色 */
+#define TEXT_COLOR 0x333333 /*!< 面板文字色 */
+#define BACK_COLOR 0xDBF0F9 /*!< 面板背景色 */
 
 /* 图标大小 */
-#define ICON_SIZE 96 /* 图标的大小 */
+#define ICON_SIZE 96 /*!< 图标的大小 */
 
-#define MENU_ICON_W 130 /* 菜单栏页签宽度 */
-#define MENU_ICON_H 30  /* 菜单栏页签高度 */
+#define MENU_ICON_W 130 /*!< 菜单栏页签宽度 */
+#define MENU_ICON_H 30  /*!< 菜单栏页签高度 */
 
 /* 图标起始位置 */
-#define STATUS_ICON_START_X 40 /* 环境信息图标起始横坐标 */
-#define STATUS_ICON_START_Y 30 /* 环境信息图标起始纵坐标 */
-#define STATUS_ICON_OFFSET 14  /* 环境信息图标之间的间距 */
+#define STATUS_ICON_START_X 40 /*!< 环境信息图标起始横坐标 */
+#define STATUS_ICON_START_Y 30 /*!< 环境信息图标起始纵坐标 */
+#define STATUS_ICON_OFFSET 14  /*!< 环境信息图标之间的间距 */
 
-#define MENU_ICON_START_X 400 /* 菜单栏起始横坐标 */
-#define MENU_ICON_START_Y 10  /* 菜单栏起始纵坐标 */
-#define MENU_ICON_OFFSET 0    /* 菜单栏页签之间的间距 */
+#define MENU_ICON_START_X 400 /*!< 菜单栏起始横坐标 */
+#define MENU_ICON_START_Y 10  /*!< 菜单栏起始纵坐标 */
+#define MENU_ICON_OFFSET 0    /*!< 菜单栏页签之间的间距 */
 
 #define CENTRE_CTRL_ICON_START_X 470
 #define CENTRE_CTRL_ICON_START_Y 60
@@ -40,37 +40,40 @@
 #define CENTRE_CTRL_ICON_OFFSET_LINE 24
 
 /* 用电器类型 */
-#define DEVICE_FAN 0x00     /* 风扇 */
-#define DEVICE_LIGHT 0x01   /* 电灯 */
-#define DEVICE_CURTAIN 0x02 /* 窗帘 */
-#define DEVICE_AC 0x03      /* 空调 */
-#define DEVICE_UNSEL 0x04   /* 未选中用电器 */
+#define DEVICE_FAN 0x00     /*!< 风扇 */
+#define DEVICE_LIGHT 0x01   /*!< 电灯 */
+#define DEVICE_CURTAIN 0x02 /*!< 窗帘 */
+#define DEVICE_AC 0x03      /*!< 空调 */
 
 /* 菜单栏类型 */
-#define MENU_SINGLE_CTRL 0x00 /* 独立控制 */
-#define MENU_CENTRE_CTRL 0x01 /* 集中控制 */
-#define MENU_AUTO_CTRL 0x02   /* 自动控制 */
+#define MENU_SINGLE_CTRL 0x00 /*!< 独立控制 */
+#define MENU_CENTRE_CTRL 0x01 /*!< 集中控制 */
+#define MENU_AUTO_CTRL 0x02   /*!< 自动控制 */
 
 /* 拼接字符串的宏指令 */
 #define DEVICE_STATUS_TOGGLE(device, status) (status) ? (gImage_##device##_off) : (gImage_##device##_on)
 
 typedef struct
 {
-    uint16_t start_x;   /* 图标的x起始坐标 */
-    uint16_t start_y;   /* 图标的y起始坐标 */
-    uint8_t width;      /* 图标宽度 */
-    uint8_t height;     /* 图标高度 */
-    uint8_t type;       /* 图标类型 */
-    uint8_t status;     /* 图标状态 */
-    uint8_t no;         /* 图标编号 */
-    uint8_t touch_flag; /* 图标按下的标志 */
+    uint16_t start_x;   /*!< 图标的x起始坐标 */
+    uint16_t start_y;   /*!< 图标的y起始坐标 */
+    uint8_t width;      /*!< 图标宽度 */
+    uint8_t height;     /*!< 图标高度 */
+    uint8_t type;       /*!< 图标类型 */
+    uint8_t status;     /*!< 图标状态 */
+    uint8_t no;         /*!< 图标编号 */
+    uint8_t touch_flag; /*!< 图标按下的标志 */
 
-    const unsigned char *gImage_icon[2]; /* 图标图片数组 */
-                                         /* gImage_icon[0]为status等于0时显示的图标 */
-                                         /* gImage_icon[1]为status等于1时显示的图标 */
+    /**
+     * @brief 图标图片数组
+     * @param *gImage_icon[2]
+     *  @arg gImage_icon[0] status等于0时显示的图标
+     *  @arg gImage_icon[1] status等于1时显示的图标
+     */
+    const unsigned char *gImage_icon[2];
 
-    void (*draw_icon)(void *icon);    /* 图标描绘函数 */
-    void (*icon_command)(void *icon); /* 图标功能执行函数 */
+    void (*draw_icon)(void *icon);    /*!< 图标描绘函数 */
+    void (*icon_command)(void *icon); /*!< 图标功能执行函数 */
 
 } Touch_Icon;
 
