@@ -4,13 +4,13 @@
   * @author  fire
   * @version V1.0
   * @date    2015-xx-xx
-  * @brief   i2cµçÈİÆÁÇı¶¯º¯Êıgt9157Ğ¾Æ¬
+  * @brief   i2cç”µå®¹å±é©±åŠ¨å‡½æ•°gt9157èŠ¯ç‰‡
   ******************************************************************************
   * @attention
   *
-  * ÊµÑéÆ½Ì¨:±ü»ğ  STM32 F429 ¿ª·¢°å 
-  * ÂÛÌ³    :http://www.firebbs.cn
-  * ÌÔ±¦    :https://fire-stm32.taobao.com
+  * å®éªŒå¹³å°:ç§‰ç«  STM32 F429 å¼€å‘æ¿ 
+  * è®ºå›    :http://www.firebbs.cn
+  * æ·˜å®    :https://fire-stm32.taobao.com
   *
   ******************************************************************************
   */ 
@@ -21,7 +21,7 @@
 #include "./lcd/bsp_lcd.h"
 #include "panel.h"
 
-// 5´çÆÁGT9157Çı¶¯ÅäÖÃ
+// 5å¯¸å±GT9157é©±åŠ¨é…ç½®
 uint8_t CTP_CFG_GT9157[] ={ 
 	0x00,0x20,0x03,0xE0,0x01,0x05,0x3C,0x00,0x01,0x08,
 	0x28,0x0C,0x50,0x32,0x03,0x05,0x00,0x00,0x00,0x00,
@@ -44,7 +44,7 @@ uint8_t CTP_CFG_GT9157[] ={
 	0xFF,0xFF,0xFF,0xFF,0x48,0x01
 };
 
-// 7´çÆÁGT911Çı¶¯ÅäÖÃ
+// 7å¯¸å±GT911é©±åŠ¨é…ç½®
 uint8_t CTP_CFG_GT911[] =  {
   0x00,0x20,0x03,0xE0,0x01,0x05,0x0D,0x00,0x01,0x08,
   0x28,0x0F,0x50,0x32,0x03,0x05,0x00,0x00,0x00,0x00,
@@ -76,18 +76,18 @@ TOUCH_IC touchIC;
 static int8_t GTP_I2C_Test(void);
 //static void GT91xx_Config_Read_Proc(void);
 
-static void Delay(__IO uint32_t nCount)	 //¼òµ¥µÄÑÓÊ±º¯Êı
+static void Delay(__IO uint32_t nCount)	 //ç®€å•çš„å»¶æ—¶å‡½æ•°
 {
 	for(; nCount != 0; nCount--);
 }
 
 
 /**
-  * @brief   Ê¹ÓÃIIC½øĞĞÊı¾İ´«Êä
+  * @brief   ä½¿ç”¨IICè¿›è¡Œæ•°æ®ä¼ è¾“
   * @param
-  *		@arg i2c_msg:Êı¾İ´«Êä½á¹¹Ìå
-  *		@arg num:Êı¾İ´«Êä½á¹¹ÌåµÄ¸öÊı
-  * @retval  Õı³£Íê³ÉµÄ´«Êä½á¹¹¸öÊı£¬Èô²»Õı³££¬·µ»Ø0xff
+  *		@arg i2c_msg:æ•°æ®ä¼ è¾“ç»“æ„ä½“
+  *		@arg num:æ•°æ®ä¼ è¾“ç»“æ„ä½“çš„ä¸ªæ•°
+  * @retval  æ­£å¸¸å®Œæˆçš„ä¼ è¾“ç»“æ„ä¸ªæ•°ï¼Œè‹¥ä¸æ­£å¸¸ï¼Œè¿”å›0xff
   */
 static int I2C_Transfer( struct i2c_msg *msgs,int num)
 {
@@ -98,29 +98,29 @@ static int I2C_Transfer( struct i2c_msg *msgs,int num)
 
 	for (im = 0; ret == 0 && im != num; im++)
 	{
-		if ((msgs[im].flags&I2C_M_RD))																//¸ù¾İflagÅĞ¶ÏÊÇ¶ÁÊı¾İ»¹ÊÇĞ´Êı¾İ
+		if ((msgs[im].flags&I2C_M_RD))																//æ ¹æ®flagåˆ¤æ–­æ˜¯è¯»æ•°æ®è¿˜æ˜¯å†™æ•°æ®
 		{
-			ret = I2C_ReadBytes(msgs[im].addr, msgs[im].buf, msgs[im].len);		//IIC¶ÁÈ¡Êı¾İ
+			ret = I2C_ReadBytes(msgs[im].addr, msgs[im].buf, msgs[im].len);		//IICè¯»å–æ•°æ®
 		} else
 		{
-			ret = I2C_WriteBytes(msgs[im].addr,  msgs[im].buf, msgs[im].len);	//IICĞ´ÈëÊı¾İ
+			ret = I2C_WriteBytes(msgs[im].addr,  msgs[im].buf, msgs[im].len);	//IICå†™å…¥æ•°æ®
 		}
 	}
 
 	if(ret)
 		return ret;
 
-	return im;   													//Õı³£Íê³ÉµÄ´«Êä½á¹¹¸öÊı
+	return im;   													//æ­£å¸¸å®Œæˆçš„ä¼ è¾“ç»“æ„ä¸ªæ•°
 }
 
 /**
-  * @brief   ´ÓIICÉè±¸ÖĞ¶ÁÈ¡Êı¾İ
+  * @brief   ä»IICè®¾å¤‡ä¸­è¯»å–æ•°æ®
   * @param
-  *		@arg client_addr:Éè±¸µØÖ·
-  *		@arg  buf[0~1]: ¶ÁÈ¡Êı¾İ¼Ä´æÆ÷µÄÆğÊ¼µØÖ·
-  *		@arg buf[2~len-1]: ´æ´¢¶Á³öÀ´Êı¾İµÄ»º³åbuffer
-  *		@arg len:    GTP_ADDR_LENGTH + read bytes count£¨¼Ä´æÆ÷µØÖ·³¤¶È+¶ÁÈ¡µÄÊı¾İ×Ö½ÚÊı£©
-  * @retval  i2c_msgs´«Êä½á¹¹ÌåµÄ¸öÊı£¬2Îª³É¹¦£¬ÆäËüÎªÊ§°Ü
+  *		@arg client_addr:è®¾å¤‡åœ°å€
+  *		@arg  buf[0~1]: è¯»å–æ•°æ®å¯„å­˜å™¨çš„èµ·å§‹åœ°å€
+  *		@arg buf[2~len-1]: å­˜å‚¨è¯»å‡ºæ¥æ•°æ®çš„ç¼“å†²buffer
+  *		@arg len:    GTP_ADDR_LENGTH + read bytes countï¼ˆå¯„å­˜å™¨åœ°å€é•¿åº¦+è¯»å–çš„æ•°æ®å­—èŠ‚æ•°ï¼‰
+  * @retval  i2c_msgsä¼ è¾“ç»“æ„ä½“çš„ä¸ªæ•°ï¼Œ2ä¸ºæˆåŠŸï¼Œå…¶å®ƒä¸ºå¤±è´¥
   */
 static int32_t GTP_I2C_Read(uint8_t client_addr, uint8_t *buf, int32_t len)
 {
@@ -129,24 +129,24 @@ static int32_t GTP_I2C_Read(uint8_t client_addr, uint8_t *buf, int32_t len)
     int32_t retries = 0;
 
     GTP_DEBUG_FUNC();
-    /*Ò»¸ö¶ÁÊı¾İµÄ¹ı³Ì¿ÉÒÔ·ÖÎªÁ½¸ö´«Êä¹ı³Ì:
-     * 1. IIC  Ğ´Èë Òª¶ÁÈ¡µÄ¼Ä´æÆ÷µØÖ·
-     * 2. IIC  ¶ÁÈ¡  Êı¾İ
+    /*ä¸€ä¸ªè¯»æ•°æ®çš„è¿‡ç¨‹å¯ä»¥åˆ†ä¸ºä¸¤ä¸ªä¼ è¾“è¿‡ç¨‹:
+     * 1. IIC  å†™å…¥ è¦è¯»å–çš„å¯„å­˜å™¨åœ°å€
+     * 2. IIC  è¯»å–  æ•°æ®
      * */
 
-    msgs[0].flags = !I2C_M_RD;					//Ğ´Èë
-    msgs[0].addr  = client_addr;					//IICÉè±¸µØÖ·
-    msgs[0].len   = GTP_ADDR_LENGTH;	//¼Ä´æÆ÷µØÖ·Îª2×Ö½Ú(¼´Ğ´ÈëÁ½×Ö½ÚµÄÊı¾İ)
-    msgs[0].buf   = &buf[0];						//buf[0~1]´æ´¢µÄÊÇÒª¶ÁÈ¡µÄ¼Ä´æÆ÷µØÖ·
+    msgs[0].flags = !I2C_M_RD;					//å†™å…¥
+    msgs[0].addr  = client_addr;					//IICè®¾å¤‡åœ°å€
+    msgs[0].len   = GTP_ADDR_LENGTH;	//å¯„å­˜å™¨åœ°å€ä¸º2å­—èŠ‚(å³å†™å…¥ä¸¤å­—èŠ‚çš„æ•°æ®)
+    msgs[0].buf   = &buf[0];						//buf[0~1]å­˜å‚¨çš„æ˜¯è¦è¯»å–çš„å¯„å­˜å™¨åœ°å€
     
-    msgs[1].flags = I2C_M_RD;					//¶ÁÈ¡
-    msgs[1].addr  = client_addr;					//IICÉè±¸µØÖ·
-    msgs[1].len   = len - GTP_ADDR_LENGTH;	//Òª¶ÁÈ¡µÄÊı¾İ³¤¶È
-    msgs[1].buf   = &buf[GTP_ADDR_LENGTH];	//buf[GTP_ADDR_LENGTH]Ö®ºóµÄ»º³åÇø´æ´¢¶Á³öµÄÊı¾İ
+    msgs[1].flags = I2C_M_RD;					//è¯»å–
+    msgs[1].addr  = client_addr;					//IICè®¾å¤‡åœ°å€
+    msgs[1].len   = len - GTP_ADDR_LENGTH;	//è¦è¯»å–çš„æ•°æ®é•¿åº¦
+    msgs[1].buf   = &buf[GTP_ADDR_LENGTH];	//buf[GTP_ADDR_LENGTH]ä¹‹åçš„ç¼“å†²åŒºå­˜å‚¨è¯»å‡ºçš„æ•°æ®
 
     while(retries < 5)
     {
-        ret = I2C_Transfer( msgs, 2);					//µ÷ÓÃIICÊı¾İ´«Êä¹ı³Ìº¯Êı£¬ÓĞ2¸ö´«Êä¹ı³Ì
+        ret = I2C_Transfer( msgs, 2);					//è°ƒç”¨IICæ•°æ®ä¼ è¾“è¿‡ç¨‹å‡½æ•°ï¼Œæœ‰2ä¸ªä¼ è¾“è¿‡ç¨‹
         if(ret == 2)break;
         retries++;
     }
@@ -160,13 +160,13 @@ static int32_t GTP_I2C_Read(uint8_t client_addr, uint8_t *buf, int32_t len)
 
 
 /**
-  * @brief   ÏòIICÉè±¸Ğ´ÈëÊı¾İ
+  * @brief   å‘IICè®¾å¤‡å†™å…¥æ•°æ®
   * @param
-  *		@arg client_addr:Éè±¸µØÖ·
-  *		@arg  buf[0~1]: ÒªĞ´ÈëµÄÊı¾İ¼Ä´æÆ÷µÄÆğÊ¼µØÖ·
-  *		@arg buf[2~len-1]: ÒªĞ´ÈëµÄÊı¾İ
-  *		@arg len:    GTP_ADDR_LENGTH + write bytes count£¨¼Ä´æÆ÷µØÖ·³¤¶È+Ğ´ÈëµÄÊı¾İ×Ö½ÚÊı£©
-  * @retval  i2c_msgs´«Êä½á¹¹ÌåµÄ¸öÊı£¬1Îª³É¹¦£¬ÆäËüÎªÊ§°Ü
+  *		@arg client_addr:è®¾å¤‡åœ°å€
+  *		@arg  buf[0~1]: è¦å†™å…¥çš„æ•°æ®å¯„å­˜å™¨çš„èµ·å§‹åœ°å€
+  *		@arg buf[2~len-1]: è¦å†™å…¥çš„æ•°æ®
+  *		@arg len:    GTP_ADDR_LENGTH + write bytes countï¼ˆå¯„å­˜å™¨åœ°å€é•¿åº¦+å†™å…¥çš„æ•°æ®å­—èŠ‚æ•°ï¼‰
+  * @retval  i2c_msgsä¼ è¾“ç»“æ„ä½“çš„ä¸ªæ•°ï¼Œ1ä¸ºæˆåŠŸï¼Œå…¶å®ƒä¸ºå¤±è´¥
   */
 static int32_t GTP_I2C_Write(uint8_t client_addr,uint8_t *buf,int32_t len)
 {
@@ -175,17 +175,17 @@ static int32_t GTP_I2C_Write(uint8_t client_addr,uint8_t *buf,int32_t len)
     int32_t retries = 0;
 
     GTP_DEBUG_FUNC();
-    /*Ò»¸öĞ´Êı¾İµÄ¹ı³ÌÖ»ĞèÒªÒ»¸ö´«Êä¹ı³Ì:
-     * 1. IICÁ¬Ğø Ğ´Èë Êı¾İ¼Ä´æÆ÷µØÖ·¼°Êı¾İ
+    /*ä¸€ä¸ªå†™æ•°æ®çš„è¿‡ç¨‹åªéœ€è¦ä¸€ä¸ªä¼ è¾“è¿‡ç¨‹:
+     * 1. IICè¿ç»­ å†™å…¥ æ•°æ®å¯„å­˜å™¨åœ°å€åŠæ•°æ®
      * */
-    msg.flags = !I2C_M_RD;			//Ğ´Èë
-    msg.addr  = client_addr;			//´ÓÉè±¸µØÖ·
-    msg.len   = len;							//³¤¶ÈÖ±½ÓµÈÓÚ(¼Ä´æÆ÷µØÖ·³¤¶È+Ğ´ÈëµÄÊı¾İ×Ö½ÚÊı)
-    msg.buf   = buf;						//Ö±½ÓÁ¬ĞøĞ´Èë»º³åÇøÖĞµÄÊı¾İ(°üÀ¨ÁË¼Ä´æÆ÷µØÖ·)
+    msg.flags = !I2C_M_RD;			//å†™å…¥
+    msg.addr  = client_addr;			//ä»è®¾å¤‡åœ°å€
+    msg.len   = len;							//é•¿åº¦ç›´æ¥ç­‰äº(å¯„å­˜å™¨åœ°å€é•¿åº¦+å†™å…¥çš„æ•°æ®å­—èŠ‚æ•°)
+    msg.buf   = buf;						//ç›´æ¥è¿ç»­å†™å…¥ç¼“å†²åŒºä¸­çš„æ•°æ®(åŒ…æ‹¬äº†å¯„å­˜å™¨åœ°å€)
 
     while(retries < 5)
     {
-        ret = I2C_Transfer(&msg, 1);	//µ÷ÓÃIICÊı¾İ´«Êä¹ı³Ìº¯Êı£¬1¸ö´«Êä¹ı³Ì
+        ret = I2C_Transfer(&msg, 1);	//è°ƒç”¨IICæ•°æ®ä¼ è¾“è¿‡ç¨‹å‡½æ•°ï¼Œ1ä¸ªä¼ è¾“è¿‡ç¨‹
         if (ret == 1)break;
         retries++;
     }
@@ -201,12 +201,12 @@ static int32_t GTP_I2C_Write(uint8_t client_addr,uint8_t *buf,int32_t len)
 
 
 /**
-  * @brief   Ê¹ÓÃIIC¶ÁÈ¡ÔÙ´ÎÊı¾İ£¬¼ìÑéÊÇ·ñÕı³£
+  * @brief   ä½¿ç”¨IICè¯»å–å†æ¬¡æ•°æ®ï¼Œæ£€éªŒæ˜¯å¦æ­£å¸¸
   * @param
-  *		@arg client:Éè±¸µØÖ·
-  *		@arg  addr: ¼Ä´æÆ÷µØÖ·
-  *		@arg rxbuf: ´æ´¢¶Á³öµÄÊı¾İ
-  *		@arg len:    ¶ÁÈ¡µÄ×Ö½ÚÊı
+  *		@arg client:è®¾å¤‡åœ°å€
+  *		@arg  addr: å¯„å­˜å™¨åœ°å€
+  *		@arg rxbuf: å­˜å‚¨è¯»å‡ºçš„æ•°æ®
+  *		@arg len:    è¯»å–çš„å­—èŠ‚æ•°
   * @retval
   * 	@arg FAIL
   * 	@arg SUCCESS
@@ -244,9 +244,9 @@ static int32_t GTP_I2C_Write(uint8_t client_addr,uint8_t *buf,int32_t len)
 
 
 /**
-  * @brief   ¹Ø±ÕGT91xxÖĞ¶Ï
-  * @param ÎŞ
-  * @retval ÎŞ
+  * @brief   å…³é—­GT91xxä¸­æ–­
+  * @param æ— 
+  * @retval æ— 
   */
 void GTP_IRQ_Disable(void)
 {
@@ -257,9 +257,9 @@ void GTP_IRQ_Disable(void)
 }
 
 /**
-  * @brief   Ê¹ÄÜGT91xxÖĞ¶Ï
-  * @param ÎŞ
-  * @retval ÎŞ
+  * @brief   ä½¿èƒ½GT91xxä¸­æ–­
+  * @param æ— 
+  * @retval æ— 
   */
 void GTP_IRQ_Enable(void)
 {
@@ -270,15 +270,15 @@ void GTP_IRQ_Enable(void)
 
 
 /**
-  * @brief   ÓÃÓÚ´¦Àí»ò±¨¸æ´¥ÆÁ¼ì²âµ½°´ÏÂ
+  * @brief   ç”¨äºå¤„ç†æˆ–æŠ¥å‘Šè§¦å±æ£€æµ‹åˆ°æŒ‰ä¸‹
   * @param
-  *    @arg     id: ´¥ÃşË³ĞòtrackID
-  *    @arg     x:  ´¥ÃşµÄ x ×ø±ê
-  *    @arg     y:  ´¥ÃşµÄ y ×ø±ê
-  *    @arg     w:  ´¥ÃşµÄ ´óĞ¡
-  * @retval ÎŞ
+  *    @arg     id: è§¦æ‘¸é¡ºåºtrackID
+  *    @arg     x:  è§¦æ‘¸çš„ x åæ ‡
+  *    @arg     y:  è§¦æ‘¸çš„ y åæ ‡
+  *    @arg     w:  è§¦æ‘¸çš„ å¤§å°
+  * @retval æ— 
   */
-/*ÓÃÓÚ¼ÇÂ¼Á¬Ğø´¥ÃşÊ±(³¤°´)µÄÉÏÒ»´Î´¥ÃşÎ»ÖÃ£¬¸ºÊıÖµ±íÊ¾ÉÏÒ»´ÎÎŞ´¥Ãş°´ÏÂ*/
+/*ç”¨äºè®°å½•è¿ç»­è§¦æ‘¸æ—¶(é•¿æŒ‰)çš„ä¸Šä¸€æ¬¡è§¦æ‘¸ä½ç½®ï¼Œè´Ÿæ•°å€¼è¡¨ç¤ºä¸Šä¸€æ¬¡æ— è§¦æ‘¸æŒ‰ä¸‹*/
 static int16_t pre_x[GTP_MAX_TOUCH] ={-1,-1,-1,-1,-1};
 static int16_t pre_y[GTP_MAX_TOUCH] ={-1,-1,-1,-1,-1};
 
@@ -287,44 +287,44 @@ static void GTP_Touch_Down(int32_t id,int32_t x,int32_t y,int32_t w)
   
 	GTP_DEBUG_FUNC();
 
-	/*È¡x¡¢y³õÊ¼Öµ´óÓÚÆÁÄ»ÏñËØÖµ*/
+	/*å–xã€yåˆå§‹å€¼å¤§äºå±å¹•åƒç´ å€¼*/
     GTP_DEBUG("ID:%d, X:%d, Y:%d, W:%d", id, x, y, w);
 
 	
-    /* ´¦Àí´¥Ãş°´Å¥£¬ÓÃÓÚ´¥Ãş»­°å */
+    /* å¤„ç†è§¦æ‘¸æŒ‰é’®ï¼Œç”¨äºè§¦æ‘¸ç”»æ¿ */
     Touch_Icon_Down(x,y); 
 	
 		/************************************/
-		/*ÔÚ´Ë´¦Ìí¼Ó×Ô¼ºµÄ´¥Ãşµã°´ÏÂÊ±´¦Àí¹ı³Ì¼´¿É*/
-		/* (x,y) ¼´Îª×îĞÂµÄ´¥Ãşµã *************/
+		/*åœ¨æ­¤å¤„æ·»åŠ è‡ªå·±çš„è§¦æ‘¸ç‚¹æŒ‰ä¸‹æ—¶å¤„ç†è¿‡ç¨‹å³å¯*/
+		/* (x,y) å³ä¸ºæœ€æ–°çš„è§¦æ‘¸ç‚¹ *************/
 		/************************************/
 	
-		/*prex,preyÊı×é´æ´¢ÉÏÒ»´Î´¥ÃşµÄÎ»ÖÃ£¬idÎª¹ì¼£±àºÅ(¶àµã´¥¿ØÊ±ÓĞ¶à¹ì¼£)*/
+		/*prex,preyæ•°ç»„å­˜å‚¨ä¸Šä¸€æ¬¡è§¦æ‘¸çš„ä½ç½®ï¼Œidä¸ºè½¨è¿¹ç¼–å·(å¤šç‚¹è§¦æ§æ—¶æœ‰å¤šè½¨è¿¹)*/
     pre_x[id] = x; pre_y[id] =y;
 	
 }
 
 
 /**
-  * @brief   ÓÃÓÚ´¦Àí»ò±¨¸æ´¥ÆÁÊÍ·Å
-  * @param ÊÍ·ÅµãµÄidºÅ
-  * @retval ÎŞ
+  * @brief   ç”¨äºå¤„ç†æˆ–æŠ¥å‘Šè§¦å±é‡Šæ”¾
+  * @param é‡Šæ”¾ç‚¹çš„idå·
+  * @retval æ— 
   */
 static void GTP_Touch_Up( int32_t id)
 {
 	
 
-    /*´¦Àí´¥ÃşÊÍ·Å,ÓÃÓÚ´¥Ãş»­°å*/
+    /*å¤„ç†è§¦æ‘¸é‡Šæ”¾,ç”¨äºè§¦æ‘¸ç”»æ¿*/
     Touch_Icon_Up(pre_x[id],pre_y[id]);
 
 		/*****************************************/
-		/*ÔÚ´Ë´¦Ìí¼Ó×Ô¼ºµÄ´¥ÃşµãÊÍ·ÅÊ±µÄ´¦Àí¹ı³Ì¼´¿É*/
-		/* pre_x[id],pre_y[id] ¼´Îª×îĞÂµÄÊÍ·Åµã ****/
+		/*åœ¨æ­¤å¤„æ·»åŠ è‡ªå·±çš„è§¦æ‘¸ç‚¹é‡Šæ”¾æ—¶çš„å¤„ç†è¿‡ç¨‹å³å¯*/
+		/* pre_x[id],pre_y[id] å³ä¸ºæœ€æ–°çš„é‡Šæ”¾ç‚¹ ****/
 		/*******************************************/	
-		/***idÎª¹ì¼£±àºÅ(¶àµã´¥¿ØÊ±ÓĞ¶à¹ì¼£)********/
+		/***idä¸ºè½¨è¿¹ç¼–å·(å¤šç‚¹è§¦æ§æ—¶æœ‰å¤šè½¨è¿¹)********/
 	
 	
-    /*´¥±ÊÊÍ·Å£¬°Ñpre xy ÖØÖÃÎª¸º*/
+    /*è§¦ç¬”é‡Šæ”¾ï¼ŒæŠŠpre xy é‡ç½®ä¸ºè´Ÿ*/
 	  pre_x[id] = -1;
 	  pre_y[id] = -1;		
   
@@ -334,9 +334,9 @@ static void GTP_Touch_Up( int32_t id)
 
 
 /**
-  * @brief   ´¥ÆÁ´¦Àíº¯Êı£¬ÂÖÑ¯»òÕßÔÚ´¥ÃşÖĞ¶Ïµ÷ÓÃ
-  * @param ÎŞ
-  * @retval ÎŞ
+  * @brief   è§¦å±å¤„ç†å‡½æ•°ï¼Œè½®è¯¢æˆ–è€…åœ¨è§¦æ‘¸ä¸­æ–­è°ƒç”¨
+  * @param æ— 
+  * @retval æ— 
   */
 static void Goodix_TS_Work_Func(void)
 {
@@ -359,7 +359,7 @@ static void Goodix_TS_Work_Func(void)
 
     GTP_DEBUG_FUNC();
 
-    ret = GTP_I2C_Read(client_addr, point_data, 12);//10×Ö½Ú¼Ä´æÆ÷¼Ó2×Ö½ÚµØÖ·
+    ret = GTP_I2C_Read(client_addr, point_data, 12);//10å­—èŠ‚å¯„å­˜å™¨åŠ 2å­—èŠ‚åœ°å€
     if (ret < 0)
     {
         GTP_ERROR("I2C transfer error. errno:%d\n ", ret);
@@ -367,37 +367,37 @@ static void Goodix_TS_Work_Func(void)
         return;
     }
     
-    finger = point_data[GTP_ADDR_LENGTH];//×´Ì¬¼Ä´æÆ÷Êı¾İ
+    finger = point_data[GTP_ADDR_LENGTH];//çŠ¶æ€å¯„å­˜å™¨æ•°æ®
 
-    if (finger == 0x00)		//Ã»ÓĞÊı¾İ£¬ÍË³ö
+    if (finger == 0x00)		//æ²¡æœ‰æ•°æ®ï¼Œé€€å‡º
     {
         return;
     }
 
-    if((finger & 0x80) == 0)//ÅĞ¶Ïbuffer statusÎ»
+    if((finger & 0x80) == 0)//åˆ¤æ–­buffer statusä½
     {
-        goto exit_work_func;//×ø±êÎ´¾ÍĞ÷£¬Êı¾İÎŞĞ§
+        goto exit_work_func;//åæ ‡æœªå°±ç»ªï¼Œæ•°æ®æ— æ•ˆ
     }
 
-    touch_num = finger & 0x0f;//×ø±êµãÊı
+    touch_num = finger & 0x0f;//åæ ‡ç‚¹æ•°
     if (touch_num > GTP_MAX_TOUCH)
     {
-        goto exit_work_func;//´óÓÚ×î´óÖ§³ÖµãÊı£¬´íÎóÍË³ö
+        goto exit_work_func;//å¤§äºæœ€å¤§æ”¯æŒç‚¹æ•°ï¼Œé”™è¯¯é€€å‡º
     }
 
-    if (touch_num > 1)//²»Ö¹Ò»¸öµã
+    if (touch_num > 1)//ä¸æ­¢ä¸€ä¸ªç‚¹
     {
         uint8_t buf[8 * GTP_MAX_TOUCH] = {(GTP_READ_COOR_ADDR + 10) >> 8, (GTP_READ_COOR_ADDR + 10) & 0xff};
 
         ret = GTP_I2C_Read(client_addr, buf, 2 + 8 * (touch_num - 1));
-        memcpy(&point_data[12], &buf[2], 8 * (touch_num - 1));			//¸´ÖÆÆäÓàµãÊıµÄÊı¾İµ½point_data
+        memcpy(&point_data[12], &buf[2], 8 * (touch_num - 1));			//å¤åˆ¶å…¶ä½™ç‚¹æ•°çš„æ•°æ®åˆ°point_data
     }
 
     
     
-    if (pre_touch>touch_num)				//pre_touch>touch_num,±íÊ¾ÓĞµÄµãÊÍ·ÅÁË
+    if (pre_touch>touch_num)				//pre_touch>touch_num,è¡¨ç¤ºæœ‰çš„ç‚¹é‡Šæ”¾äº†
     {
-        for (i = 0; i < pre_touch; i++)						//Ò»¸öµãÒ»¸öµã´¦Àí
+        for (i = 0; i < pre_touch; i++)						//ä¸€ä¸ªç‚¹ä¸€ä¸ªç‚¹å¤„ç†
          {
             uint8_t j;
            for(j=0; j<touch_num; j++)
@@ -407,7 +407,7 @@ static void Goodix_TS_Work_Func(void)
               if(pre_id[i] == id)
                 break;
 
-              if(j >= touch_num-1)											//±éÀúµ±Ç°ËùÓĞid¶¼ÕÒ²»µ½pre_id[i]£¬±íÊ¾ÒÑÊÍ·Å
+              if(j >= touch_num-1)											//éå†å½“å‰æ‰€æœ‰idéƒ½æ‰¾ä¸åˆ°pre_id[i]ï¼Œè¡¨ç¤ºå·²é‡Šæ”¾
               {
                  GTP_Touch_Up( pre_id[i]);
               }
@@ -418,23 +418,23 @@ static void Goodix_TS_Work_Func(void)
 
     if (touch_num)
     {
-        for (i = 0; i < touch_num; i++)						//Ò»¸öµãÒ»¸öµã´¦Àí
+        for (i = 0; i < touch_num; i++)						//ä¸€ä¸ªç‚¹ä¸€ä¸ªç‚¹å¤„ç†
         {
             coor_data = &point_data[i * 8 + 3];
 
             id = coor_data[0] & 0x0F;									//track id
             pre_id[i] = id;
 
-            input_x  = coor_data[1] | (coor_data[2] << 8);	//x×ø±ê
-            input_y  = coor_data[3] | (coor_data[4] << 8);	//y×ø±ê
+            input_x  = coor_data[1] | (coor_data[2] << 8);	//xåæ ‡
+            input_y  = coor_data[3] | (coor_data[4] << 8);	//yåæ ‡
             input_w  = coor_data[5] | (coor_data[6] << 8);	//size
         
             {
-                GTP_Touch_Down( id, input_x, input_y, input_w);//Êı¾İ´¦Àí
+                GTP_Touch_Down( id, input_x, input_y, input_w);//æ•°æ®å¤„ç†
             }
         }
     }
-    else if (pre_touch)		//touch_ num=0 ÇÒpre_touch£¡=0
+    else if (pre_touch)		//touch_ num=0 ä¸”pre_touchï¼=0
     {
       for(i=0;i<pre_touch;i++)
       {
@@ -459,9 +459,9 @@ exit_work_func:
 
 
 /**
-  * @brief   ¸ø´¥ÆÁĞ¾Æ¬ÖØĞÂ¸´Î»
-  * @param ÎŞ
-  * @retval ÎŞ
+  * @brief   ç»™è§¦å±èŠ¯ç‰‡é‡æ–°å¤ä½
+  * @param æ— 
+  * @retval æ— 
   */
  int8_t GTP_Reset_Guitar(void)
 {
@@ -469,12 +469,12 @@ exit_work_func:
 #if 1
     I2C_ResetChip();
     return 0;
-#else 		//Èí¼ş¸´Î»
+#else 		//è½¯ä»¶å¤ä½
     int8_t ret = -1;
     int8_t retry = 0;
     uint8_t reset_command[3]={(uint8_t)GTP_REG_COMMAND>>8,(uint8_t)GTP_REG_COMMAND&0xFF,2};
 
-    //Ğ´Èë¸´Î»ÃüÁî
+    //å†™å…¥å¤ä½å‘½ä»¤
     while(retry++ < 5)
     {
         ret = GTP_I2C_Write(GTP_ADDRESS, reset_command, 3);
@@ -495,9 +495,9 @@ exit_work_func:
 
 
  /**
-   * @brief   ½øÈëË¯ÃßÄ£Ê½
-   * @param ÎŞ
-   * @retval 1Îª³É¹¦£¬ÆäËüÎªÊ§°Ü
+   * @brief   è¿›å…¥ç¡çœ æ¨¡å¼
+   * @param æ— 
+   * @retval 1ä¸ºæˆåŠŸï¼Œå…¶å®ƒä¸ºå¤±è´¥
    */
 //int8_t GTP_Enter_Sleep(void)
 //{
@@ -547,9 +547,9 @@ int8_t GTP_Send_Command(uint8_t command)
 }
 
 /**
-  * @brief   »½ĞÑ´¥ÃşÆÁ
-  * @param ÎŞ
-  * @retval 0Îª³É¹¦£¬ÆäËüÎªÊ§°Ü
+  * @brief   å”¤é†’è§¦æ‘¸å±
+  * @param æ— 
+  * @retval 0ä¸ºæˆåŠŸï¼Œå…¶å®ƒä¸ºå¤±è´¥
   */
 int8_t GTP_WakeUp_Sleep(void)
 {
@@ -630,7 +630,7 @@ Output:
     uint8_t* cfg_info;
     uint8_t cfg_info_len  ;
 
-    uint8_t cfg_num =0x80FE-0x8047+1 ;		//ĞèÒªÅäÖÃµÄ¼Ä´æÆ÷¸öÊı
+    uint8_t cfg_num =0x80FE-0x8047+1 ;		//éœ€è¦é…ç½®çš„å¯„å­˜å™¨ä¸ªæ•°
 
     GTP_DEBUG_FUNC();
 
@@ -644,34 +644,34 @@ Output:
 				return ret;
     } 
 		
-		//»ñÈ¡´¥ÃşICµÄĞÍºÅ
+		//è·å–è§¦æ‘¸ICçš„å‹å·
     GTP_Read_Version(); 
 		
-		//¸ù¾İICµÄĞÍºÅÖ¸Ïò²»Í¬µÄÅäÖÃ
+		//æ ¹æ®ICçš„å‹å·æŒ‡å‘ä¸åŒçš„é…ç½®
 		if(touchIC == GT9157)
 		{
-			cfg_info =  CTP_CFG_GT9157; //Ö¸Ïò¼Ä´æÆ÷ÅäÖÃ
-			cfg_info_len = CFG_GROUP_LEN(CTP_CFG_GT9157);//¼ÆËãÅäÖÃ±íµÄ´óĞ¡
+			cfg_info =  CTP_CFG_GT9157; //æŒ‡å‘å¯„å­˜å™¨é…ç½®
+			cfg_info_len = CFG_GROUP_LEN(CTP_CFG_GT9157);//è®¡ç®—é…ç½®è¡¨çš„å¤§å°
 		}
 		else
 		{
-			cfg_info =  CTP_CFG_GT911;//Ö¸Ïò¼Ä´æÆ÷ÅäÖÃ
-			cfg_info_len = CFG_GROUP_LEN(CTP_CFG_GT911) ;//¼ÆËãÅäÖÃ±íµÄ´óĞ¡
+			cfg_info =  CTP_CFG_GT911;//æŒ‡å‘å¯„å­˜å™¨é…ç½®
+			cfg_info_len = CFG_GROUP_LEN(CTP_CFG_GT911) ;//è®¡ç®—é…ç½®è¡¨çš„å¤§å°
 		}			
 
     memset(&config[GTP_ADDR_LENGTH], 0, GTP_CONFIG_MAX_LENGTH);
     memcpy(&config[GTP_ADDR_LENGTH], cfg_info, cfg_info_len);
 		
-    //¼ÆËãÒªĞ´Èëchecksum¼Ä´æÆ÷µÄÖµ
+    //è®¡ç®—è¦å†™å…¥checksumå¯„å­˜å™¨çš„å€¼
     check_sum = 0;
     for (i = GTP_ADDR_LENGTH; i < cfg_num+GTP_ADDR_LENGTH; i++)
     {
         check_sum += config[i];
     }
     config[ cfg_num+GTP_ADDR_LENGTH] = (~check_sum) + 1; 	//checksum
-    config[ cfg_num+GTP_ADDR_LENGTH+1] =  1; 						//refresh ÅäÖÃ¸üĞÂ±êÖ¾
+    config[ cfg_num+GTP_ADDR_LENGTH+1] =  1; 						//refresh é…ç½®æ›´æ–°æ ‡å¿—
 
-    //Ğ´ÈëÅäÖÃĞÅÏ¢
+    //å†™å…¥é…ç½®ä¿¡æ¯
     for (retry = 0; retry < 5; retry++)
     {
         ret = GTP_I2C_Write(GTP_ADDRESS, config , cfg_num + GTP_ADDR_LENGTH+2);
@@ -680,23 +680,23 @@ Output:
             break;
         }
     }
-    Delay(0xfffff);				//ÑÓ³ÙµÈ´ıĞ¾Æ¬¸üĞÂ
+    Delay(0xfffff);				//å»¶è¿Ÿç­‰å¾…èŠ¯ç‰‡æ›´æ–°
 		
 
 		
-#if 1	//¶Á³öĞ´ÈëµÄÊı¾İ£¬¼ì²éÊÇ·ñÕı³£Ğ´Èë
-    //¼ìÑé¶Á³öµÄÊı¾İÓëĞ´ÈëµÄÊÇ·ñÏàÍ¬
+#if 1	//è¯»å‡ºå†™å…¥çš„æ•°æ®ï¼Œæ£€æŸ¥æ˜¯å¦æ­£å¸¸å†™å…¥
+    //æ£€éªŒè¯»å‡ºçš„æ•°æ®ä¸å†™å…¥çš„æ˜¯å¦ç›¸åŒ
 	{
     	    uint16_t i;
     	    uint8_t buf[200];
     	     buf[0] = config[0];
-    	     buf[1] =config[1];    //¼Ä´æÆ÷µØÖ·
+    	     buf[1] =config[1];    //å¯„å­˜å™¨åœ°å€
 
     	    GTP_DEBUG_FUNC();
 
     	    ret = GTP_I2C_Read(GTP_ADDRESS, buf, sizeof(buf));
 
-    	    //°æ±¾ºÅĞ´Èë0x00ºó£¬»á½øĞĞ¸´Î»£¬¸´Î»Îª0x41
+    	    //ç‰ˆæœ¬å·å†™å…¥0x00åï¼Œä¼šè¿›è¡Œå¤ä½ï¼Œå¤ä½ä¸º0x41
     	     config[GTP_ADDR_LENGTH] = 0x41;
 
     	    for(i=0;i<cfg_num+GTP_ADDR_LENGTH;i++)
@@ -714,7 +714,7 @@ Output:
 #endif
 	
 		GTP_DEBUG("I2C_GTP_IRQEnable 0");
-	 /*Ê¹ÄÜÖĞ¶Ï£¬ÕâÑù²ÅÄÜ¼ì²â´¥ÃşÊı¾İ*/
+	 /*ä½¿èƒ½ä¸­æ–­ï¼Œè¿™æ ·æ‰èƒ½æ£€æµ‹è§¦æ‘¸æ•°æ®*/
 		I2C_GTP_IRQEnable();
 	  GTP_DEBUG("I2C_GTP_IRQEnable 1");
     GTP_Get_Info();
@@ -736,7 +736,7 @@ Output:
 int32_t GTP_Read_Version(void)
 {
     int32_t ret = -1;
-    uint8_t buf[8] = {GTP_REG_VERSION >> 8, GTP_REG_VERSION & 0xff};    //¼Ä´æÆ÷µØÖ·
+    uint8_t buf[8] = {GTP_REG_VERSION >> 8, GTP_REG_VERSION & 0xff};    //å¯„å­˜å™¨åœ°å€
 
     GTP_DEBUG_FUNC();
 
@@ -751,7 +751,7 @@ int32_t GTP_Read_Version(void)
     {
         GTP_INFO("IC1 Version: %c%c%c_%02x%02x", buf[2], buf[3], buf[4], buf[7], buf[6]);
 				
-				//GT911Ğ¾Æ¬
+				//GT911èŠ¯ç‰‡
 				if(buf[2] == '9' && buf[3] == '1' && buf[4] == '1')
 					touchIC = GT911;
     }
@@ -759,7 +759,7 @@ int32_t GTP_Read_Version(void)
     {
         GTP_INFO("IC2 Version: %c%c%c%c_%02x%02x", buf[2], buf[3], buf[4], buf[5], buf[7], buf[6]);
 				
-				//GT9157Ğ¾Æ¬
+				//GT9157èŠ¯ç‰‡
 				if(buf[2] == '9' && buf[3] == '1' && buf[4] == '5' && buf[5] == '7')
 					touchIC = GT9157;
 		}
@@ -795,7 +795,7 @@ static int8_t GTP_I2C_Test( void)
     return ret;
 }
 
-//¼ì²âµ½´¥ÃşÖĞ¶ÏÊ±µ÷ÓÃ£¬
+//æ£€æµ‹åˆ°è§¦æ‘¸ä¸­æ–­æ—¶è°ƒç”¨ï¼Œ
 void GTP_TouchProcess(void)
 {
   GTP_DEBUG_FUNC();
@@ -803,7 +803,7 @@ void GTP_TouchProcess(void)
 
 }
 
-#if 0//Ã»ÓĞµ½µÄ²âÊÔº¯Êı
+#if 0//æ²¡æœ‰åˆ°çš„æµ‹è¯•å‡½æ•°
 /*******************************************************
 Function:
     Request gpio(INT & RST) ports.
@@ -830,7 +830,7 @@ static int8_t GTP_Request_IRQ(struct goodix_ts_data *ts)
 {
 }
 
-//Êä³öÒª³õÊ¼»¯µÄÊı¾İ¼°Ğ¾Æ¬ÖĞµÄÕæÊµÊı¾İ
+//è¾“å‡ºè¦åˆå§‹åŒ–çš„æ•°æ®åŠèŠ¯ç‰‡ä¸­çš„çœŸå®æ•°æ®
 static void GT91xx_Config_Read_Proc(void)
 {
     char temp_data[GTP_CONFIG_MAX_LENGTH + 2] = {0x80, 0x47};
@@ -859,7 +859,7 @@ static void GT91xx_Config_Read_Proc(void)
 
 }
 
-//ÏòĞ¾Æ¬Ğ´ÈëÅäÖÃÊı¾İ
+//å‘èŠ¯ç‰‡å†™å…¥é…ç½®æ•°æ®
 static int32_t GT91xx_Config_Write_Proc(void)
 {
     int32_t ret = -1;
@@ -867,7 +867,7 @@ static int32_t GT91xx_Config_Write_Proc(void)
     int32_t i = 0;
     uint8_t check_sum = 0;
     int32_t retry = 0;
-    uint8_t cfg_num =0x80FE-0x8047+1 ;		//ĞèÒªÅäÖÃµÄ¼Ä´æÆ÷¸öÊı
+    uint8_t cfg_num =0x80FE-0x8047+1 ;		//éœ€è¦é…ç½®çš„å¯„å­˜å™¨ä¸ªæ•°
 
     uint8_t cfg_info[] = CTP_CFG_GROUP1;
     uint8_t cfg_info_len =CFG_GROUP_LEN(cfg_info) ;
@@ -877,16 +877,16 @@ static int32_t GT91xx_Config_Write_Proc(void)
     memset(&config[GTP_ADDR_LENGTH], 0, GTP_CONFIG_MAX_LENGTH);
     memcpy(&config[GTP_ADDR_LENGTH], cfg_info,cfg_info_len);
 
-    //¼ÆËãÒªĞ´Èëchecksum¼Ä´æÆ÷µÄÖµ
+    //è®¡ç®—è¦å†™å…¥checksumå¯„å­˜å™¨çš„å€¼
     check_sum = 0;
     for (i = GTP_ADDR_LENGTH; i < cfg_num+GTP_ADDR_LENGTH; i++)
     {
         check_sum += config[i];
     }
     config[ cfg_num+GTP_ADDR_LENGTH] = (~check_sum) + 1; 	//checksum
-    config[ cfg_num+GTP_ADDR_LENGTH+1] =  1; 						//refresh ÅäÖÃ¸üĞÂ±êÖ¾
+    config[ cfg_num+GTP_ADDR_LENGTH+1] =  1; 						//refresh é…ç½®æ›´æ–°æ ‡å¿—
 
-    //Ğ´ÈëÅäÖÃĞÅÏ¢
+    //å†™å…¥é…ç½®ä¿¡æ¯
     for (retry = 0; retry < 5; retry++)
     {
         ret = GTP_I2C_Write(GTP_ADDRESS, config , cfg_num + GTP_ADDR_LENGTH+2);

@@ -1,64 +1,63 @@
 #ifndef __I2C_TOUCH_H
-#define	__I2C_TOUCH_H
+#define __I2C_TOUCH_H
 
 #include "stm32f4xx.h"
 
-/* π”√»Ìº˛IIC£¨∞—SOFT_IIC∫Í…Ë÷√Œ™1£¨”≤º˛IIC‘Ú…Ë÷√Œ™0
-!! π”√”≤º˛IIC ±∑«≥£»›“◊≥ˆœ÷¥ÌŒÛ£¨≤ªÕ∆ºˆ*/
-#define SOFT_IIC      1
+/*‰ΩøÁî®ËΩØ‰ª∂IICÔºåÊääSOFT_IICÂÆèËÆæÁΩÆ‰∏∫1ÔºåÁ°¨‰ª∂IICÂàôËÆæÁΩÆ‰∏∫0
+!!‰ΩøÁî®Á°¨‰ª∂IICÊó∂ÈùûÂ∏∏ÂÆπÊòìÂá∫Áé∞ÈîôËØØÔºå‰∏çÊé®Ëçê*/
+#define SOFT_IIC 1
 
-/*…Ë∂® π”√µƒµÁ»›∆¡IIC…Ë±∏µÿ÷∑*/
-#define GTP_ADDRESS            0xBA
+/*ËÆæÂÆö‰ΩøÁî®ÁöÑÁîµÂÆπÂ±èIICËÆæÂ§áÂú∞ÂùÄ*/
+#define GTP_ADDRESS 0xBA
 
-#define I2CT_FLAG_TIMEOUT         ((uint32_t)0x1000)
-#define I2CT_LONG_TIMEOUT         ((uint32_t)(10 * I2CT_FLAG_TIMEOUT))
+#define I2CT_FLAG_TIMEOUT ((uint32_t)0x1000)
+#define I2CT_LONG_TIMEOUT ((uint32_t)(10 * I2CT_FLAG_TIMEOUT))
 
-/*I2C“˝Ω≈*/
-#define GTP_I2C                          I2C2
-#define GTP_I2C_CLK                      RCC_APB1Periph_I2C2
-#define GTP_I2C_CLK_INIT								RCC_APB1PeriphClockCmd	
+/*I2CÂºïËÑö*/
+#define GTP_I2C I2C2
+#define GTP_I2C_CLK RCC_APB1Periph_I2C2
+#define GTP_I2C_CLK_INIT RCC_APB1PeriphClockCmd
 
-#define GTP_I2C_SCL_PIN                  GPIO_Pin_4                 
-#define GTP_I2C_SCL_GPIO_PORT            GPIOH                       
-#define GTP_I2C_SCL_GPIO_CLK             RCC_AHB1Periph_GPIOH
-#define GTP_I2C_SCL_SOURCE               GPIO_PinSource4
-#define GTP_I2C_SCL_AF                   GPIO_AF_I2C2
+#define GTP_I2C_SCL_PIN GPIO_Pin_4
+#define GTP_I2C_SCL_GPIO_PORT GPIOH
+#define GTP_I2C_SCL_GPIO_CLK RCC_AHB1Periph_GPIOH
+#define GTP_I2C_SCL_SOURCE GPIO_PinSource4
+#define GTP_I2C_SCL_AF GPIO_AF_I2C2
 
-#define GTP_I2C_SDA_PIN                  GPIO_Pin_5                  
-#define GTP_I2C_SDA_GPIO_PORT            GPIOH                     
-#define GTP_I2C_SDA_GPIO_CLK             RCC_AHB1Periph_GPIOH
-#define GTP_I2C_SDA_SOURCE               GPIO_PinSource5
-#define GTP_I2C_SDA_AF                   GPIO_AF_I2C2
+#define GTP_I2C_SDA_PIN GPIO_Pin_5
+#define GTP_I2C_SDA_GPIO_PORT GPIOH
+#define GTP_I2C_SDA_GPIO_CLK RCC_AHB1Periph_GPIOH
+#define GTP_I2C_SDA_SOURCE GPIO_PinSource5
+#define GTP_I2C_SDA_AF GPIO_AF_I2C2
 
-/*∏¥Œª“˝Ω≈*/
-#define GTP_RST_GPIO_PORT                GPIOD
-#define GTP_RST_GPIO_CLK                 RCC_AHB1Periph_GPIOD
-#define GTP_RST_GPIO_PIN                 GPIO_Pin_11
-/*÷–∂œ“˝Ω≈*/
-#define GTP_INT_GPIO_PORT                GPIOD
-#define GTP_INT_GPIO_CLK                 RCC_AHB1Periph_GPIOD
-#define GTP_INT_GPIO_PIN                 GPIO_Pin_13
-#define GTP_INT_EXTI_PORTSOURCE          EXTI_PortSourceGPIOD
-#define GTP_INT_EXTI_PINSOURCE           EXTI_PinSource13
-#define GTP_INT_EXTI_LINE                EXTI_Line13
-#define GTP_INT_EXTI_IRQ                 EXTI15_10_IRQn
-/*÷–∂œ∑˛ŒÒ∫Ø ˝*/
-#define GTP_IRQHandler                   EXTI15_10_IRQHandler
+/*Â§ç‰ΩçÂºïËÑö*/
+#define GTP_RST_GPIO_PORT GPIOD
+#define GTP_RST_GPIO_CLK RCC_AHB1Periph_GPIOD
+#define GTP_RST_GPIO_PIN GPIO_Pin_11
+/*‰∏≠Êñ≠ÂºïËÑö*/
+#define GTP_INT_GPIO_PORT GPIOD
+#define GTP_INT_GPIO_CLK RCC_AHB1Periph_GPIOD
+#define GTP_INT_GPIO_PIN GPIO_Pin_13
+#define GTP_INT_EXTI_PORTSOURCE EXTI_PortSourceGPIOD
+#define GTP_INT_EXTI_PINSOURCE EXTI_PinSource13
+#define GTP_INT_EXTI_LINE EXTI_Line13
+#define GTP_INT_EXTI_IRQ EXTI15_10_IRQn
+/*‰∏≠Êñ≠ÊúçÂä°ÂáΩÊï∞*/
+#define GTP_IRQHandler EXTI15_10_IRQHandler
 
+//ËΩØ‰ª∂IIC‰ΩøÁî®ÁöÑÂÆè
+#define I2C_SCL_1() GPIO_SetBits(GTP_I2C_SCL_GPIO_PORT, GTP_I2C_SCL_PIN)   /* SCL = 1 */
+#define I2C_SCL_0() GPIO_ResetBits(GTP_I2C_SCL_GPIO_PORT, GTP_I2C_SCL_PIN) /* SCL = 0 */
 
-//»Ìº˛IIC π”√µƒ∫Í
-#define I2C_SCL_1()  GPIO_SetBits(GTP_I2C_SCL_GPIO_PORT, GTP_I2C_SCL_PIN)		/* SCL = 1 */
-#define I2C_SCL_0()  GPIO_ResetBits(GTP_I2C_SCL_GPIO_PORT, GTP_I2C_SCL_PIN)		/* SCL = 0 */
+#define I2C_SDA_1() GPIO_SetBits(GTP_I2C_SDA_GPIO_PORT, GTP_I2C_SDA_PIN)   /* SDA = 1 */
+#define I2C_SDA_0() GPIO_ResetBits(GTP_I2C_SDA_GPIO_PORT, GTP_I2C_SDA_PIN) /* SDA = 0 */
 
-#define I2C_SDA_1()  GPIO_SetBits(GTP_I2C_SDA_GPIO_PORT, GTP_I2C_SDA_PIN)		/* SDA = 1 */
-#define I2C_SDA_0()  GPIO_ResetBits(GTP_I2C_SDA_GPIO_PORT, GTP_I2C_SDA_PIN)		/* SDA = 0 */
+#define I2C_SDA_READ() GPIO_ReadInputDataBit(GTP_I2C_SDA_GPIO_PORT, GTP_I2C_SDA_PIN) /* ËØªSDAÂè£Á∫øÁä∂ÊÄÅ */
 
-#define I2C_SDA_READ()  GPIO_ReadInputDataBit(GTP_I2C_SDA_GPIO_PORT, GTP_I2C_SDA_PIN)	/* ∂¡SDAø⁄œﬂ◊¥Ã¨ */
-
-//∫Ø ˝Ω”ø⁄
+//ÂáΩÊï∞Êé•Âè£
 void I2C_Touch_Init(void);
-uint32_t I2C_WriteBytes(uint8_t ClientAddr,uint8_t* pBuffer,  uint8_t NumByteToWrite);
-uint32_t I2C_ReadBytes(uint8_t ClientAddr,uint8_t* pBuffer, uint16_t NumByteToRead);
+uint32_t I2C_WriteBytes(uint8_t ClientAddr, uint8_t *pBuffer, uint8_t NumByteToWrite);
+uint32_t I2C_ReadBytes(uint8_t ClientAddr, uint8_t *pBuffer, uint16_t NumByteToRead);
 void I2C_ResetChip(void);
 void I2C_GTP_IRQDisable(void);
 void I2C_GTP_IRQEnable(void);

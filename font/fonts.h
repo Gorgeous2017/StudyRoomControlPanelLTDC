@@ -57,17 +57,17 @@ extern "C"
   * @{
   */
 
-  /*×ÖÌå¸ñÊ½*/
+  /*å­—ä½“æ ¼å¼*/
   typedef struct _tFont
   {
-    const uint16_t *table; /*Ö¸Ïò×ÖÄ£Êı¾İµÄÖ¸Õë*/
-    uint16_t Width;        /*×ÖÄ£µÄÏñËØ¿í¶È*/
-    uint16_t Height;       /*×ÖÄ£µÄÏñËØ¸ß¶È*/
+    const uint16_t *table; /*æŒ‡å‘å­—æ¨¡æ•°æ®çš„æŒ‡é’ˆ*/
+    uint16_t Width;        /*å­—æ¨¡çš„åƒç´ å®½åº¦*/
+    uint16_t Height;       /*å­—æ¨¡çš„åƒç´ é«˜åº¦*/
   } sFONT;
 
-  /*ÕâĞ©¿ÉÑ¡µÄ×ÖÌå¸ñÊ½¶¨ÒåÔÚfonts.cÎÄ¼ş*/
+  /*è¿™äº›å¯é€‰çš„å­—ä½“æ ¼å¼å®šä¹‰åœ¨fonts.cæ–‡ä»¶*/
 
-  extern sFONT Font48x96; /* ÊÒÄÚ¿ØÖÆÃæ°åÓÃ ´óASCIIÂë×ÖÄ£ */
+  extern sFONT Font48x96; /* å®¤å†…æ§åˆ¶é¢æ¿ç”¨ å¤§ASCIIç å­—æ¨¡ */
 
   extern sFONT Font16x24;
   extern sFONT Font12x12;
