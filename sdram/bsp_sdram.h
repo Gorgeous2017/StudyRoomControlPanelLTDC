@@ -4,19 +4,19 @@
 #include "stm32f4xx.h"
 #include <stdio.h>
 
-#define IS42S16400J_SIZE 0x800000 //400000*16bits = 0x800000  ï¼Œ8Må­—èŠ‚
+#define IS42S16400J_SIZE 0x800000 //400000*16bits = 0x800000  £¬8M×Ö½Ú
 
-/*SDRAM çš„banké€‰æ‹©*/
+/*SDRAM µÄbankÑ¡Ôñ*/
 #define FMC_BANK_SDRAM FMC_Bank2_SDRAM
 #define FMC_COMMAND_TARGET_BANK FMC_Command_Target_bank2
 
 /**
-  * @brief  FMC SDRAM æ•°æ®åŸºåœ°å€
+  * @brief  FMC SDRAM Êı¾İ»ùµØÖ·
   */
 #define SDRAM_BANK_ADDR ((uint32_t)0xD0000000)
 
 /**
-  * @brief  FMC SDRAM æ•°æ®å®½åº¦
+  * @brief  FMC SDRAM Êı¾İ¿í¶È
   */
 /* #define SDRAM_MEMORY_WIDTH   FMC_SDMemory_Width_8b  */
 #define SDRAM_MEMORY_WIDTH FMC_SDMemory_Width_16b
@@ -28,13 +28,13 @@
 #define SDRAM_CAS_LATENCY FMC_CAS_Latency_3
 
 /**
-  * @brief  FMC SDRAM SDCLKæ—¶é’Ÿåˆ†é¢‘å› å­
+  * @brief  FMC SDRAM SDCLKÊ±ÖÓ·ÖÆµÒò×Ó
   */
 #define SDCLOCK_PERIOD FMC_SDClock_Period_2 /* Default configuration used with LCD */
 /* #define SDCLOCK_PERIOD    FMC_SDClock_Period_3 */
 
 /**
-  * @brief  FMC SDRAM çªå‘è¯»å–ç‰¹æ€§
+  * @brief  FMC SDRAM Í»·¢¶ÁÈ¡ÌØĞÔ
   */
 #define SDRAM_READBURST FMC_Read_Burst_Disable /* Default configuration used with LCD */
 /* #define SDRAM_READBURST    FMC_Read_Burst_Enable  */
@@ -45,7 +45,7 @@
 /* #define SDRAM_BANK_REMAP */
 
 /**
-  * @brief  FMC SDRAM æ¨¡å¼é…ç½®çš„å¯„å­˜å™¨ç›¸å…³å®šä¹‰
+  * @brief  FMC SDRAM Ä£Ê½ÅäÖÃµÄ¼Ä´æÆ÷Ïà¹Ø¶¨Òå
   */
 #define SDRAM_MODEREG_BURST_LENGTH_1 ((uint16_t)0x0000)
 #define SDRAM_MODEREG_BURST_LENGTH_2 ((uint16_t)0x0001)
@@ -59,22 +59,22 @@
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE ((uint16_t)0x0200)
 
-/*ä¿¡æ¯è¾“å‡º*/
+/*ĞÅÏ¢Êä³ö*/
 #define SDRAM_DEBUG_ON 1
 
 #define SDRAM_INFO(fmt, arg...) printf("<<-SDRAM-INFO->> " fmt "\n", ##arg)
 #define SDRAM_ERROR(fmt, arg...) printf("<<-SDRAM-ERROR->> " fmt "\n", ##arg)
-#define SDRAM_DEBUG(fmt, arg...)                                        \
-	do                                                                  \
-	{                                                                   \
-		if (SDRAM_DEBUG_ON)                                             \
-			printf("<<-SDRAM-DEBUG->> [%d]" fmt "\n", __LINE__, ##arg); \
-	} while (0)
+#define SDRAM_DEBUG(fmt, arg...)                                  \
+  do                                                              \
+  {                                                               \
+    if (SDRAM_DEBUG_ON)                                           \
+      printf("<<-SDRAM-DEBUG->> [%d]" fmt "\n", __LINE__, ##arg); \
+  } while (0)
 /**
   * @}
   */
 
-/*åœ°å€ä¿¡å·çº¿*/
+/*µØÖ·ĞÅºÅÏß*/
 #define FMC_A0_GPIO_PORT GPIOF
 #define FMC_A0_GPIO_CLK RCC_AHB1Periph_GPIOF
 #define FMC_A0_GPIO_PIN GPIO_Pin_0
@@ -147,7 +147,7 @@
 #define FMC_A11_PINSOURCE GPIO_PinSource1
 #define FMC_A11_AF GPIO_AF_FMC
 
-/*æ•°æ®ä¿¡å·çº¿*/
+/*Êı¾İĞÅºÅÏß*/
 #define FMC_D0_GPIO_PORT GPIOD
 #define FMC_D0_GPIO_CLK RCC_AHB1Periph_GPIOD
 #define FMC_D0_GPIO_PIN GPIO_Pin_14
@@ -244,7 +244,7 @@
 #define FMC_D15_PINSOURCE GPIO_PinSource10
 #define FMC_D15_AF GPIO_AF_FMC
 
-/*æ§åˆ¶ä¿¡å·çº¿*/
+/*¿ØÖÆĞÅºÅÏß*/
 #define FMC_CS_GPIO_PORT GPIOH
 #define FMC_CS_GPIO_CLK RCC_AHB1Periph_GPIOH
 #define FMC_CS_GPIO_PIN GPIO_Pin_6
@@ -306,7 +306,7 @@
 #define FMC_LDQM_PINSOURCE GPIO_PinSource0
 #define FMC_LDQM_AF GPIO_AF_FMC
 
-/** @defgroup STM32429 SDRAMå‡½æ•°
+/** @defgroup STM32429 SDRAMº¯Êı
   * @{
   */
 void SDRAM_Init(void);

@@ -168,57 +168,12 @@ void GTP_IRQHandler(void)
 }
 
 void ST_USART_IRQHandler(void) {
-/*
-	if(USART_GetITStatus(ST_USART,USART_IT_RXNE) == SET) {
 
-		 USART_ClearFlag(ST_USART,USART_IT_RXNE); 
+	PANEL_DEBUG("Function: ST_USART_IRQHandler in ");
 
-	}
 
-	usart3[length_usart3++] = ST_USART->DR & (uint16_t)0x01FF;
-
-	if((length_usart3 == 5) || (usart3[0] != 0xfe))	{
-
-		if(length_usart3 == 5)			cmd_match();
-		//printf("lusart3[0]:%x\n",usart3[0]);
-		//printf("length:%d\n",length);
-		length_usart3 = 0;
-
-	}
-*/
-	printf("Function: ST_USART_IRQHandler in \n");
 }	
-/*
-void AP_USART_IRQHandler(void) {
 
-	if(USART_GetITStatus(AP_USART,USART_IT_RXNE) == SET) {
-
-		 USART_ClearFlag(AP_USART,USART_IT_RXNE); 
-		 usart1[length_usart1++] = AP_USART->DR & (uint16_t)0x01FF;
-		 // printf("length_usart1: %d,usart1:%d \n",length_usart1-1,usart1[length_usart1-1]);
-
-	}	else {
-		printf("USART_IT_RXNE NOT SET");
-	}
-
-
-	if(length_usart1 == 6 || (usart1[0] != 0xff))	{
-
-		if(length_usart1 == 6) {
-
-			int i=0;
-			while(i<6) {
-				
-				USART_SendData(USART3,usart1[i++]) ;
-				while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET){}
-
-			}
-		}
-			length_usart1 = 0;
-	}	
-
-}
-*/
 void AP_USART_IRQHandler(void) {
 
 	PANEL_DEBUG("Function: AP_USART_IRQHandler in ");
@@ -232,6 +187,8 @@ void AP_USART_IRQHandler(void) {
 		USART_ClearFlag(AP_USART,USART_IT_RXNE); 
 
 		ucTemp = USART_ReceiveData( AP_USART );
+
+		//PANEL_DEBUG("Receive char is %#X, count is %d", ucTemp, uCount);
 
 		if ( (ucTemp == statusMsg.MsgFlag) && (uCount == 0) ) { /* 接收到开始标志位，且之前没有收到消息 */
 

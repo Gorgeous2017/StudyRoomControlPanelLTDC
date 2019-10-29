@@ -4,13 +4,13 @@
   * @author  fire
   * @version V1.0
   * @date    2015-xx-xx
-  * @brief   sdramåº”ç”¨å‡½æ•°æ¥å£
+  * @brief   sdramÓ¦ÓÃº¯Êı½Ó¿Ú
   ******************************************************************************
   * @attention
   *
-  * å®éªŒå¹³å°:ç§‰ç«  STM32 F429 å¼€å‘æ¿  
-  * è®ºå›    :http://www.firebbs.cn
-  * æ·˜å®    :https://fire-stm32.taobao.com
+  * ÊµÑéÆ½Ì¨:±ü»ğ  STM32 F429 ¿ª·¢°å  
+  * ÂÛÌ³    :http://www.firebbs.cn
+  * ÌÔ±¦    :https://fire-stm32.taobao.com
   *
   ******************************************************************************
   */
@@ -18,8 +18,8 @@
 #include "./sdram/bsp_sdram.h"   
 
 /**
-  * @brief  å»¶è¿Ÿä¸€æ®µæ—¶é—´
-  * @param  å»¶è¿Ÿçš„æ—¶é—´é•¿åº¦
+  * @brief  ÑÓ³ÙÒ»¶ÎÊ±¼ä
+  * @param  ÑÓ³ÙµÄÊ±¼ä³¤¶È
   * @retval None
   */
 static void SDRAM_delay(__IO uint32_t nCount)
@@ -31,46 +31,46 @@ static void SDRAM_delay(__IO uint32_t nCount)
 }
 
 /**
-  * @brief  åˆå§‹åŒ–æ§åˆ¶SDRAMçš„IO
-  * @param  æ— 
-  * @retval æ— 
+  * @brief  ³õÊ¼»¯¿ØÖÆSDRAMµÄIO
+  * @param  ÎŞ
+  * @retval ÎŞ
   */
 static void SDRAM_GPIO_Config(void)
 {		
   GPIO_InitTypeDef GPIO_InitStructure;
   
-  /* ä½¿èƒ½SDRAMç›¸å…³çš„GPIOæ—¶é’Ÿ */
+  /* Ê¹ÄÜSDRAMÏà¹ØµÄGPIOÊ±ÖÓ */
 
-						 /*åœ°å€ä¿¡å·çº¿*/
+                         /*µØÖ·ĞÅºÅÏß*/
   RCC_AHB1PeriphClockCmd(FMC_A0_GPIO_CLK | FMC_A1_GPIO_CLK | FMC_A2_GPIO_CLK | 
-						 FMC_A3_GPIO_CLK | FMC_A4_GPIO_CLK | FMC_A5_GPIO_CLK |
-						 FMC_A6_GPIO_CLK | FMC_A7_GPIO_CLK | FMC_A8_GPIO_CLK |
-						 FMC_A9_GPIO_CLK | FMC_A10_GPIO_CLK| FMC_A11_GPIO_CLK|  
-						 /*æ•°æ®ä¿¡å·çº¿*/
-						 FMC_D0_GPIO_CLK | FMC_D1_GPIO_CLK | FMC_D2_GPIO_CLK | 
-						 FMC_D3_GPIO_CLK | FMC_D4_GPIO_CLK | FMC_D5_GPIO_CLK |
-						 FMC_D6_GPIO_CLK | FMC_D7_GPIO_CLK | FMC_D8_GPIO_CLK |
-						 FMC_D9_GPIO_CLK | FMC_D10_GPIO_CLK| FMC_D11_GPIO_CLK|
-						 FMC_D12_GPIO_CLK| FMC_D13_GPIO_CLK| FMC_D14_GPIO_CLK|
-						 FMC_D15_GPIO_CLK|  
-						 /*æ§åˆ¶ä¿¡å·çº¿*/
-						 FMC_CS_GPIO_CLK | FMC_BA0_GPIO_CLK | FMC_BA1_GPIO_CLK | 
-						 FMC_WE_GPIO_CLK | FMC_RAS_GPIO_CLK | FMC_CAS_GPIO_CLK |
-						 FMC_CLK_GPIO_CLK | FMC_CKE_GPIO_CLK | FMC_UDQM_GPIO_CLK |
-						 FMC_LDQM_GPIO_CLK, ENABLE);
+                         FMC_A3_GPIO_CLK | FMC_A4_GPIO_CLK | FMC_A5_GPIO_CLK |
+                         FMC_A6_GPIO_CLK | FMC_A7_GPIO_CLK | FMC_A8_GPIO_CLK |
+                         FMC_A9_GPIO_CLK | FMC_A10_GPIO_CLK| FMC_A11_GPIO_CLK|  
+                         /*Êı¾İĞÅºÅÏß*/
+                         FMC_D0_GPIO_CLK | FMC_D1_GPIO_CLK | FMC_D2_GPIO_CLK | 
+                         FMC_D3_GPIO_CLK | FMC_D4_GPIO_CLK | FMC_D5_GPIO_CLK |
+                         FMC_D6_GPIO_CLK | FMC_D7_GPIO_CLK | FMC_D8_GPIO_CLK |
+                         FMC_D9_GPIO_CLK | FMC_D10_GPIO_CLK| FMC_D11_GPIO_CLK|
+                         FMC_D12_GPIO_CLK| FMC_D13_GPIO_CLK| FMC_D14_GPIO_CLK|
+                         FMC_D15_GPIO_CLK|  
+                         /*¿ØÖÆĞÅºÅÏß*/
+                         FMC_CS_GPIO_CLK | FMC_BA0_GPIO_CLK | FMC_BA1_GPIO_CLK | 
+                         FMC_WE_GPIO_CLK | FMC_RAS_GPIO_CLK | FMC_CAS_GPIO_CLK |
+                         FMC_CLK_GPIO_CLK | FMC_CKE_GPIO_CLK | FMC_UDQM_GPIO_CLK |
+                         FMC_LDQM_GPIO_CLK, ENABLE);
 
 
   
-  /*-- GPIO é…ç½® -----------------------------------------------------*/
+  /*-- GPIO ÅäÖÃ -----------------------------------------------------*/
 
-  /* é€šç”¨ GPIO é…ç½® */
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;       //é…ç½®ä¸ºå¤ç”¨åŠŸèƒ½
+  /* Í¨ÓÃ GPIO ÅäÖÃ */
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;       //ÅäÖÃÎª¸´ÓÃ¹¦ÄÜ
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;   
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;      //æ¨æŒ½è¾“å‡º
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;      //ÍÆÍìÊä³ö
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;   
   
   
-  /*åœ°å€ä¿¡å·çº¿ é’ˆå¯¹å¼•è„šé…ç½®*/
+  /*µØÖ·ĞÅºÅÏß Õë¶ÔÒı½ÅÅäÖÃ*/
   GPIO_InitStructure.GPIO_Pin = FMC_A0_GPIO_PIN; 
   GPIO_Init(FMC_A0_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_A0_GPIO_PORT, FMC_A0_PINSOURCE , FMC_A0_AF);
@@ -120,7 +120,7 @@ static void SDRAM_GPIO_Config(void)
   GPIO_PinAFConfig(FMC_A11_GPIO_PORT, FMC_A11_PINSOURCE , FMC_A11_AF);
   
   
-  /*æ•°æ®ä¿¡å·çº¿ é’ˆå¯¹å¼•è„šé…ç½®*/
+  /*Êı¾İĞÅºÅÏß Õë¶ÔÒı½ÅÅäÖÃ*/
   GPIO_InitStructure.GPIO_Pin = FMC_D0_GPIO_PIN; 
   GPIO_Init(FMC_D0_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_D0_GPIO_PORT, FMC_D0_PINSOURCE , FMC_D0_AF);
@@ -128,7 +128,7 @@ static void SDRAM_GPIO_Config(void)
   GPIO_InitStructure.GPIO_Pin = FMC_D1_GPIO_PIN; 
   GPIO_Init(FMC_D1_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_D1_GPIO_PORT, FMC_D1_PINSOURCE , FMC_D1_AF);
-	
+    
   GPIO_InitStructure.GPIO_Pin = FMC_D2_GPIO_PIN; 
   GPIO_Init(FMC_D2_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_D2_GPIO_PORT, FMC_D2_PINSOURCE , FMC_D2_AF);
@@ -185,7 +185,7 @@ static void SDRAM_GPIO_Config(void)
   GPIO_Init(FMC_D15_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_D15_GPIO_PORT, FMC_D15_PINSOURCE , FMC_D15_AF);
   
-  /*æ§åˆ¶ä¿¡å·çº¿*/
+  /*¿ØÖÆĞÅºÅÏß*/
   GPIO_InitStructure.GPIO_Pin = FMC_CS_GPIO_PIN; 
   GPIO_Init(FMC_CS_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_CS_GPIO_PORT, FMC_CS_PINSOURCE , FMC_CS_AF);
@@ -197,7 +197,7 @@ static void SDRAM_GPIO_Config(void)
   GPIO_InitStructure.GPIO_Pin = FMC_BA1_GPIO_PIN;
   GPIO_Init(FMC_BA1_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_BA1_GPIO_PORT, FMC_BA1_PINSOURCE , FMC_BA1_AF);
-	
+    
   GPIO_InitStructure.GPIO_Pin = FMC_WE_GPIO_PIN; 
   GPIO_Init(FMC_WE_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_WE_GPIO_PORT, FMC_WE_PINSOURCE , FMC_WE_AF);
@@ -205,7 +205,7 @@ static void SDRAM_GPIO_Config(void)
   GPIO_InitStructure.GPIO_Pin = FMC_RAS_GPIO_PIN; 
   GPIO_Init(FMC_RAS_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_RAS_GPIO_PORT, FMC_RAS_PINSOURCE , FMC_RAS_AF);
-	
+    
   GPIO_InitStructure.GPIO_Pin = FMC_CAS_GPIO_PIN; 
   GPIO_Init(FMC_CAS_GPIO_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FMC_CAS_GPIO_PORT, FMC_CAS_PINSOURCE , FMC_CAS_AF);
@@ -230,7 +230,7 @@ static void SDRAM_GPIO_Config(void)
 }
 
 /**
-  * @brief  å¯¹SDRAMèŠ¯ç‰‡è¿›è¡Œåˆå§‹åŒ–é…ç½®
+  * @brief  ¶ÔSDRAMĞ¾Æ¬½øĞĞ³õÊ¼»¯ÅäÖÃ
   * @param  None. 
   * @retval None.
   */
@@ -240,81 +240,81 @@ static void SDRAM_InitSequence(void)
   uint32_t tmpr = 0;
   
 /* Step 3 --------------------------------------------------------------------*/
-  /* é…ç½®å‘½ä»¤ï¼šå¼€å¯æä¾›ç»™SDRAMçš„æ—¶é’Ÿ */
+  /* ÅäÖÃÃüÁî£º¿ªÆôÌá¹©¸øSDRAMµÄÊ±ÖÓ */
   FMC_SDRAMCommandStructure.FMC_CommandMode = FMC_Command_Mode_CLK_Enabled;
   FMC_SDRAMCommandStructure.FMC_CommandTarget = FMC_COMMAND_TARGET_BANK;
   FMC_SDRAMCommandStructure.FMC_AutoRefreshNumber = 1;
   FMC_SDRAMCommandStructure.FMC_ModeRegisterDefinition = 0;
-  /* æ£€æŸ¥SDRAMæ ‡å¿—ï¼Œç­‰å¾…è‡³SDRAMç©ºé—² */ 
+  /* ¼ì²éSDRAM±êÖ¾£¬µÈ´ıÖÁSDRAM¿ÕÏĞ */ 
   while(FMC_GetFlagStatus(FMC_BANK_SDRAM, FMC_FLAG_Busy) != RESET)
   {
   }
-  /* å‘é€ä¸Šè¿°å‘½ä»¤*/
+  /* ·¢ËÍÉÏÊöÃüÁî*/
   FMC_SDRAMCmdConfig(&FMC_SDRAMCommandStructure);  
   
 /* Step 4 --------------------------------------------------------------------*/
-  /* çº¦100msçš„å»¶æ—¶ */
+  /* Ô¼100msµÄÑÓÊ± */
   SDRAM_delay(10);
-	
+    
 /* Step 5 --------------------------------------------------------------------*/
-  /* é…ç½®å‘½ä»¤ï¼šå¯¹æ‰€æœ‰çš„banké¢„å……ç”µ */ 
+  /* ÅäÖÃÃüÁî£º¶ÔËùÓĞµÄbankÔ¤³äµç */ 
   FMC_SDRAMCommandStructure.FMC_CommandMode = FMC_Command_Mode_PALL;
   FMC_SDRAMCommandStructure.FMC_CommandTarget = FMC_COMMAND_TARGET_BANK;
   FMC_SDRAMCommandStructure.FMC_AutoRefreshNumber = 1;
   FMC_SDRAMCommandStructure.FMC_ModeRegisterDefinition = 0;
-  /* æ£€æŸ¥SDRAMæ ‡å¿—ï¼Œç­‰å¾…è‡³SDRAMç©ºé—² */ 
+  /* ¼ì²éSDRAM±êÖ¾£¬µÈ´ıÖÁSDRAM¿ÕÏĞ */ 
   while(FMC_GetFlagStatus(FMC_BANK_SDRAM, FMC_FLAG_Busy) != RESET)
   {
   }
-   /* å‘é€ä¸Šè¿°å‘½ä»¤*/
+   /* ·¢ËÍÉÏÊöÃüÁî*/
   FMC_SDRAMCmdConfig(&FMC_SDRAMCommandStructure);
   
 /* Step 6 --------------------------------------------------------------------*/
-  /* é…ç½®å‘½ä»¤ï¼šè‡ªåŠ¨åˆ·æ–° */   
+  /* ÅäÖÃÃüÁî£º×Ô¶¯Ë¢ĞÂ */   
   FMC_SDRAMCommandStructure.FMC_CommandMode = FMC_Command_Mode_AutoRefresh;
   FMC_SDRAMCommandStructure.FMC_CommandTarget = FMC_COMMAND_TARGET_BANK;
   FMC_SDRAMCommandStructure.FMC_AutoRefreshNumber = 4;
   FMC_SDRAMCommandStructure.FMC_ModeRegisterDefinition = 0;
-  /* æ£€æŸ¥SDRAMæ ‡å¿—ï¼Œç­‰å¾…è‡³SDRAMç©ºé—² */ 
+  /* ¼ì²éSDRAM±êÖ¾£¬µÈ´ıÖÁSDRAM¿ÕÏĞ */ 
   while(FMC_GetFlagStatus(FMC_BANK_SDRAM, FMC_FLAG_Busy) != RESET)
   {
   }
-   /* å‘é€ç¬¬1æ¬¡è‡ªåŠ¨åˆ·æ–°å‘½ä»¤*/
+   /* ·¢ËÍµÚ1´Î×Ô¶¯Ë¢ĞÂÃüÁî*/
   FMC_SDRAMCmdConfig(&FMC_SDRAMCommandStructure);
   
-  /* æ£€æŸ¥SDRAMæ ‡å¿—ï¼Œç­‰å¾…è‡³SDRAMç©ºé—² */ 
+  /* ¼ì²éSDRAM±êÖ¾£¬µÈ´ıÖÁSDRAM¿ÕÏĞ */ 
   while(FMC_GetFlagStatus(FMC_BANK_SDRAM, FMC_FLAG_Busy) != RESET)
   {
   }
-   /* å‘é€ç¬¬2æ¬¡è‡ªåŠ¨åˆ·æ–°å‘½ä»¤*/
+   /* ·¢ËÍµÚ2´Î×Ô¶¯Ë¢ĞÂÃüÁî*/
   FMC_SDRAMCmdConfig(&FMC_SDRAMCommandStructure);
   
 /* Step 7 --------------------------------------------------------------------*/
-  /* è®¾ç½®sdramå¯„å­˜å™¨é…ç½® */
+  /* ÉèÖÃsdram¼Ä´æÆ÷ÅäÖÃ */
   tmpr = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_2          |
-				   SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   |
-				   SDRAM_MODEREG_CAS_LATENCY_3           |
-				   SDRAM_MODEREG_OPERATING_MODE_STANDARD |
-				   SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;
+                   SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   |
+                   SDRAM_MODEREG_CAS_LATENCY_3           |
+                   SDRAM_MODEREG_OPERATING_MODE_STANDARD |
+                   SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;
   
-  /* é…ç½®å‘½ä»¤ï¼šè®¾ç½®SDRAMå¯„å­˜å™¨ */
+  /* ÅäÖÃÃüÁî£ºÉèÖÃSDRAM¼Ä´æÆ÷ */
   FMC_SDRAMCommandStructure.FMC_CommandMode = FMC_Command_Mode_LoadMode;
   FMC_SDRAMCommandStructure.FMC_CommandTarget = FMC_COMMAND_TARGET_BANK;
   FMC_SDRAMCommandStructure.FMC_AutoRefreshNumber = 1;
   FMC_SDRAMCommandStructure.FMC_ModeRegisterDefinition = tmpr;
-  /* æ£€æŸ¥SDRAMæ ‡å¿—ï¼Œç­‰å¾…è‡³SDRAMç©ºé—² */ 
+  /* ¼ì²éSDRAM±êÖ¾£¬µÈ´ıÖÁSDRAM¿ÕÏĞ */ 
   while(FMC_GetFlagStatus(FMC_BANK_SDRAM, FMC_FLAG_Busy) != RESET)
   {
   }
-   /* å‘é€ä¸Šè¿°å‘½ä»¤*/
+   /* ·¢ËÍÉÏÊöÃüÁî*/
   FMC_SDRAMCmdConfig(&FMC_SDRAMCommandStructure);
   
 /* Step 8 --------------------------------------------------------------------*/
 
-  /* è®¾ç½®åˆ·æ–°è®¡æ•°å™¨ */
+  /* ÉèÖÃË¢ĞÂ¼ÆÊıÆ÷ */
   /* (15.62 us x Freq) - 20 */
   FMC_SetRefreshCount(1386);
-  /* å‘é€ä¸Šè¿°å‘½ä»¤*/
+  /* ·¢ËÍÉÏÊöÃüÁî*/
   while(FMC_GetFlagStatus(FMC_BANK_SDRAM, FMC_FLAG_Busy) != RESET)
   {
   }
@@ -322,8 +322,8 @@ static void SDRAM_InitSequence(void)
 
 
 /**
-  * @brief  åˆå§‹åŒ–é…ç½®ä½¿ç”¨SDRAMçš„FMCåŠGPIOæ¥å£ï¼Œ
-  *         æœ¬å‡½æ•°åœ¨SDRAMè¯»å†™æ“ä½œå‰éœ€è¦è¢«è°ƒç”¨
+  * @brief  ³õÊ¼»¯ÅäÖÃÊ¹ÓÃSDRAMµÄFMC¼°GPIO½Ó¿Ú£¬
+  *         ±¾º¯ÊıÔÚSDRAM¶ÁĞ´²Ù×÷Ç°ĞèÒª±»µ÷ÓÃ
   * @param  None
   * @retval None
   */
@@ -332,14 +332,14 @@ void SDRAM_Init(void)
   FMC_SDRAMInitTypeDef  FMC_SDRAMInitStructure;
   FMC_SDRAMTimingInitTypeDef  FMC_SDRAMTimingInitStructure; 
   
-  /* é…ç½®FMCæ¥å£ç›¸å…³çš„ GPIO*/
+  /* ÅäÖÃFMC½Ó¿ÚÏà¹ØµÄ GPIO*/
   SDRAM_GPIO_Config();
   
-  /* ä½¿èƒ½ FMC æ—¶é’Ÿ */
+  /* Ê¹ÄÜ FMC Ê±ÖÓ */
   RCC_AHB3PeriphClockCmd(RCC_AHB3Periph_FMC, ENABLE);
  
-  /* é…ç½® FMC ç›¸å…³å‚æ•° ---------------------------------------------------------*/
-  /* SDCLKï¼š 90 Mhz (HCLK/2 :180Mhz/2) */
+  /* ÅäÖÃ FMC Ïà¹Ø²ÎÊı ---------------------------------------------------------*/
+  /* SDCLK£º 90 Mhz (HCLK/2 :180Mhz/2) */
   /* TMRD: 2 Clock cycles */
   FMC_SDRAMTimingInitStructure.FMC_LoadToActiveDelay    = 2;      
   /* TXSR: min=70ns (7x11.11ns) */
@@ -355,27 +355,27 @@ void SDRAM_Init(void)
   /* TRCD: 20ns => 2x11.11ns */
   FMC_SDRAMTimingInitStructure.FMC_RCDDelay             = 2;
 
-/* FMC SDRAM æ§åˆ¶é…ç½® */
+/* FMC SDRAM ¿ØÖÆÅäÖÃ */
   FMC_SDRAMInitStructure.FMC_Bank = FMC_BANK_SDRAM;
-  /* è¡Œåœ°å€çº¿å®½åº¦: [7:0] */
+  /* ĞĞµØÖ·Ïß¿í¶È: [7:0] */
   FMC_SDRAMInitStructure.FMC_ColumnBitsNumber = FMC_ColumnBits_Number_8b;
-  /* åˆ—åœ°å€çº¿å®½åº¦: [11:0] */
+  /* ÁĞµØÖ·Ïß¿í¶È: [11:0] */
   FMC_SDRAMInitStructure.FMC_RowBitsNumber = FMC_RowBits_Number_12b;
-  /* æ•°æ®çº¿å®½åº¦ */
+  /* Êı¾İÏß¿í¶È */
   FMC_SDRAMInitStructure.FMC_SDMemoryDataWidth = SDRAM_MEMORY_WIDTH;
-  /* SDRAMå†…éƒ¨bankæ•°é‡*/
+  /* SDRAMÄÚ²¿bankÊıÁ¿*/
   FMC_SDRAMInitStructure.FMC_InternalBankNumber = FMC_InternalBank_Number_4;
-  /* CASæ½œä¼æœŸ */
+  /* CASÇ±·üÆÚ */
   FMC_SDRAMInitStructure.FMC_CASLatency = SDRAM_CAS_LATENCY; 
-  /* ç¦æ­¢å†™ä¿æŠ¤*/
+  /* ½ûÖ¹Ğ´±£»¤*/
   FMC_SDRAMInitStructure.FMC_WriteProtection = FMC_Write_Protection_Disable;
-  /* SDCLKæ—¶é’Ÿåˆ†é¢‘å› å­ï¼ŒSDCLK = HCLK/SDCLOCK_PERIOD*/
+  /* SDCLKÊ±ÖÓ·ÖÆµÒò×Ó£¬SDCLK = HCLK/SDCLOCK_PERIOD*/
   FMC_SDRAMInitStructure.FMC_SDClockPeriod = SDCLOCK_PERIOD; 
-  /* çªå‘è¯»æ¨¡å¼è®¾ç½®*/  
+  /* Í»·¢¶ÁÄ£Ê½ÉèÖÃ*/  
   FMC_SDRAMInitStructure.FMC_ReadBurst = SDRAM_READBURST;
-  /* è¯»å»¶è¿Ÿé…ç½® */
+  /* ¶ÁÑÓ³ÙÅäÖÃ */
   FMC_SDRAMInitStructure.FMC_ReadPipeDelay = FMC_ReadPipe_Delay_1;
-  /* SDRAMæ—¶åºå‚æ•° */
+  /* SDRAMÊ±Ğò²ÎÊı */
   FMC_SDRAMInitStructure.FMC_SDRAMTimingStruct = &FMC_SDRAMTimingInitStructure;
   
   /* FMC SDRAM bank initialization */
@@ -389,41 +389,41 @@ void SDRAM_Init(void)
 
 
 /**
-  * @brief  ä»¥â€œå­—â€ä¸ºå•ä½å‘sdramå†™å…¥æ•°æ® 
-  * @param  pBuffer: æŒ‡å‘æ•°æ®çš„æŒ‡é’ˆ 
-  * @param  uwWriteAddress: è¦å†™å…¥çš„SDRAMå†…éƒ¨åœ°å€
-  * @param  uwBufferSize: è¦å†™å…¥æ•°æ®å¤§å°
+  * @brief  ÒÔ¡°×Ö¡±Îªµ¥Î»ÏòsdramĞ´ÈëÊı¾İ 
+  * @param  pBuffer: Ö¸ÏòÊı¾İµÄÖ¸Õë 
+  * @param  uwWriteAddress: ÒªĞ´ÈëµÄSDRAMÄÚ²¿µØÖ·
+  * @param  uwBufferSize: ÒªĞ´ÈëÊı¾İ´óĞ¡
   * @retval None.
   */
 void SDRAM_WriteBuffer(uint32_t* pBuffer, uint32_t uwWriteAddress, uint32_t uwBufferSize)
 {
   __IO uint32_t write_pointer = (uint32_t)uwWriteAddress;
 
-  /* ç¦æ­¢å†™ä¿æŠ¤ */
+  /* ½ûÖ¹Ğ´±£»¤ */
   FMC_SDRAMWriteProtectionConfig(FMC_Bank2_SDRAM, DISABLE);
   
-  /* æ£€æŸ¥SDRAMæ ‡å¿—ï¼Œç­‰å¾…è‡³SDRAMç©ºé—² */ 
+  /* ¼ì²éSDRAM±êÖ¾£¬µÈ´ıÖÁSDRAM¿ÕÏĞ */ 
   while(FMC_GetFlagStatus(FMC_Bank2_SDRAM, FMC_FLAG_Busy) != RESET)
   {
   }
 
-  /* å¾ªç¯å†™å…¥æ•°æ® */
+  /* Ñ­»·Ğ´ÈëÊı¾İ */
   for (; uwBufferSize != 0; uwBufferSize--) 
   {
-	/* å‘é€æ•°æ®åˆ°SDRAM */
-	*(uint32_t *) (SDRAM_BANK_ADDR + write_pointer) = *pBuffer++;
+    /* ·¢ËÍÊı¾İµ½SDRAM */
+    *(uint32_t *) (SDRAM_BANK_ADDR + write_pointer) = *pBuffer++;
 
-	/* åœ°å€è‡ªå¢*/
-	write_pointer += 4;
+    /* µØÖ·×ÔÔö*/
+    write_pointer += 4;
   }
-	
+    
 }
 
 /**
-  * @brief  ä»SDRAMä¸­è¯»å–æ•°æ® 
-  * @param  pBuffer: æŒ‡å‘å­˜å‚¨æ•°æ®çš„buffer
-  * @param  ReadAddress: è¦è¯»å–æ•°æ®çš„åœ°å
-  * @param  uwBufferSize: è¦è¯»å–çš„æ•°æ®å¤§å°
+  * @brief  ´ÓSDRAMÖĞ¶ÁÈ¡Êı¾İ 
+  * @param  pBuffer: Ö¸Ïò´æ´¢Êı¾İµÄbuffer
+  * @param  ReadAddress: Òª¶ÁÈ¡Êı¾İµÄµØÊ®
+  * @param  uwBufferSize: Òª¶ÁÈ¡µÄÊı¾İ´óĞ¡
   * @retval None.
   */
 void SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBufferSize)
@@ -431,97 +431,97 @@ void SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBuff
   __IO uint32_t write_pointer = (uint32_t)uwReadAddress;
   
    
-  /* æ£€æŸ¥SDRAMæ ‡å¿—ï¼Œç­‰å¾…è‡³SDRAMç©ºé—² */  
+  /* ¼ì²éSDRAM±êÖ¾£¬µÈ´ıÖÁSDRAM¿ÕÏĞ */  
   while(FMC_GetFlagStatus(FMC_Bank2_SDRAM, FMC_FLAG_Busy) != RESET)
   {
   }
   
-  /*è¯»å–æ•°æ® */
+  /*¶ÁÈ¡Êı¾İ */
   for(; uwBufferSize != 0x00; uwBufferSize--)
   {
    *pBuffer++ = *(__IO uint32_t *)(SDRAM_BANK_ADDR + write_pointer );
-	
-   /* åœ°å€è‡ªå¢*/
-	write_pointer += 4;
+    
+   /* µØÖ·×ÔÔö*/
+    write_pointer += 4;
   } 
 }
 
 /**
-  * @brief  æµ‹è¯•SDRAMæ˜¯å¦æ­£å¸¸ 
+  * @brief  ²âÊÔSDRAMÊÇ·ñÕı³£ 
   * @param  None
-  * @retval æ­£å¸¸è¿”å›1ï¼Œå¼‚å¸¸è¿”å›0
+  * @retval Õı³£·µ»Ø1£¬Òì³£·µ»Ø0
   */
 uint8_t SDRAM_Test(void)
 {
-  /*å†™å…¥æ•°æ®è®¡æ•°å™¨*/
+  /*Ğ´ÈëÊı¾İ¼ÆÊıÆ÷*/
   uint32_t counter=0;
   
-  /* 8ä½çš„æ•°æ® */
+  /* 8Î»µÄÊı¾İ */
   uint8_t ubWritedata_8b = 0, ubReaddata_8b = 0;  
   
-  /* 16ä½çš„æ•°æ® */
+  /* 16Î»µÄÊı¾İ */
   uint16_t uhWritedata_16b = 0, uhReaddata_16b = 0; 
   
-  SDRAM_INFO("æ­£åœ¨æ£€æµ‹SDRAMï¼Œä»¥8ä½ã€16ä½çš„æ–¹å¼è¯»å†™sdram...");
+  SDRAM_INFO("ÕıÔÚ¼ì²âSDRAM£¬ÒÔ8Î»¡¢16Î»µÄ·½Ê½¶ÁĞ´sdram...");
 
 
-  /*æŒ‰8ä½æ ¼å¼è¯»å†™æ•°æ®ï¼Œå¹¶æ ¡éªŒ*/
+  /*°´8Î»¸ñÊ½¶ÁĞ´Êı¾İ£¬²¢Ğ£Ñé*/
   
-  /* æŠŠSDRAMæ•°æ®å…¨éƒ¨é‡ç½®ä¸º0 ï¼ŒIS42S16400J_SIZEæ˜¯ä»¥16ä½ä¸ºå•ä½çš„ */
+  /* °ÑSDRAMÊı¾İÈ«²¿ÖØÖÃÎª0 £¬IS42S16400J_SIZEÊÇÒÔ16Î»Îªµ¥Î»µÄ */
   for (counter = 0x00; counter < IS42S16400J_SIZE; counter++)
   {
-	*(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
+    *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
   }
   
-  /* å‘æ•´ä¸ªSDRAMå†™å…¥æ•°æ®  8ä½ */
+  /* ÏòÕû¸öSDRAMĞ´ÈëÊı¾İ  8Î» */
   for (counter = 0; counter < IS42S16400J_SIZE; counter++)
   {
-	*(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
+    *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
   }
   
-  /* è¯»å– SDRAM æ•°æ®å¹¶æ£€æµ‹*/
+  /* ¶ÁÈ¡ SDRAM Êı¾İ²¢¼ì²â*/
   for(counter = 0; counter<IS42S16400J_SIZE;counter++ )
   {
-	ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);  //ä»è¯¥åœ°å€è¯»å‡ºæ•°æ®
-	
-	if(ubReaddata_8b != (uint8_t)(ubWritedata_8b + counter))      //æ£€æµ‹æ•°æ®ï¼Œè‹¥ä¸ç›¸ç­‰ï¼Œè·³å‡ºå‡½æ•°,è¿”å›æ£€æµ‹å¤±è´¥ç»“æœã€‚
-	{
-	  SDRAM_ERROR("8ä½æ•°æ®è¯»å†™é”™è¯¯ï¼");
-	  return 0;
-	}
+    ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);  //´Ó¸ÃµØÖ·¶Á³öÊı¾İ
+    
+    if(ubReaddata_8b != (uint8_t)(ubWritedata_8b + counter))      //¼ì²âÊı¾İ£¬Èô²»ÏàµÈ£¬Ìø³öº¯Êı,·µ»Ø¼ì²âÊ§°Ü½á¹û¡£
+    {
+      SDRAM_ERROR("8Î»Êı¾İ¶ÁĞ´´íÎó£¡");
+      return 0;
+    }
   }
 	
   
-  /*æŒ‰16ä½æ ¼å¼è¯»å†™æ•°æ®ï¼Œå¹¶æ£€æµ‹*/
+  /*°´16Î»¸ñÊ½¶ÁĞ´Êı¾İ£¬²¢¼ì²â*/
   
-  /* æŠŠSDRAMæ•°æ®å…¨éƒ¨é‡ç½®ä¸º0 */
+  /* °ÑSDRAMÊı¾İÈ«²¿ÖØÖÃÎª0 */
   for (counter = 0x00; counter < IS42S16400J_SIZE/2; counter++)
   {
-	*(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)0x00;
+    *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)0x00;
   }
   
-  /* å‘æ•´ä¸ªSDRAMå†™å…¥æ•°æ®  16ä½ */
+  /* ÏòÕû¸öSDRAMĞ´ÈëÊı¾İ  16Î» */
   for (counter = 0; counter < IS42S16400J_SIZE/2; counter++)
   {
-	*(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)(uhWritedata_16b + counter);
+    *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)(uhWritedata_16b + counter);
   }
   
-	/* è¯»å– SDRAM æ•°æ®å¹¶æ£€æµ‹*/
+    /* ¶ÁÈ¡ SDRAM Êı¾İ²¢¼ì²â*/
   for(counter = 0; counter<IS42S16400J_SIZE/2;counter++ )
   {
-	uhReaddata_16b = *(__IO uint16_t*)(SDRAM_BANK_ADDR + 2*counter);  //ä»è¯¥åœ°å€è¯»å‡ºæ•°æ®
-	
-	if(uhReaddata_16b != (uint16_t)(uhWritedata_16b + counter))      //æ£€æµ‹æ•°æ®ï¼Œè‹¥ä¸ç›¸ç­‰ï¼Œè·³å‡ºå‡½æ•°,è¿”å›æ£€æµ‹å¤±è´¥ç»“æœã€‚
-	{
-	  SDRAM_ERROR("16ä½æ•°æ®è¯»å†™é”™è¯¯ï¼");
+    uhReaddata_16b = *(__IO uint16_t*)(SDRAM_BANK_ADDR + 2*counter);  //´Ó¸ÃµØÖ·¶Á³öÊı¾İ
+    
+    if(uhReaddata_16b != (uint16_t)(uhWritedata_16b + counter))      //¼ì²âÊı¾İ£¬Èô²»ÏàµÈ£¬Ìø³öº¯Êı,·µ»Ø¼ì²âÊ§°Ü½á¹û¡£
+    {
+      SDRAM_ERROR("16Î»Êı¾İ¶ÁĞ´´íÎó£¡");
 
-	  return 0;
-	}
+      return 0;
+    }
   }
 
   
-  SDRAM_INFO("SDRAMè¯»å†™æµ‹è¯•æ­£å¸¸ï¼");
-  /*æ£€æµ‹æ­£å¸¸ï¼Œreturn 1 */
+  SDRAM_INFO("SDRAM¶ÁĞ´²âÊÔÕı³££¡");
+  /*¼ì²âÕı³££¬return 1 */
   return 1;
   
 
