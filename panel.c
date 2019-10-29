@@ -15,6 +15,9 @@
 #include "./lcd/bsp_lcd.h" /* 显示屏驱动 */
 
 #include "panel.h" /* panel.c的头文件 */
+#include "panel_usart.h" 
+
+extern UartMsg statusUart;
  
 /* 图标结构体数组 */
 Touch_Icon status_icon[4];      /* 环境信息图标数组 */
@@ -49,14 +52,36 @@ void Panel_Init(void)
 
     /* 显示环境信息数字 */
     LCD_SetFont(&Font48x96);
-    LCD_SetTextColor(TEXT_COLOR);
-    LCD_DisplayStringLine(STATUS_ICON_START_Y,"15%");
-    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE),"36db");
-    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE) * 2,"25");
-    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE) * 3,"15%");
+    AP_DisplayStatus();
+
 
     PANEL_DEBUG("Draw String down ");
     
+}
+
+/**
+ * @brief 根据指令串显示环境信息
+ * 
+ */
+void AP_DisplayStatus(void) {
+
+    uint8_t i;
+    uint8_t ucTemp;
+
+    LCD_SetTextColor(TEXT_COLOR);
+
+    sprintf(ucTemp, "%d%c", statusUart.MsgBuff[1], "%");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y, ucTemp);
+
+    sprintf(ucTemp, "%d%s", statusUart.MsgBuff[2], "db");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE), ucTemp);
+
+    sprintf(ucTemp, "%d", statusUart.MsgBuff[3]);
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE) * 2, ucTemp);
+
+    sprintf(ucTemp, "%d%c", statusUart.MsgBuff[4], "%");
+    LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE) * 3, ucTemp);
+
 }
 
 /**
