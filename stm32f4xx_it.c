@@ -229,9 +229,9 @@ void AP_USART_IRQHandler(void) {
 
 	if (USART_GetITStatus(AP_USART, USART_IT_RXNE) != RESET) {
 
-		ucTemp = USART_ReceiveData( AP_USART );
+		USART_ClearFlag(AP_USART,USART_IT_RXNE); 
 
-		PANEL_DEBUG("Receive char is %#X, count is %d", ucTemp, uCount);
+		ucTemp = USART_ReceiveData( AP_USART );
 
 		if ( (ucTemp == statusMsg.MsgFlag) && (uCount == 0) ) { /* 接收到开始标志位，且之前没有收到消息 */
 
@@ -269,8 +269,6 @@ void AP_USART_IRQHandler(void) {
 			}
 
 		}
-
-		USART_ClearFlag(AP_USART,USART_IT_RXNE); 
 	
 	}
 
