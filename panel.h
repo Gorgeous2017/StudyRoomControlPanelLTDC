@@ -138,7 +138,7 @@ void Tag_Change(void *icon);
 void Control_Device(void *icon);
 void Switch_Model(void *sw);
 void Control_All_Device(void *icon);
-void AP_DisplayStatus(void);
+extern void AP_DisplayStatus(void);
 
 /* 图标状态设置函数 */
 void Set_IconStatus(Touch_Icon *IconArray, uint8_t num, uint8_t value);

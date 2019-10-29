@@ -66,7 +66,6 @@ void Panel_Init(void)
  */
 void AP_DisplayStatus(void) {
 
-	uint8_t i;
 	uint8_t ucTemp[5];
 
 	LCD_SetTextColor(TEXT_COLOR);
@@ -74,13 +73,13 @@ void AP_DisplayStatus(void) {
 	sprintf(ucTemp, "%d%s", statusMsg.MsgBuff[1], "%");
 	LCD_DisplayStringLine(STATUS_ICON_START_Y, ucTemp);
 
-	sprintf(ucTemp, "%d%s", statusMsg.MsgBuff[2], "db");
+	sprintf(ucTemp, "%d%s", statusMsg.MsgBuff[4], "db");
 	LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE), ucTemp);
 
-	sprintf(ucTemp, "%d", statusMsg.MsgBuff[3]);
+	sprintf(ucTemp, "%d", statusMsg.MsgBuff[2]);
 	LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE) * 2, ucTemp);
 
-	sprintf(ucTemp, "%d%s", statusMsg.MsgBuff[4], "%");
+	sprintf(ucTemp, "%d%s", statusMsg.MsgBuff[3], "%");
 	LCD_DisplayStringLine(STATUS_ICON_START_Y + (STATUS_ICON_OFFSET + ICON_SIZE) * 3, ucTemp);
 
 }

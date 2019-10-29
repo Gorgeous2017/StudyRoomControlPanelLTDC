@@ -24,6 +24,8 @@ void Send2ST(void* uartMsg ){
 				PANEL_DEBUG("MsgBuff[%d] = %#X", i, ptr->MsgBuff[i]);
 		}
 
+		AP_DisplayStatus();
+
 }
 
 
