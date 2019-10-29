@@ -56,9 +56,9 @@ UartMsg CtrlMsg;  /*!< 从ST接收到的云端下发的用电器控制信息  */
 
 void PANEL_USART_Config(void)
 {
-		AP_USART_Config();
-		ST_USART_Config();
-		NVIC_Configuration();
+	AP_USART_Config();
+	ST_USART_Config();
+	NVIC_Configuration();
 }
 
 /**
@@ -76,10 +76,10 @@ void PANEL_USART_Config(void)
  */
 
 /**
-	* @brief  AP_USART GPIO 配置,工作模式配置。115200 8-N-1
-	* @param  无
-	* @retval 无
-	*/
+  * @brief  AP_USART GPIO 配置,工作模式配置。115200 8-N-1
+  * @param  无
+  * @retval 无
+  */
 void AP_USART_Config(void)
 {
 

@@ -20,11 +20,11 @@
  */
 typedef struct
 {
-    uint8_t MsgBuff[10]; /*!< 串口信息缓存区 */
-    const uint8_t MsgLenth;    /*!< 串口信息的长度 */
-    const uint8_t MsgFlag;     /*!< 串口信息的首部和尾部标志 */
+    uint8_t MsgBuff[10];    /*!< 串口信息缓存区 */
+    const uint8_t MsgLenth; /*!< 串口信息的长度 */
+    const uint8_t MsgFlag;  /*!< 串口信息的首部和尾部标志 */
 
-    void (*MsgHandler)(void* uartMsg);
+    void (*MsgHandler)(void *uartMsg); /*!< 串口信息处理函数 */
 
 } UartMsg;
 

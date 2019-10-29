@@ -68,14 +68,14 @@ void Delay(__IO uint32_t nCount)
     // ...more member 
     @endcode
 
- * @note 用于初始化的变量不一定要赋值所有的成员，可以只赋值每个结构体中都相同的成员。但是这样的话在初始化变
+ * @note - 用于初始化的变量不一定要赋值所有的成员，可以只赋值每个结构体中都相同的成员。但是这样的话在初始化变
  * 量中没有赋值的成员必须在后面“设置结构体中与初始化值不一样的成员”中赋值，否则容易出现“硬错误(HardFault)”
  * 
- * @note Icon_Struct_Init 只能将source_icon的“全部成员”一同赋值给aim_icon，不能单独赋值某一个特定的成员，
+ * @note - Icon_Struct_Init 只能将source_icon的“全部成员”一同赋值给aim_icon，不能单独赋值某一个特定的成员，
  * 故此函数只适用于批量初始化 Touch_Icon 结构体中的成员，不适用于程序运行时批量修改 Touch_Icon 结构体中的
  * 某个成员
  * 
- * @note 若要将Matrix_Init()与Icon_Struct_Init()一起使用，务必将Matrix_Init()置于Icon_Struct_Init()之
+ * @note - 若要将Matrix_Init()与Icon_Struct_Init()一起使用，务必将Matrix_Init()置于Icon_Struct_Init()之
  * 后调用，并在Icon_Struct_Init()中将矩阵第一个图标的坐标赋值 start_x 和 start_y 成员
  */
 void Icon_Struct_Init(Touch_Icon *source_icon, Touch_Icon *aim_icon, uint8_t icon_num){
@@ -171,7 +171,8 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
  * @param LineOffset 图标间的垂直间距
  * @param ColumnOffset 图标间的水平间距
  * 
- * @par 用法示例：初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
+ * @par 初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
+ *  @verbatim 
  * 
  *         ——————              ——————              ——————  
  *        |      | <-- 20 --> |      | <-- 20 --> |      | 
@@ -186,9 +187,12 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
  *        |      | <-- 20 --> |      | <-- 20 --> |      | 
  *        |      |            |      |            |      | 
  *         ——————              ——————              ——————  
- * 
+ *  
+ *  @endverbatim 
  * 调用语句如下：
+ *  @code
  *     Matrix_Init(IconArray, 2, 3, 30, 20);
+ *  @endcode
  * 
  * @note 若要将Matrix_Init()与Icon_Struct_Init()一起使用，务必将Matrix_Init()于Icon_Struct_Init()
  * 之后调用，并在Icon_Struct_Init()中将矩阵第一个图标的坐标赋给 start_x 和 start_y 成员

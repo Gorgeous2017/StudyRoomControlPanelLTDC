@@ -20,14 +20,17 @@
 extern UartMsg statusUart;
  
 /* 图标结构体数组 */
-Touch_Icon status_icon[4];      /* 环境信息图标数组 */
-Touch_Icon menu_icon[3];        /* 菜单栏模式选择图标数组 */
-Touch_Icon single_ctrl_icon[4]; /* 独立控制页面 用电器类型选择图标数组 */
-Touch_Icon centre_ctrl_icon[4]; /* 集中控制页面 用电器集中控制图标数组 */
-Touch_Icon auto_ctrl_icon[2];   /* 自动控制页面 自动控制标签及控制开关图标数组 */
+Touch_Icon status_icon[4];      /*!<环境信息图标数组 */
+Touch_Icon menu_icon[3];        /*!< 菜单栏模式选择图标数组 */
+Touch_Icon single_ctrl_icon[4]; /*!< 独立控制页面 用电器类型选择图标数组 */
+Touch_Icon centre_ctrl_icon[4]; /*!< 集中控制页面 用电器集中控制图标数组 */
+Touch_Icon auto_ctrl_icon[2];   /*!< 自动控制页面 自动控制标签及控制开关图标数组 */
 
-Touch_Icon device[4][6]; /* 用电器独立控制图标数组 */
-                         /* 数组第一维表示用电器类型，第二维表示该类型的用电器 */
+/**
+ * @brief 用电器独立控制图标数组
+ * @details 数组第一维表示用电器类型，第二维表示该类型的用电器
+ */
+Touch_Icon device[4][6]; 
 
 /**
  * @brief 控制面板初始化函数
@@ -36,7 +39,7 @@ Touch_Icon device[4][6]; /* 用电器独立控制图标数组 */
 void Panel_Init(void)
 {
 
-    LCD_Clear(0xDBF0F9); /* 淡蓝背景色 */
+    LCD_Clear(BACK_COLOR); /* 淡蓝背景色 */
 
     /* 初始化图标 */
     Touch_Icon_Init();
@@ -160,7 +163,7 @@ void Status_Icon_Init(void) {
     Icon_InitStruct.gImage_icon[0] = gImage_people;
 
     Icon_Struct_Init(&Icon_InitStruct, status_icon, 4);
-    Matrix_Init(status_icon, 4, 1, 14, 0); // 四个图标纵向排列，间距为14 pixel
+    Matrix_Init(status_icon, 4, 1, STATUS_ICON_OFFSET, 0); // 四个图标纵向排列，间距为STATUS_ICON_OFFSET
 
     status_icon[0].gImage_icon[0] = gImage_people;
 
@@ -376,7 +379,6 @@ void Touch_Icon_Down(uint16_t x, uint16_t y){
 
 /**
  * @brief Touch_Icon_Up 图标被释放时调用的函数，由触摸屏调用
- * 
  * @param x 触摸最后释放时的x坐标
  * @param y 触摸最后释放时的y坐标
  * 
@@ -523,11 +525,6 @@ void Select_Device(void *icon){
 
     /* 重置用电器选择状态 */
     Set_IconStatus(single_ctrl_icon, 4, 0);
-
-    // single_ctrl_icon[0].status = 0;
-    // single_ctrl_icon[1].status = 0;
-    // single_ctrl_icon[2].status = 0;
-    // single_ctrl_icon[3].status = 0;
     
     /* 置该用电器的选择状态为真 */
     ptr->status = 1; 
