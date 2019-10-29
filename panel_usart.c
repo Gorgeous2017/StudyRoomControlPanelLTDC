@@ -39,7 +39,7 @@ void Send2ST(void* uartMsg ){
 
 UartMsg statusMsg = {
 		.MsgLenth = 6,
-		.MsgFlag = 0xFE,
+		.MsgFlag = 0xFF,
 		.MsgHandler = Send2ST
 }; /*!< 从AP接收到的环境信息 */
 
