@@ -58,7 +58,8 @@ UartMsg CtrlMsg;  /*!< 从ST接收到的云端下发的用电器控制信息  */
 
 void PANEL_USART_Config(void)
 {
-	AP_USART_Config();
+	DEBUG_USART_Config(); /* 调试串口配置 */
+	AP_USART_Config(); 
 	ST_USART_Config();
 	NVIC_Configuration();
 }
@@ -73,7 +74,7 @@ void PANEL_USART_Config(void)
  */
 
 /**
- * @defgroup Config
+ * @defgroup AP_Config
  * @{
  */
 
@@ -139,7 +140,7 @@ void AP_USART_Config(void)
  */
 
 /**
- * @defgroup Config
+ * @defgroup ST_Config
  * @{
  */
 
@@ -198,6 +199,66 @@ void ST_USART_Config(void)
  */
 
 /**
+ * @addtogroup DEBUG_UART
+ * @{
+ */
+
+/**
+ * @defgroup DEBUG_Config
+ * @{
+ */
+
+/**
+  * @brief  DEBUG_USART GPIO 配置,工作模式配置。115200 8-N-1
+  * @note	调试串口，无需使能中断
+  * @param  无
+  * @retval 无
+  */
+void DEBUG_USART_Config(void)
+{
+
+	GPIO_InitTypeDef GPIO_InitStructure;
+	USART_InitTypeDef USART_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(DEBUG_USART_TX_GPIO_CLK, ENABLE);
+
+	/* 使能 UART 时钟 */
+	RCC_APB2PeriphClockCmd(DEBUG_USART_CLK, ENABLE);
+
+	/*  连接 PXx 到 USARTx__Rx*/
+	GPIO_PinAFConfig(DEBUG_USART_TX_GPIO_PORT, DEBUG_USART_TX_SOURCE, DEBUG_USART_TX_AF);
+
+	/* 配置Tx引脚为复用功能  */
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+
+	GPIO_InitStructure.GPIO_Pin = DEBUG_USART_TX_PIN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(DEBUG_USART_TX_GPIO_PORT, &GPIO_InitStructure);
+
+	/* 配置串DEBUG_USART 模式 */
+	USART_InitStructure.USART_BaudRate = DEBUG_USART_BAUDRATE;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Tx;
+
+	USART_Init(DEBUG_USART, &USART_InitStructure);
+	USART_Cmd(DEBUG_USART, ENABLE);
+}
+
+/**
+ * @}
+ */
+
+/**
+ * @}
+ */
+
+
+/**
  * @defgroup NVIC
  * @brief 初始化AP和ST的串口中断
  * @{
@@ -241,27 +302,27 @@ void NVIC_Configuration(void)
  * @{
  */
 
-///重定向c库函数printf到串口AP_USART，重定向后可使用printf函数
+///重定向c库函数printf到串口DEBUG_USART，重定向后可使用printf函数
 int fputc(int ch, FILE *f)
 {
-	/* 发送一个字节数据到串口AP_USART */
-	USART_SendData(AP_USART, (uint8_t)ch);
+	/* 发送一个字节数据到串口DEBUG_USART */
+	USART_SendData(DEBUG_USART, (uint8_t)ch);
 
 	/* 等待发送完毕 */
-	while (USART_GetFlagStatus(AP_USART, USART_FLAG_TXE) == RESET)
+	while (USART_GetFlagStatus(DEBUG_USART, USART_FLAG_TXE) == RESET)
 		;
 
 	return (ch);
 }
 
-///重定向c库函数scanf到串口AP_USART，重写向后可使用scanf、getchar等函数
+///重定向c库函数scanf到串口DEBUG_USART，重写向后可使用scanf、getchar等函数
 int fgetc(FILE *f)
 {
 	/* 等待串口输入数据 */
-	while (USART_GetFlagStatus(AP_USART, USART_FLAG_RXNE) == RESET)
+	while (USART_GetFlagStatus(DEBUG_USART, USART_FLAG_RXNE) == RESET)
 		;
 
-	return (int)USART_ReceiveData(AP_USART);
+	return (int)USART_ReceiveData(DEBUG_USART);
 }
 
 /**

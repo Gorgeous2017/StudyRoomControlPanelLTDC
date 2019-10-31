@@ -188,7 +188,7 @@ void AP_USART_IRQHandler(void) {
 
 		ucTemp = USART_ReceiveData( AP_USART );
 
-		//PANEL_DEBUG("Receive char is %#X, count is %d", ucTemp, uCount);
+		PANEL_DEBUG("Receive char is %#X, count is %d", ucTemp, uCount);
 
 		if ( (ucTemp == statusMsg.MsgFlag) && (uCount == 0) ) { /* 接收到开始标志位，且之前没有收到消息 */
 

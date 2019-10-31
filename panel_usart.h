@@ -41,7 +41,7 @@ extern UartMsg statusMsg;
  */
 
 /**
- * @defgroup Macro
+ * @defgroup AP_Macro
  * @{
  */
 #define AP_USART USART1
@@ -78,7 +78,7 @@ extern UartMsg statusMsg;
  */
 
 /**
- * @defgroup Macro
+ * @defgroup ST_Macro
  * @{
  */
 #define ST_USART USART3
@@ -108,11 +108,48 @@ extern UartMsg statusMsg;
  * @} 
  */
 
+
+/**
+ * @defgroup DEBUG_UART
+ * @brief 用于输出调试信息的串口
+ * @{
+ */
+
+/**
+ * @defgroup DEBUG_Macro
+ * @{
+ */
+#define DEBUG_USART USART6
+#define DEBUG_USART_CLK RCC_APB2Periph_USART6
+#define DEBUG_USART_BAUDRATE 115200
+
+#define DEBUG_USART_TX_GPIO_PORT GPIOC
+#define DEBUG_USART_TX_GPIO_CLK RCC_AHB1Periph_GPIOC
+#define DEBUG_USART_TX_PIN GPIO_Pin_6
+#define DEBUG_USART_TX_AF GPIO_AF_USART6
+#define DEBUG_USART_TX_SOURCE GPIO_PinSource6
+
+#define DEBUG_USART_RX_GPIO_PORT GPIOC
+#define DEBUG_USART_RX_GPIO_CLK RCC_AHB1Periph_GPIOC
+#define DEBUG_USART_RX_PIN GPIO_Pin_7
+#define DEBUG_USART_RX_AF GPIO_AF_USART6
+#define DEBUG_USART_RX_SOURCE GPIO_PinSource7
+
+/**
+ * @} 
+ */
+
+/**
+ * @} 
+ */
+
+
 /**
  * @defgroup Function
  * @{
  */
 void PANEL_USART_Config(void);
+void DEBUG_USART_Config(void);
 void AP_USART_Config(void);
 void ST_USART_Config(void);
 void NVIC_Configuration(void);
