@@ -581,11 +581,11 @@ void LCD_DisplayChar(uint16_t Line, uint16_t Column, uint8_t Ascii)
 {
 	Ascii -= 32;
 
-	PANEL_DEBUG("ASCII CODE = %d",Ascii);
+	PANEL_DEBUG("ASCII CODE = %c",Ascii);
 	
-	PANEL_DEBUG("table index = %d",Ascii * LCD_Currentfonts->Height);
+//	PANEL_DEBUG("table index = %d",Ascii * LCD_Currentfonts->Height);
 
-	PANEL_DEBUG("fonts table in index = %#X",LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height+1]);
+//	PANEL_DEBUG("fonts table in index = %#X",LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height+1]);
 	
 #ifdef PANEL
 	Panel_DrawChar(Line, Column, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height * 6]); /* 字模高度 x 行成员数 */
@@ -609,7 +609,7 @@ void LCD_DisplayStringLine(uint16_t Line, uint8_t *ptr)
 	/* Send the string character by character on lCD */
 	while ((refcolumn < LCD_PIXEL_WIDTH) && ((*ptr != 0) & (((refcolumn + LCD_Currentfonts->Width) & 0xFFFF) >= LCD_Currentfonts->Width)))
 	{
-		PANEL_DEBUG("Line = %d, refcolumn = %d", Line, refcolumn);
+		//PANEL_DEBUG("Line = %d, refcolumn = %d", Line, refcolumn);
 		
 		/* Display one character on LCD */
 		LCD_DisplayChar(Line, refcolumn, *ptr);
