@@ -16,15 +16,20 @@
 #include "panel_usart.h"
 #include "panel.h"
 
-void Send2ST(void* uartMsg ){
-		UartMsg *ptr = (UartMsg *)uartMsg;
+void Update_StatusMsg(void* uartMsg ) {
 
-		uint8_t i;
-		for ( i = 0; i < ptr->MsgLenth; i++) {
-				PANEL_DEBUG("MsgBuff[%d] = %#X", i, ptr->MsgBuff[i]);
-		}
+	UartMsg *ptr = (UartMsg *)uartMsg;
 
-		AP_DisplayStatus();
+	uint8_t i;
+	for ( i = 0; i < ptr->MsgLenth; i++ ) {
+		PANEL_DEBUG("MsgBuff[%d] = %#X", i, ptr->MsgBuff[i]);
+	}
+
+	/* 更新面板上的环境信息 */
+	AP_DisplayStatus();
+	/* 更新物联网公有云上的环境信息 */
+	Usart_SendBuff(ST_USART, ptr->MsgBuff, ptr->MsgLenth);
+
 
 }
 
