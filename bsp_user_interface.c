@@ -171,7 +171,8 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
  * @param LineOffset 图标间的垂直间距
  * @param ColumnOffset 图标间的水平间距
  * 
- * @par 初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
+ * @par 用法示例：
+ *  初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
  *  @verbatim 
  * 
  *         ——————              ——————              ——————  

@@ -18,7 +18,7 @@
 #include "panel_usart.h" 
 
 /* 图标结构体数组 */
-Touch_Icon status_icon[4];      /*!<环境信息图标数组 */
+Touch_Icon status_icon[4];      /*!< 环境信息图标数组 */
 Touch_Icon menu_icon[3];        /*!< 菜单栏模式选择图标数组 */
 Touch_Icon single_ctrl_icon[4]; /*!< 独立控制页面 用电器类型选择图标数组 */
 Touch_Icon centre_ctrl_icon[4]; /*!< 集中控制页面 用电器集中控制图标数组 */
