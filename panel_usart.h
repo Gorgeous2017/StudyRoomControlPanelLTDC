@@ -29,6 +29,7 @@ typedef struct
 } UartMsg;
 
 extern UartMsg statusMsg;
+extern UartMsg ctrlMsg;
 
 /**
  * @} 

@@ -498,6 +498,7 @@ void Draw_Icon(void *icon)
 void Control_Device(void *icon){
 
 	Touch_Icon *ptr = (Touch_Icon *)icon;
+	uint8_t command_buf[5]; /*!< 需要发送的用电器控制指令串 */
 
 	ptr->status = (ptr->status == 0) ? 1 : 0; /* 反转用电器状态 */
 
@@ -506,6 +507,17 @@ void Control_Device(void *icon){
 	 * 将被触控的用电器的类型、编号、状态通过串口传输出去
 	 * 
 	 ******************************************************************/
+
+	command_buf[0] = ctrlMsg.MsgFlag;
+	command_buf[1] = ptr->type;
+	command_buf[2] = ptr->no;
+	command_buf[3] = ptr->status;
+	command_buf[4] = ctrlMsg.MsgFlag;
+
+	/* 发送给AP，用于控制用电器 */
+	Usart_SendBuff(AP_USART, command_buf, ctrlMsg.MsgLenth);
+	/* 发送给ST，用于更新物联网公有云上的数据 */
+	Usart_SendBuff(ST_USART, command_buf, ctrlMsg.MsgLenth);
 
 }
 

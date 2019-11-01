@@ -47,10 +47,14 @@ void Update_StatusMsg(void* uartMsg ) {
 UartMsg statusMsg = {
 		.MsgLenth = 6,
 		.MsgFlag = 0xFF,
-		.MsgHandler = Send2ST
+		.MsgHandler = Update_StatusMsg
 }; /*!< 从AP接收到的环境信息 */
 
-UartMsg CtrlMsg;  /*!< 从ST接收到的云端下发的用电器控制信息  */
+UartMsg ctrlMsg = {
+		.MsgLenth = 5,
+		.MsgFlag = 0XFE,
+		.MsgHandler = Send2AP
+};  /*!< 从ST接收到的云端下发的用电器控制信息  */
 
 /**
  * @}
