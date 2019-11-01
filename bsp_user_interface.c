@@ -14,6 +14,8 @@
 #include "panel_usart.h"
 #include "panel.h"
 
+Touch_Icon *last_widget = NULL; /*!< 最后一个被触控控件，即当前所处的界面 */
+
 /**
  * @brief 简单的延时函数
  * 
@@ -113,6 +115,9 @@ void Draw_Widget(Touch_Icon *icon_array, uint8_t num)
     uint8_t i;
     
     PANEL_DEBUG("Function: Draw_Widget in ");
+
+    /* 记录最后一次被触控的控件 */
+    last_widget = icon_array;
 
     for ( i = 0; i < num; i++ ) {
 
