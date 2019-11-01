@@ -150,11 +150,7 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
 
             widget[i].icon_command(&widget[i]); /*执行图标的功能命令*/
 
-            PANEL_DEBUG("Redraw the widget above");
-				
             widget[i].draw_icon(&widget[i]); /*重绘图标*/
-            
-            PANEL_DEBUG("Redraw the widget below");
 
             break;
         }
