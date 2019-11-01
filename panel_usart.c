@@ -16,15 +16,65 @@
 #include "panel_usart.h"
 #include "panel.h"
 
-void Send2ST(void* uartMsg ){
-		UartMsg *ptr = (UartMsg *)uartMsg;
+void Update_StatusMsg(void* uartMsg ) {
 
-		uint8_t i;
-		for ( i = 0; i < ptr->MsgLenth; i++) {
-				PANEL_DEBUG("MsgBuff[%d] = %#X", i, ptr->MsgBuff[i]);
-		}
+	UartMsg *ptr = (UartMsg *)uartMsg;
 
-		AP_DisplayStatus();
+	uint8_t i;
+	for ( i = 0; i < ptr->MsgLenth; i++ ) {
+		PANEL_DEBUG("MsgBuff[%d] = %#X", i, ptr->MsgBuff[i]);
+	}
+
+	/* 更新面板上的环境信息 */
+	AP_DisplayStatus();
+	/* 更新物联网公有云上的环境信息 */
+	Usart_SendBuff(ST_USART, ptr->MsgBuff, ptr->MsgLenth);
+
+}
+
+/**
+ * @brief ST uart 指令串处理函数
+ * @details 
+ * 	- 将对应用电器的状态更新
+ *  - 若当前面板所处的页面是该指令串所指的用电器，重绘当前页面
+ * 
+ * @param uartMsg 
+ */
+void Update_DeviceMsg(void* uartMsg ) {
+
+	UartMsg *ptr = (UartMsg *)uartMsg;
+
+	uint8_t i;
+	for ( i = 0; i < ptr->MsgLenth; i++ ) {
+			PANEL_DEBUG("MsgBuff[%d] = %#X", i, ptr->MsgBuff[i]);
+	}
+
+	//PANEL_DEBUG("");
+
+	/**
+	 * @brief 更新串口指令串所指向的用电器的状态
+	 * @param 
+	 * 	@arg MsgBuff[1]: 用电器类型
+	 * 	@arg MsgBuff[2]: 用电器编号
+	 * 	@arg MsgBuff[3]: 用电器状态
+	 * 	
+	 */
+	device[ ptr->MsgBuff[1] ][ ptr->MsgBuff[2] ].status = ptr->MsgBuff[3];
+	
+	/**
+	 * @brief 判断当前面板所处的页面是该指令串所指的用电器
+	 * @param last_widget: Touch_Icon 类型的指针 用于记录面板最后一次被触控的控件
+	 * @details 当 Draw_Widget 函数被调用时，last_widget 会更新为调用该函数的图标数组指针，
+	 * 以此来记录当前面板所处的页面。 
+	 */
+	if( last_widget == device[ ptr->MsgBuff[1] ] ) {
+
+		Draw_Widget(device[ ptr->MsgBuff[1] ], 6);
+
+	}
+
+	/* 将控制用电器的指令串转发给AP */
+	Usart_SendBuff(AP_USART, ptr->MsgBuff, 5);
 
 }
 
@@ -42,10 +92,14 @@ void Send2ST(void* uartMsg ){
 UartMsg statusMsg = {
 		.MsgLenth = 6,
 		.MsgFlag = 0xFF,
-		.MsgHandler = Send2ST
+		.MsgHandler = Update_StatusMsg
 }; /*!< 从AP接收到的环境信息 */
 
-UartMsg CtrlMsg;  /*!< 从ST接收到的云端下发的用电器控制信息  */
+UartMsg ctrlMsg = {
+		.MsgLenth = 5,
+		.MsgFlag = 0XFE,
+		.MsgHandler = Update_DeviceMsg
+};  /*!< 从ST接收到的云端下发的用电器控制信息  */
 
 /**
  * @}

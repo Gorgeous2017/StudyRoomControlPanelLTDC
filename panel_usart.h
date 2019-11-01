@@ -29,6 +29,7 @@ typedef struct
 } UartMsg;
 
 extern UartMsg statusMsg;
+extern UartMsg ctrlMsg;
 
 /**
  * @} 
@@ -153,6 +154,8 @@ void DEBUG_USART_Config(void);
 void AP_USART_Config(void);
 void ST_USART_Config(void);
 void NVIC_Configuration(void);
+
+void Usart_SendBuff(USART_TypeDef *pUSARTx, uint8_t *buf, uint8_t len);
 
 /**
  * @} 

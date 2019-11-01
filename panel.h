@@ -77,6 +77,9 @@ typedef struct
 
 } Touch_Icon;
 
+extern Touch_Icon *last_widget;
+extern Touch_Icon device[4][6]; 
+
 /*
 	LCD 颜色代码，CL_是Color的简写
 	16Bit由高位至低位， RRRR RGGG GGGB BBBB
