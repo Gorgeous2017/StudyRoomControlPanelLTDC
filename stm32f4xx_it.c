@@ -171,6 +171,56 @@ void ST_USART_IRQHandler(void) {
 
 	PANEL_DEBUG("Function: ST_USART_IRQHandler in ");
 
+	uint8_t i;
+	uint8_t ucTemp;
+	static uint8_t uCount = 0;
+
+	if (USART_GetITStatus(ST_USART, USART_IT_RXNE) != RESET) {
+
+		USART_ClearFlag(ST_USART,USART_IT_RXNE); 
+
+		ucTemp = USART_ReceiveData( ST_USART );
+
+		PANEL_DEBUG("Receive char is %#X, count is %d", ucTemp, uCount);
+
+		if ( (ucTemp == ctrlMsg.MsgFlag) && (uCount == 0) ) { /* 接收到开始标志位，且之前没有收到消息 */
+
+			PANEL_DEBUG("Receive Start");
+
+			ctrlMsg.MsgBuff[ uCount++ ] = ucTemp; /* uCount自增一，下一次进入中断处理函数会执行下一条if语句 */
+
+		} else if ( (uCount > 0) && (uCount < ctrlMsg.MsgLenth - 1 ) ) { /* 接收数据位 */
+
+			PANEL_DEBUG("Receiving");
+
+			ctrlMsg.MsgBuff[ uCount++ ] = ucTemp;
+
+		} else if ( ucTemp == ctrlMsg.MsgFlag) { /* 接收完全部串口信息，且收到了结束标志位 */
+			
+			PANEL_DEBUG("Receive over");
+
+			ctrlMsg.MsgBuff[ uCount ] = ucTemp;
+			ctrlMsg.MsgHandler(&ctrlMsg); /* 将接收到的信息发送到UART3 */
+
+			uCount = 0; /* 重置串口信息长度计数 */
+			/* 清空信息接收缓存区 */			
+			for ( i = 0; i < ctrlMsg.MsgLenth; i++)	{
+				ctrlMsg.MsgBuff[i] = 0;
+			}
+
+		} else { /* 非正常的出错情况 */
+			
+			PANEL_DEBUG("Receive error ");
+
+			uCount = 0; /* 重置串口信息长度计数 */
+			/* 清空信息接收缓存区 */
+			for ( i = 0; i < ctrlMsg.MsgLenth; i++)	{
+				ctrlMsg.MsgBuff[i] = 0;
+			}
+
+		}
+	
+	}
 
 }	
 

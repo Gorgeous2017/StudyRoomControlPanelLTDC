@@ -14,6 +14,8 @@
 #include "panel_usart.h"
 #include "panel.h"
 
+Touch_Icon *last_widget = NULL; /*!< 最后一个被触控控件，即当前所处的界面 */
+
 /**
  * @brief 简单的延时函数
  * 
@@ -114,6 +116,9 @@ void Draw_Widget(Touch_Icon *icon_array, uint8_t num)
     
     PANEL_DEBUG("Function: Draw_Widget in ");
 
+    /* 记录最后一次被触控的控件 */
+    last_widget = icon_array;
+
     for ( i = 0; i < num; i++ ) {
 
         icon_array[i].draw_icon(&icon_array[i]);
@@ -150,11 +155,7 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
 
             widget[i].icon_command(&widget[i]); /*执行图标的功能命令*/
 
-            PANEL_DEBUG("Redraw the widget above");
-				
             widget[i].draw_icon(&widget[i]); /*重绘图标*/
-            
-            PANEL_DEBUG("Redraw the widget below");
 
             break;
         }
@@ -171,24 +172,25 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
  * @param LineOffset 图标间的垂直间距
  * @param ColumnOffset 图标间的水平间距
  * 
- * @par 初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
+ * @par 用法示例：
+ *  初始化如下图的 2 x 3 图标矩阵,行间距为30，列间距为20
  *  @verbatim 
- * 
- *         ——————              ——————              ——————  
- *        |      | <-- 20 --> |      | <-- 20 --> |      | 
- *        |      |            |      |            |      | 
- *         ——————              ——————              ——————  
- *           ^
- *           |
- *           30
- *           |
- *           ^ 
- *         ——————              ——————              ——————  
- *        |      | <-- 20 --> |      | <-- 20 --> |      | 
- *        |      |            |      |            |      | 
- *         ——————              ——————              ——————  
- *  
- *  @endverbatim 
+ 
+     ------              ------              ------  
+    |      | <-- 20 --> |      | <-- 20 --> |      | 
+    |      |            |      |            |      | 
+     ------              ------              ------  
+       ^
+       |
+       30
+       |
+       ^ 
+     ------              ------              ------  
+    |      | <-- 20 --> |      | <-- 20 --> |      | 
+    |      |            |      |            |      | 
+     ------              ------              ------  
+  
+    @endverbatim 
  * 调用语句如下：
  *  @code
  *     Matrix_Init(IconArray, 2, 3, 30, 20);
