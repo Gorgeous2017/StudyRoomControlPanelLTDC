@@ -75,6 +75,8 @@ void Update_DeviceMsg(void* uartMsg ) {
 
 	/* 将控制用电器的指令串转发给AP */
 	Usart_SendBuff(AP_USART, ptr->MsgBuff, 5);
+	/* 将控制用电器的指令串发回给ST，用于更新云端用电器状态 */
+	Usart_SendBuff(ST_USART, ptr->MsgBuff, 5);
 
 }
 
