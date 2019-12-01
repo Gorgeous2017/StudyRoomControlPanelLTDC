@@ -110,8 +110,7 @@ void Icon_Struct_Init(Touch_Icon *source_icon, Touch_Icon *aim_icon, uint8_t ico
  * @param icon_array 存储控件中各个图标的数组
  * @param num 控件中图标的数量
  */
-void Draw_Widget(Touch_Icon *icon_array, uint8_t num)
-{
+void Draw_Widget(Touch_Icon *icon_array, uint8_t num) {
     uint8_t i;
     
     PANEL_DEBUG("Function: Draw_Widget in ");
@@ -139,26 +138,28 @@ void Draw_Widget(Touch_Icon *icon_array, uint8_t num)
  * @param x 触点横坐标
  * @param y 触点纵坐标
  */
-void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t y){
+void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t y) {
+
     uint8_t i;
 	
     PANEL_DEBUG("Funtion: Widget_TouchUpHandler in");
 	
-    for (i = 0; i < num; i++){
+    for (i = 0; i < num; i++) {
 
         PANEL_DEBUG("widget no = %d, x = %d, y = %d",i,widget[i].start_x,widget[i].start_y);
 
         /* 触笔在图标区域释放 */
-        if (x <= (widget[i].start_x + widget[i].width) && y <= (widget[i].start_y + widget[i].height) && y >= widget[i].start_y && x >= widget[i].start_x){
+        if (x <= (widget[i].start_x + widget[i].width) && y <= (widget[i].start_y + widget[i].height) && y >= widget[i].start_y && x >= widget[i].start_x) {
         
-            widget[i].touch_flag = 0; /*释放触摸标志*/
+            widget[i].touch_flag = 0; /* 释放触摸标志 */
 
-            widget[i].icon_command(&widget[i]); /*执行图标的功能命令*/
+            widget[i].icon_command(&widget[i]); /* 执行图标的功能命令 */
 
-            widget[i].draw_icon(&widget[i]); /*重绘图标*/
+            widget[i].draw_icon(&widget[i]); /* 重绘图标 */
 
-            break;
+            break; /* 结束遍历 */
         }
+
     }
 
 }
@@ -199,15 +200,20 @@ void Widget_TouchUpHandler(Touch_Icon *widget, uint8_t num, uint16_t x, uint16_t
  * @note 若要将Matrix_Init()与Icon_Struct_Init()一起使用，务必将Matrix_Init()于Icon_Struct_Init()
  * 之后调用，并在Icon_Struct_Init()中将矩阵第一个图标的坐标赋给 start_x 和 start_y 成员
  */
-void Matrix_Init(Touch_Icon *IconArray, uint8_t LineNum, uint8_t ColumnNum, uint8_t LineOffset, uint8_t ColumnOffset){
+void Matrix_Init(Touch_Icon *IconArray, uint8_t LineNum, uint8_t ColumnNum, uint8_t LineOffset, uint8_t ColumnOffset) {
 
     uint8_t i, j, k = 0;
 
-    for ( i = 0; i < LineNum; i++ ) {
+    /* 行下标从零开始计数，因为第一行不需要加上行偏移 */
+    for ( i = 0; i < LineNum; i++ ) { 
 
-        for ( j = 0; j < ColumnNum; j++, k++) {
+        /* 列下标从零开始计数，因为第一列不需要加上列偏移 */
+        /* 注意：下标 K 在循环开始时不会被清零，所以它会作为下标遍历 IconArray 的成员*/
+        /* 因为每一行开始时列坐标都是重新开始累加，所以下一次进入该循环时下标 j 重新从零开始计数 */
+        for ( j = 0; j < ColumnNum; j++, k++) { 
 
-            IconArray[k].start_x =  IconArray[k].start_x + (IconArray[k].width + ColumnOffset) * j;
+            /* 基坐标（矩阵第一个图标的坐标）加上坐标间距和图标大小即为该成员的坐标 */
+            IconArray[k].start_x = IconArray[k].start_x + (IconArray[k].width + ColumnOffset) * j;
             IconArray[k].start_y = IconArray[k].start_y + (IconArray[k].height + LineOffset) * i;
 
         }

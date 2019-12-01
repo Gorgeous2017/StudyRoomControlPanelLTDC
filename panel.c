@@ -558,7 +558,7 @@ void Select_Device(void *icon){
  * 
  * @param icon Touch_Icon 类型的图标参数
  */
-void Tag_Change(void *ic){
+void Tag_Change(void *ic) {
 	
 	Touch_Icon *ptr = (Touch_Icon *)ic;
 
@@ -566,7 +566,7 @@ void Tag_Change(void *ic){
 
 	/* 重置菜单栏页签状态 */
 	Set_IconStatus(menu_icon, 3, 0);
-	Draw_Widget(menu_icon, 3);
+	Draw_Widget(menu_icon, 3); /*!< 需要重绘页签，否则在显示屏上之前选中页签仍为选中状态  */
 	
 	/* 将当前页签置为选中状态 */
 	ptr->status = 1;
